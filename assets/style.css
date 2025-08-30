@@ -142,6 +142,7 @@ svg.icon {
 .msg-text {
     flex-grow: 1;
     padding: 0.6em 1em;
+    white-space: pre-line;
 }
 #msg-list > li.danger {
     color: var(--text-danger);

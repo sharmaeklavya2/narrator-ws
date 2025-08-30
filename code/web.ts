@@ -55,11 +55,11 @@ function getArticlePathFromQString(): string | undefined {
     }
     const fpath = articlesMap[param];
     if(fpath === undefined) {
-        throw new Error(`article ${param} not found`);
+        throw new Error(`Article ${param} not found.`);
     }
     const ext = getExt(fpath);
     if(ext !== 'html' && ext !== 'csv') {
-        throw new Error(`file extension ${ext} is unsupported`);
+        throw new Error(`File extension ${ext} is unsupported.`);
     }
     return fpath;
 }
@@ -67,7 +67,7 @@ function getArticlePathFromQString(): string | undefined {
 async function fetchRawArticleFromPath(fpath: string): Promise<RawArticle> {
     const response = await fetch(fpath);
     if(!response.ok) {
-        throw new Error(`fetch failed. status: ${response.status}, path: ${fpath}`);
+        throw new Error(`Fetch failed. status: ${response.status}, path: ${fpath}.`);
     }
     const text = await response.text();
     const ext = getExt(fpath);
@@ -75,9 +75,17 @@ async function fetchRawArticleFromPath(fpath: string): Promise<RawArticle> {
 }
 
 function loadArticle(articleInfo: ArticleInfo): void {
+    if(articleInfo.warnings.length > 0) {
+        for(const warning of articleInfo.warnings) {
+            uiMessage('warning', warning.message);
+        }
+    }
     const mainElem = document.getElementById('main')!;
     if(articleInfo.defaultLang) {
-        populate(articleInfo, articleInfo.defaultLang);
+        const fails = populate(articleInfo, articleInfo.defaultLang);
+        if(fails > 0) {
+            uiMessage('warning', `${fails} sentences missing in lang ${articleInfo.defaultLang}.`);
+        }
     }
     console.log(articleInfo);
     mainElem.appendChild(articleInfo.root);
