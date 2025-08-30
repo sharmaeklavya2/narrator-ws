@@ -63,6 +63,9 @@ body {
     color: var(--text-color);
     font-family: BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Open Sans", "Helvetica Neue", sans-serif;
 }
+.hidden {
+    display: none;
+}
 header {
     text-align: center;
     background-color: var(--medium-tint);

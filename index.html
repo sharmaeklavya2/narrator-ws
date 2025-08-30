@@ -39,8 +39,11 @@ Narrator with Subtitles
     <button id="button-open" title="Open">
         <svg class="icon" id="icon-open"><use xlink:href="assets/icons.svg#fa-file-circle-plus"/></svg>
     </button>
-    <button id="button-settings" disabled title="Settings">
-        <svg class="icon" id="icon-settings"><use xlink:href="assets/icons.svg#fa-gear"/></svg>
+    <button id="button-text-settings" title="Text Settings">
+        <svg class="icon" id="icon-text-settings"><use xlink:href="assets/icons.svg#fa-gear"/></svg>
+    </button>
+    <button id="button-voice-settings" title="Voice Settings">
+        <svg class="icon" id="icon-volume-settings"><use xlink:href="assets/icons.svg#fa-volume-high"/></svg>
     </button>
     <button id="button-about" title="About">
         <svg class="icon" id="icon-about"><use xlink:href="assets/icons.svg#fa-question"/></svg>
@@ -48,5 +51,8 @@ Narrator with Subtitles
 </div>
 </div>
 </footer>
+<div class="hidden">
+    <input type="file" id="level-loader" accept=".json,application/json" style="display:none" />
+</div>
 </body>
 </html>
