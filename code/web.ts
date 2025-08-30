@@ -1,7 +1,38 @@
 import {RawArticle, ArticleInfo, parse, populate} from "./parser.js";
 
-function uiMessage(type: string, msg: string): void {
-    console.log(msg);
+type Status = 'danger' | 'warning' | 'success';
+
+function closeBtnClickHandler(ev: Event): void {
+    let closeBtn = ev.currentTarget as HTMLElement;  // will always be a span.close-btn element
+    let LiElem = closeBtn.parentElement!;
+    let msgList = document.getElementById('msg-list')!;
+    msgList.removeChild(LiElem);
+}
+
+function uiMessage(status: Status | undefined, text: string | string[]): void {
+    let textArray;
+    if(Array.isArray(text)) {
+        textArray = text;
+    }
+    else {
+        textArray = [text];
+    }
+    for(const text of textArray) {
+        let liElem = document.createElement('li');
+        if(status !== undefined) {
+            liElem.classList.add(status);
+        }
+        let msgSpan = document.createElement('span');
+        msgSpan.classList.add('msg-text');
+        msgSpan.innerText = text;
+        liElem.appendChild(msgSpan);
+        let closeButton = document.createElement('span');
+        closeButton.classList.add('close-btn');
+        closeButton.addEventListener('click', closeBtnClickHandler);
+        liElem.appendChild(closeButton);
+        let msgList = document.getElementById('msg-list')!;
+        msgList.appendChild(liElem);
+    }
 }
 
 const articlesMap: Record<string, string> = {
