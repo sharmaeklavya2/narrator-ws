@@ -1,4 +1,9 @@
-export interface DocInfo {
+export interface RawArticle {
+    ext?: string;
+    text: string;
+}
+
+export interface ArticleInfo {
     defaultLang?: string;
     root: HTMLElement;
     sockets: HTMLElement[];
@@ -6,27 +11,27 @@ export interface DocInfo {
     kids2: Record<string, HTMLElement>[];
 }
 
-export function parse({ext: ext, text: text}: {ext?: string, text: string}): DocInfo {
-    if(ext !== 'html') {
-        throw new Error(`invalid file extension ${ext}`);
+export function parse(rawArticle: RawArticle): ArticleInfo {
+    if(rawArticle.ext !== 'html') {
+        throw new Error(`invalid file extension ${rawArticle.ext}`);
     }
     // console.log('text:', text.slice(0, 200));
     const parser = new DOMParser();
-    const article = parser.parseFromString(text, 'text/html');
-    console.log(article);
-    const defaultLang = article.documentElement.getAttribute('lang')
+    const articleDoc = parser.parseFromString(rawArticle.text, 'text/html');
+    console.log(articleDoc);
+    const defaultLang = articleDoc.documentElement.getAttribute('lang')
     const newRoot = document.createElement('div');
-    const docInfo: DocInfo = {defaultLang: defaultLang ?? undefined, root: newRoot,
+    const articleInfo: ArticleInfo = {defaultLang: defaultLang ?? undefined, root: newRoot,
         sockets: [], kids: [], kids2: []};
-    outerParseHelper(article, article.body, newRoot, docInfo);
-    for(const kid of docInfo.kids) {
+    outerParseHelper(articleDoc.body, newRoot, articleDoc, articleInfo);
+    for(const kid of articleInfo.kids) {
         const kid2: Record<string, HTMLElement> = {};
         for(const [lang, elem] of Object.entries(kid)) {
             kid2[lang] = elem.cloneNode(true) as HTMLElement;
         }
-        docInfo.kids2.push(kid2);
+        articleInfo.kids2.push(kid2);
     }
-    return docInfo;
+    return articleInfo;
 }
 
 function shallowCloneElem(elem: HTMLElement): HTMLElement {
@@ -45,7 +50,8 @@ function assertNoLangInDescendants(elem: Element) {
     }
 }
 
-function outerParseHelper(article: HTMLDocument, source: HTMLElement, dest: HTMLElement, docInfo: DocInfo): void {
+function outerParseHelper(source: HTMLElement, dest: HTMLElement,
+        articleDoc: HTMLDocument, articleInfo: ArticleInfo): void {
     let langKids: Record<string, HTMLElement> = {};
     let langBox: HTMLElement | undefined = undefined;
     for(const srcChild of source.childNodes) {
@@ -53,7 +59,7 @@ function outerParseHelper(article: HTMLDocument, source: HTMLElement, dest: HTML
             const lang = srcChild.getAttribute('lang');
             if(lang === null) {
                 const destChild = shallowCloneElem(srcChild);
-                outerParseHelper(article, srcChild, destChild, docInfo);
+                outerParseHelper(srcChild, destChild, articleDoc, articleInfo);
                 dest.appendChild(destChild);
             }
             else {
@@ -68,11 +74,11 @@ function outerParseHelper(article: HTMLDocument, source: HTMLElement, dest: HTML
                     langKids = {};
                 }
                 if(langBox === undefined) {
-                    langBox = article.createElement('span');
-                    langBox.id = 'sent-' + docInfo.sockets.length;
+                    langBox = articleDoc.createElement('span');
+                    langBox.id = 'sent-' + articleInfo.sockets.length;
                     langBox.classList.add('lang-box');
-                    docInfo.sockets.push(langBox);
-                    docInfo.kids.push(langKids);
+                    articleInfo.sockets.push(langBox);
+                    articleInfo.kids.push(langKids);
                     dest.appendChild(langBox);
                 }
                 // register current tag
@@ -89,12 +95,12 @@ function outerParseHelper(article: HTMLDocument, source: HTMLElement, dest: HTML
     }
 }
 
-export function populate(docInfo: DocInfo, lang: string): number {
+export function populate(articleInfo: ArticleInfo, lang: string): number {
     let fails = 0;
-    const n = docInfo.sockets.length;
+    const n = articleInfo.sockets.length;
     for(let i=0; i<n; ++i) {
-        const socket = docInfo.sockets[i];
-        const kid = docInfo.kids[i][lang];
+        const socket = articleInfo.sockets[i];
+        const kid = articleInfo.kids[i][lang];
         if(kid === undefined) {
             fails++;
         }

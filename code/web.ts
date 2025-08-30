@@ -1,4 +1,4 @@
-import * as parser from "./parser.js";
+import {RawArticle, ArticleInfo, parse, populate} from "./parser.js";
 
 function uiMessage(type: string, msg: string): void {
     console.log(msg);
@@ -16,40 +16,49 @@ function getExt(fname: string): string | undefined {
     return fname.slice(i+1).toLowerCase();
 }
 
-async function loadArticleTextFromQString() {
-    // returns a Promise that resolves to the contents of the article fetched from the querystring
+function getArticlePathFromQString(): string | undefined {
     const urlParams = new URLSearchParams(window.location.search);
     const param = urlParams.get('article');
-    if(param !== null) {
-        const fpath = articlesMap[param];
-        if(fpath === undefined) {
-            throw new Error(`article ${param} not found`);
-        }
-        const ext = getExt(fpath);
-        // console.log('fetching article', fpath);
-        const response = await window.fetch(fpath);
-        if(!response.ok) {
-            throw new Error(`fetch failed. status: ${response.status}, path: ${fpath}`);
-        }
-        const text = await response.text();
-        return [ext, text]
+    if(param === null) {
+        return undefined;
     }
-    else {
-        return [undefined, undefined];
+    const fpath = articlesMap[param];
+    if(fpath === undefined) {
+        throw new Error(`article ${param} not found`);
     }
+    const ext = getExt(fpath);
+    if(ext !== 'html' && ext !== 'csv') {
+        throw new Error(`file extension ${ext} is unsupported`);
+    }
+    return fpath;
+}
+
+async function fetchRawArticleFromPath(fpath: string): Promise<RawArticle> {
+    const response = await fetch(fpath);
+    if(!response.ok) {
+        throw new Error(`fetch failed. status: ${response.status}, path: ${fpath}`);
+    }
+    const text = await response.text();
+    const ext = getExt(fpath);
+    return {ext: ext, text: text};
+}
+
+function loadArticle(articleInfo: ArticleInfo): void {
+    const mainElem = document.getElementById('main')!;
+    if(articleInfo.defaultLang) {
+        populate(articleInfo, articleInfo.defaultLang);
+    }
+    console.log(articleInfo);
+    mainElem.appendChild(articleInfo.root);
 }
 
 async function main(): Promise<void> {
     try {
-        const [ext, text] = await loadArticleTextFromQString();
-        if(text !== undefined) {
-            const mainElem = document.getElementById('main')!;
-            const docInfo = parser.parse({ext: ext, text: text});
-            if(docInfo.defaultLang) {
-                parser.populate(docInfo, docInfo.defaultLang);
-            }
-            mainElem.appendChild(docInfo.root);
-            console.log(docInfo);
+        const fpath = getArticlePathFromQString();
+        if(fpath !== undefined) {
+            const rawArticle = await fetchRawArticleFromPath(fpath);
+            const articleInfo = parse(rawArticle);
+            loadArticle(articleInfo);
         }
     } catch (e) {
         if(e instanceof Error) {
