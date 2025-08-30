@@ -1,0 +1,13 @@
+{
+  "name": "narrator-ws",
+  "version": "0.1.0",
+  "description": "Narrator with Subtitles",
+  "type": "module",
+  "scripts": {
+    "clean": "rm -f src/*.js src/*.js.map"
+  },
+  "author": "Eklavya Sharma",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {}
+}
