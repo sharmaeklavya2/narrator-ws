@@ -1,4 +1,5 @@
 import {RawArticle, ArticleInfo, parse, populate} from "./parser.js";
+import * as fetchers from "./fetchers.js";
 
 type Status = 'danger' | 'warning' | 'success';
 
@@ -35,45 +36,6 @@ function uiMessage(status: Status | undefined, text: string | string[]): void {
     }
 }
 
-const articlesMap: Record<string, string> = {
-    'ict20': 'articles/ict/l20.html',
-};
-
-function getExt(fname: string): string | undefined {
-    const i = fname.lastIndexOf('.');
-    if (i === -1) {
-        return undefined;
-    }
-    return fname.slice(i+1).toLowerCase();
-}
-
-function getArticlePathFromQString(): string | undefined {
-    const urlParams = new URLSearchParams(window.location.search);
-    const param = urlParams.get('article');
-    if(param === null) {
-        return undefined;
-    }
-    const fpath = articlesMap[param];
-    if(fpath === undefined) {
-        throw new Error(`Article ${param} not found.`);
-    }
-    const ext = getExt(fpath);
-    if(ext !== 'html' && ext !== 'csv') {
-        throw new Error(`File extension ${ext} is unsupported.`);
-    }
-    return fpath;
-}
-
-async function fetchRawArticleFromPath(fpath: string): Promise<RawArticle> {
-    const response = await fetch(fpath);
-    if(!response.ok) {
-        throw new Error(`Fetch failed. status: ${response.status}, path: ${fpath}.`);
-    }
-    const text = await response.text();
-    const ext = getExt(fpath);
-    return {ext: ext, text: text};
-}
-
 function loadArticle(articleInfo: ArticleInfo): void {
     if(articleInfo.warnings.length > 0) {
         for(const warning of articleInfo.warnings) {
@@ -93,9 +55,9 @@ function loadArticle(articleInfo: ArticleInfo): void {
 
 async function main(): Promise<void> {
     try {
-        const fpath = getArticlePathFromQString();
+        const fpath = fetchers.getArticlePathFromQString();
         if(fpath !== undefined) {
-            const rawArticle = await fetchRawArticleFromPath(fpath);
+            const rawArticle = await fetchers.fetchRawArticleFromPath(fpath);
             const articleInfo = parse(rawArticle);
             loadArticle(articleInfo);
         }
