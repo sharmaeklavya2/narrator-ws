@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="color-scheme" content="dark light" />
 <meta name="description" content="Web application that reads text and shows translations. Useful for listening practice when learning a new language." />
-<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="assets/style.css" />
+<script type="module" src="code/web.js"></script>
 <title>Narrator WS</title>
 </head>
 
@@ -23,25 +24,25 @@ Narrator with Subtitles
 <div class="toolbar">
 <div class="toolbar-section">
     <button id="button-prev" title="Prev">
-        <svg class="icon" id="icon-prev"><use xlink:href="icons.svg#fa-step-backward"/></svg>
+        <svg class="icon" id="icon-prev"><use xlink:href="assets/icons.svg#fa-step-backward"/></svg>
     </button>
     <button disabled id="button-play" title="Play" data-state="paused">
-        <svg class="icon" id="icon-play"><use xlink:href="icons.svg#fa-play"/></svg>
-        <svg class="icon" id="icon-pause"><use xlink:href="icons.svg#fa-pause"/></svg>
+        <svg class="icon" id="icon-play"><use xlink:href="assets/icons.svg#fa-play"/></svg>
+        <svg class="icon" id="icon-pause"><use xlink:href="assets/icons.svg#fa-pause"/></svg>
     </button>
     <button id="button-next" title="Next">
-        <svg class="icon" id="icon-next"><use xlink:href="icons.svg#fa-step-forward"/></svg>
+        <svg class="icon" id="icon-next"><use xlink:href="assets/icons.svg#fa-step-forward"/></svg>
     </button>
 </div>
 <div class="toolbar-section">
     <button id="button-open" title="Open">
-        <svg class="icon" id="icon-open"><use xlink:href="icons.svg#fa-file-circle-plus"/></svg>
+        <svg class="icon" id="icon-open"><use xlink:href="assets/icons.svg#fa-file-circle-plus"/></svg>
     </button>
     <button id="button-settings" disabled title="Settings">
-        <svg class="icon" id="icon-settings"><use xlink:href="icons.svg#fa-gear"/></svg>
+        <svg class="icon" id="icon-settings"><use xlink:href="assets/icons.svg#fa-gear"/></svg>
     </button>
     <button id="button-about" title="About">
-        <svg class="icon" id="icon-about"><use xlink:href="icons.svg#fa-question"/></svg>
+        <svg class="icon" id="icon-about"><use xlink:href="assets/icons.svg#fa-question"/></svg>
     </button>
 </div>
 </div>
