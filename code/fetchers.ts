@@ -12,6 +12,10 @@ function getExt(fname: string): string | undefined {
     return fname.slice(i+1).toLowerCase();
 }
 
+function isValidExt(ext?: string): boolean {
+    return ext !== undefined && (ext === 'html' || ext === 'csv');
+}
+
 export function getArticlePathFromQString(): string | undefined {
     const urlParams = new URLSearchParams(window.location.search);
     const param = urlParams.get('article');
@@ -23,7 +27,7 @@ export function getArticlePathFromQString(): string | undefined {
         throw new Error(`Article ${param} not found.`);
     }
     const ext = getExt(fpath);
-    if(ext !== 'html' && ext !== 'csv') {
+    if(!isValidExt(ext)) {
         throw new Error(`File extension ${ext} is unsupported.`);
     }
     return fpath;
@@ -37,4 +41,27 @@ export async function fetchRawArticleFromPath(fpath: string): Promise<RawArticle
     const text = await response.text();
     const ext = getExt(fpath);
     return {ext: ext, text: text};
+}
+
+export async function fetchRawArticleFromFile(file: File): Promise<RawArticle> {
+    const ext = getExt(file.name);
+    if(!isValidExt(ext)) {
+        throw new Error(`File extension ${ext} is unsupported.`);
+    }
+    const text = await file.text();
+    return {ext: ext, text: text};
+}
+
+export function getFileFromList(files: FileList | null | undefined): File {
+    if(files === null || files === undefined || files.length === 0) {
+        throw new Error('Received empty file list.');
+    }
+    else if(files.length > 1) {
+        throw new Error(`Received ${files.length} files.`);
+    }
+    const file = files.item(0);
+    if(file === null) {
+        throw new Error('Received a null file.');
+    }
+    return file;
 }

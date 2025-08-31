@@ -36,6 +36,13 @@ function uiMessage(status: Status | undefined, text: string | string[]): void {
     }
 }
 
+function logError(e: unknown): void {
+    if(e instanceof Error) {
+        uiMessage('danger', e.message);
+    }
+    throw e;
+}
+
 function loadArticle(articleInfo: ArticleInfo): void {
     if(articleInfo.warnings.length > 0) {
         for(const warning of articleInfo.warnings) {
@@ -53,8 +60,55 @@ function loadArticle(articleInfo: ArticleInfo): void {
     mainElem.appendChild(articleInfo.root);
 }
 
+function setEventHandlers(): void {
+    const fileLoaderElem = document.getElementById('file-loader')!;
+    fileLoaderElem.addEventListener('change', function(ev: Event) {
+            try {
+                const files = (ev.currentTarget! as HTMLInputElement).files;
+                const file = fetchers.getFileFromList(files);
+                fetchers.fetchRawArticleFromFile(file)
+                    .then(parse).then(loadArticle).catch(logError);
+            }
+            catch(e) {
+                logError(e);
+            }
+        });
+    document.getElementById('button-open')!.addEventListener('click', function(ev: Event) {
+            fileLoaderElem.click();
+        });
+
+    document.body.addEventListener('dragover', function(ev) {
+            ev.stopPropagation();
+            ev.preventDefault();
+            if(ev.dataTransfer) {
+                ev.dataTransfer.dropEffect = 'copy';
+            }
+        });
+    document.body.addEventListener('dragstart', function(ev) {
+        console.debug('dragstart', ev.target);
+        ev.preventDefault();
+        return false;
+    });
+    document.body.addEventListener('drop', function(ev) {
+        ev.stopPropagation();
+        ev.preventDefault();
+        if(ev.dataTransfer) {
+            ev.dataTransfer.dropEffect = 'copy';
+            try {
+                const file = fetchers.getFileFromList(ev.dataTransfer.files);
+                fetchers.fetchRawArticleFromFile(file)
+                    .then(parse).then(loadArticle).catch(logError);
+            }
+            catch(e) {
+                logError(e);
+            }
+        }
+    });
+}
+
 async function main(): Promise<void> {
     try {
+        setEventHandlers();
         const fpath = fetchers.getArticlePathFromQString();
         if(fpath !== undefined) {
             const rawArticle = await fetchers.fetchRawArticleFromPath(fpath);
@@ -62,10 +116,7 @@ async function main(): Promise<void> {
             loadArticle(articleInfo);
         }
     } catch (e) {
-        if(e instanceof Error) {
-            uiMessage('danger', e.message);
-        }
-        throw e;
+        logError(e);
     }
 }
 
