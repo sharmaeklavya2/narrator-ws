@@ -22,6 +22,7 @@ body {
     --light-shade: hsl(0, 0%, 95%);
 
     --border-radius: 0.3em;
+    --button-size: 3em;
 }
 @media (prefers-color-scheme: dark) {
     body {
@@ -104,14 +105,20 @@ footer .spotlight {
     display: flex;
     align-items: center;
 }
+.toolbar .toolbar-section {
+    width: 100%;
+    max-width: calc(var(--button-size) * var(--n-kids));
+    flex-basis: calc(var(--button-size) * var(--n-kids));
+}
 .toolbar button {
     display: flex;
     align-items: center;
     justify-content: space-around;
     background-color: transparent;
     border: 1px solid var(--heavy-tint);
-    width: 4em;
-    height: 4em;
+    width: 100%;
+    /* max-width: var(--button-size); */
+    aspect-ratio: 1;
 }
 .toolbar button[disabled] .icon {
     fill: var(--text-secondary);
@@ -125,8 +132,8 @@ footer .spotlight {
 }
 
 .icon {
-    width: 2.5em;
-    height: 2.5em;
+    max-width: 2.5em;
+    max-height: 2.5em;
 }
 svg.icon {
     fill: var(--text-color);
