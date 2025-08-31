@@ -58,10 +58,12 @@ body {
 html, body {
     height: 100%;
 }
-body {
-    margin: 0;
+body, #non-footer, .inner {
     display: flex;
     flex-direction: column;
+}
+body {
+    margin: 0;
     font-size: 1.2em;
     background-color: var(--bg-color);
     color: var(--text-color);
@@ -70,21 +72,21 @@ body {
 .hidden {
     display: none;
 }
+#non-footer, .inner, main {
+    flex: 1;
+}
+#non-footer {
+    overflow-y: auto;
+}
 header {
     text-align: center;
     background-color: var(--medium-tint);
     font-size: 2em;
     padding: 0.1em 0 0.1em 0;
 }
-.inner {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
 main {
     padding: 0.2em 1em;
     line-height: 1.6;
-    flex: 1;
 }
 @media(min-width: 640px) {
     body > .inner, footer .spotlight {
