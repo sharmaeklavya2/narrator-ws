@@ -55,6 +55,9 @@ body {
 
 /* structural =============================================================== */
 
+html, body {
+    height: 100%;
+}
 body {
     margin: 0;
     display: flex;
@@ -73,9 +76,15 @@ header {
     font-size: 2em;
     padding: 0.1em 0 0.1em 0;
 }
+.inner {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
 main {
     padding: 0.2em 1em;
     line-height: 1.6;
+    flex: 1;
 }
 @media(min-width: 640px) {
     body > .inner, footer .spotlight {
