@@ -129,6 +129,9 @@ footer .spotlight {
     /* max-width: var(--button-size); */
     aspect-ratio: 1;
 }
+.toolbar button[disabled] {
+    cursor: not-allowed;
+}
 .toolbar button[disabled] .icon {
     fill: var(--text-secondary);
 }
