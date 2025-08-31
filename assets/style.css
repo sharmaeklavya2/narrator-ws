@@ -147,7 +147,7 @@ footer .spotlight {
 
 .icon {
     max-width: 2.5em;
-    max-height: 2.5em;
+    aspect-ratio: 1;
 }
 svg.icon {
     fill: var(--text-color);
