@@ -2,6 +2,7 @@ import {RawArticle, ArticleInfo, parse, populate} from "./parser.js";
 import * as fetchers from "./fetchers.js";
 
 type Status = 'danger' | 'warning' | 'success';
+let gArticleInfo: ArticleInfo | undefined = undefined;
 
 function closeBtnClickHandler(ev: Event): void {
     let closeBtn = ev.currentTarget as HTMLElement;  // will always be a span.close-btn element
@@ -56,8 +57,17 @@ function loadArticle(articleInfo: ArticleInfo): void {
             uiMessage('warning', `${fails} sentences missing in lang ${articleInfo.defaultLang}.`);
         }
     }
-    console.log(articleInfo);
+    console.debug(articleInfo);
+    gArticleInfo = articleInfo;
     mainElem.appendChild(articleInfo.root);
+    enableButtons();
+}
+
+function enableButtons(): void {
+    for(const btnName of ['prev', 'play', 'next', 'text-settings', 'voice-settings']) {
+        const elem = document.getElementById('button-' + btnName)!;
+        elem.removeAttribute('disabled');
+    }
 }
 
 function setEventHandlers(): void {

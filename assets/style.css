@@ -113,6 +113,17 @@ footer .spotlight {
     width: 4em;
     height: 4em;
 }
+.toolbar button[disabled] .icon {
+    fill: var(--text-secondary);
+}
+.toolbar button:not([disabled]):hover {
+    background-color: var(--light-tint);
+    cursor: pointer;
+}
+.toolbar button:not([disabled]):active {
+    background-color: var(--medium-tint);
+}
+
 .icon {
     width: 2.5em;
     height: 2.5em;
