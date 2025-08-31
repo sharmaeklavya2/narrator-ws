@@ -16,9 +16,13 @@ export function parse(rawArticle: RawArticle): ArticleInfo {
     if(rawArticle.ext !== 'html') {
         throw new Error(`Invalid file extension ${rawArticle.ext}.`);
     }
+    return parseHtml(rawArticle.text);
+}
+
+function parseHtml(text: string): ArticleInfo {
     // console.log('text:', text.slice(0, 200));
     const parser = new DOMParser();
-    const articleDoc = parser.parseFromString(rawArticle.text, 'text/html');
+    const articleDoc = parser.parseFromString(text, 'text/html');
     const defaultLang = articleDoc.documentElement.getAttribute('lang')
     const newRoot = document.createElement('div');
     const articleInfo: ArticleInfo = {defaultLang: defaultLang ?? undefined, root: newRoot,
