@@ -53,5 +53,46 @@
 <div class="hidden">
     <input type="file" id="file-loader" accept=".html,application/html,.csv,text/csv" />
 </div>
+<div id="modal-group">
+    <div id="text-settings-menu" class="menu disabled">
+        <header>
+            <div class="heading">Text settings</div>
+            <div class="close-btn"></div>
+        </header>
+        <div id="text-settings-form" class="menu-body">
+        </div>
+    </div>
+    <div id="voice-settings-menu" class="menu disabled">
+        <header>
+            <div class="heading">Voice settings</div>
+            <div class="close-btn"></div>
+        </header>
+        <div id="voice-settings-form" class="menu-body">
+        </div>
+    </div>
+    <div id="about-menu" class="menu disabled">
+        <header>
+            <div class="heading">About</div>
+            <div class="close-btn"></div>
+        </header>
+        <div class="menu-body">
+            <p>
+<strong>Narrator with Subtitles</strong> is a web application to aid in language learning.
+It is especially useful for languages that have good textual resources
+but not enough beginner-friendly resources to practice listening skills.
+It speaks out text using a text-to-speech engine, and offers control to
+adjust speech speed and navigate across sentences.
+It optionally shows translations too.
+            </p>
+            <p>
+To use this web application, you must upload a txt, html, or csv file containing the text you want spoken.
+Documentation regarding file formats and source code can be found at
+<a href="https://github.com/sharmaeklavya2/narrator-ws">
+https://github.com/sharmaeklavya2/narrator-ws</a>.
+            </p>
+        </div>
+    </div>
+    <div id="modal-overlay" class="overlay"></div>
+</div>
 </body>
 </html>

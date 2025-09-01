@@ -4,7 +4,7 @@ import * as fetchers from "./fetchers.js";
 type Status = 'danger' | 'warning' | 'success';
 let gArticleInfo: ArticleInfo | undefined = undefined;
 
-function closeBtnClickHandler(ev: Event): void {
+function msgCloseBtnClickHandler(ev: Event): void {
     let closeBtn = ev.currentTarget as HTMLElement;  // will always be a span.close-btn element
     let LiElem = closeBtn.parentElement!;
     let msgList = document.getElementById('msg-list')!;
@@ -30,7 +30,7 @@ function uiMessage(status: Status | undefined, text: string | string[]): void {
         liElem.appendChild(msgSpan);
         let closeButton = document.createElement('span');
         closeButton.classList.add('close-btn');
-        closeButton.addEventListener('click', closeBtnClickHandler);
+        closeButton.addEventListener('click', msgCloseBtnClickHandler);
         liElem.appendChild(closeButton);
         let msgList = document.getElementById('msg-list')!;
         msgList.appendChild(liElem);
@@ -67,6 +67,45 @@ function enableButtons(): void {
     for(const btnName of ['prev', 'play', 'next', 'text-settings', 'voice-settings']) {
         const elem = document.getElementById('button-' + btnName)!;
         elem.removeAttribute('disabled');
+    }
+}
+
+class MenuManager {
+    menus: Map<string, HTMLElement>;
+    selected: string | undefined;
+
+    constructor() {
+        this.menus = new Map();
+        this.selected = undefined;
+    }
+
+    add(id: string): void {
+        if(this.menus.has(id)) {
+            throw new Error(`Attempt to re-add menu ${id}.`);
+        }
+        const elem = document.getElementById(id);
+        if(elem === null) {
+            throw new Error(`Could not find element with id ${id}.`);
+        }
+        this.menus.set(id, elem);
+    }
+
+    hide(): void {
+        const id = this.selected;
+        if(id !== undefined) {
+            const elem = this.menus.get(id);
+            elem!.classList.add('disabled');
+        }
+    }
+
+    show(id: string): void {
+        this.hide();
+        const elem = this.menus.get(id);
+        if(elem === undefined) {
+            throw new Error(`Could not find element with id ${id}.`);
+        }
+        this.selected = id;
+        elem.classList.remove('disabled');
     }
 }
 
@@ -114,6 +153,27 @@ function setEventHandlers(): void {
             }
         }
     });
+
+    const menuManager = new MenuManager();
+    menuManager.add('text-settings-menu');
+    menuManager.add('voice-settings-menu');
+    menuManager.add('about-menu');
+
+    function hideMenus(): void {menuManager.hide();}
+
+    document.getElementById('modal-overlay')!.addEventListener('click', hideMenus);
+    for(const [id, elem] of menuManager.menus.entries()) {
+        console.log(id, elem);
+        const closeBtn = elem.firstElementChild!.lastElementChild!;
+        closeBtn.addEventListener('click', hideMenus);
+    }
+
+    document.getElementById('button-text-settings')!.addEventListener('click',
+        () => menuManager.show('text-settings-menu'));
+    document.getElementById('button-voice-settings')!.addEventListener('click',
+        () => menuManager.show('voice-settings-menu'));
+    document.getElementById('button-about')!.addEventListener('click',
+        () => menuManager.show('about-menu'));
 }
 
 async function main(): Promise<void> {
