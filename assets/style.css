@@ -89,8 +89,11 @@ main {
     line-height: 1.6;
 }
 @media(min-width: 640px) {
-    body > .inner, footer .spotlight {
+    body .inner, footer .spotlight {
         margin: 0 3em;
+    }
+    main {
+        text-align: justify;
     }
 }
 footer {
