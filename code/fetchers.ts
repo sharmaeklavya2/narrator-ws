@@ -1,7 +1,8 @@
 import {RawArticle, ArticleInfo} from "./parser.js";
 
 const articlesMap: Record<string, string> = {
-    'ict20': 'articles/ict/l20.html',
+    'ict-20': 'articles/ict/l20.html',
+    'sk1-02-sahakaara': 'articles/sk1/02-sahakaara.csv',
 };
 
 function getExt(fname: string): string | undefined {
@@ -13,7 +14,7 @@ function getExt(fname: string): string | undefined {
 }
 
 function isValidExt(ext?: string): boolean {
-    return ext !== undefined && (ext === 'html' || ext === 'csv');
+    return ext !== undefined && (ext === 'html' || ext === 'csv' || ext === 'tsv');
 }
 
 export function getArticlePathFromQString(): string | undefined {

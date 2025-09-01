@@ -1,3 +1,5 @@
+import {default as parseCsv} from "./csv.js";
+
 export interface RawArticle {
     ext?: string;
     text: string;
@@ -13,22 +15,22 @@ export interface ArticleInfo {
     warnings: Error[];
 }
 
-export function parse(rawArticle: RawArticle): ArticleInfo {
-    if(rawArticle.ext !== 'html') {
+export function parseArticle(rawArticle: RawArticle): ArticleInfo {
+    if(rawArticle.ext === 'html') {
+        return parseArticleFromHtml(rawArticle.text);
+    }
+    else if(rawArticle.ext === 'csv') {
+        return parseArticleFromCsv(rawArticle.text, ',');
+    }
+    else if(rawArticle.ext === 'tsv') {
+        return parseArticleFromCsv(rawArticle.text, '\t');
+    }
+    else {
         throw new Error(`Invalid file extension ${rawArticle.ext}.`);
     }
-    return parseHtml(rawArticle.text);
 }
 
-function parseHtml(text: string): ArticleInfo {
-    // console.log('text:', text.slice(0, 200));
-    const parser = new DOMParser();
-    const articleDoc = parser.parseFromString(text, 'text/html');
-    const defaultLang = articleDoc.documentElement.getAttribute('lang')
-    const newRoot = document.createElement('div');
-    const articleInfo: ArticleInfo = {defaultLang: defaultLang ?? undefined, root: newRoot,
-        langs: new Set(), sockets: [], kids: [], kids2: [], warnings: []};
-    outerParseHelper(articleDoc.body, newRoot, articleDoc, articleInfo);
+function postProcess(articleInfo: ArticleInfo): void {
     for(const kid of articleInfo.kids) {
         const kid2: Record<string, HTMLElement> = {};
         for(const [lang, elem] of Object.entries(kid)) {
@@ -36,6 +38,73 @@ function parseHtml(text: string): ArticleInfo {
         }
         articleInfo.kids2.push(kid2);
     }
+}
+
+function csvLineToCells(line: string, delimiter: string): string[] {
+    if(line.includes('"')) {
+        throw new Error('Quotes are not yet implemented in CSV parsing.');
+    }
+    return line.split(delimiter);
+}
+
+function valuesAreEmpty(d: Record<string, string>): boolean {
+    for(const [k, v] of Object.entries(d)) {
+        if(v !== '') {
+            return false;
+        }
+    }
+    return true;
+}
+
+function parseArticleFromCsv(text: string, delimiter: string): ArticleInfo {
+    const newRoot = document.createElement('div');
+    const [header, data] = parseCsv(text, delimiter);
+    const articleInfo: ArticleInfo = {defaultLang: header[0], root: newRoot,
+        langs: new Set(header), sockets: [], kids: [], kids2: [], warnings: []};
+
+    let langKids: Record<string, HTMLElement> = {};
+    let langBox: HTMLElement | undefined = undefined;
+    let p: HTMLElement | undefined = undefined;
+    for(const row of data) {
+        if(valuesAreEmpty(row)) {
+            p = undefined;
+        }
+        else {
+            if(p === undefined) {
+                p = document.createElement('p');
+                newRoot.appendChild(p);
+            }
+            langBox = document.createElement('span');
+            langBox.id = 'sent-' + articleInfo.sockets.length;
+            langBox.classList.add('lang-box');
+            articleInfo.sockets.push(langBox);
+            p.appendChild(langBox);
+            p.appendChild(document.createTextNode(' '));
+
+            const kids: Record<string, HTMLElement> = {};
+            for(const [lang, sentence] of Object.entries(row)) {
+                const langKid = document.createElement('span');
+                langKid.setAttribute('lang', lang);
+                langKid.innerText = sentence;
+                kids[lang] = langKid;
+            }
+            articleInfo.kids.push(kids);
+        }
+    }
+    postProcess(articleInfo);
+    return articleInfo;
+}
+
+function parseArticleFromHtml(text: string): ArticleInfo {
+    // console.log('text:', text.slice(0, 200));
+    const parser = new DOMParser();
+    const articleDoc = parser.parseFromString(text, 'text/html');
+    const defaultLang = articleDoc.documentElement.getAttribute('lang')
+    const newRoot = document.createElement('div');
+    const articleInfo: ArticleInfo = {defaultLang: defaultLang ?? undefined, root: newRoot,
+        langs: new Set(), sockets: [], kids: [], kids2: [], warnings: []};
+    outerHtmlParseHelper(articleDoc.body, newRoot, articleDoc, articleInfo);
+    postProcess(articleInfo);
     return articleInfo;
 }
 
@@ -55,7 +124,7 @@ function assertNoLangInDescendants(elem: Element) {
     }
 }
 
-function outerParseHelper(source: HTMLElement, dest: HTMLElement,
+function outerHtmlParseHelper(source: HTMLElement, dest: HTMLElement,
         articleDoc: HTMLDocument, articleInfo: ArticleInfo): void {
     let langKids: Record<string, HTMLElement> = {};
     let langBox: HTMLElement | undefined = undefined;
@@ -64,7 +133,7 @@ function outerParseHelper(source: HTMLElement, dest: HTMLElement,
             const lang = srcChild.getAttribute('lang');
             if(lang === null) {
                 const destChild = shallowCloneElem(srcChild);
-                outerParseHelper(srcChild, destChild, articleDoc, articleInfo);
+                outerHtmlParseHelper(srcChild, destChild, articleDoc, articleInfo);
                 dest.appendChild(destChild);
             }
             else {

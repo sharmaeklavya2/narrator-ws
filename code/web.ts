@@ -1,4 +1,4 @@
-import {RawArticle, ArticleInfo, parse, populate} from "./parser.js";
+import {RawArticle, ArticleInfo, parseArticle, populate} from "./parser.js";
 import * as fetchers from "./fetchers.js";
 
 type Status = 'danger' | 'warning' | 'success';
@@ -123,7 +123,7 @@ function setEventHandlers(): void {
                 const files = (ev.currentTarget! as HTMLInputElement).files;
                 const file = fetchers.getFileFromList(files);
                 fetchers.fetchRawArticleFromFile(file)
-                    .then(parse).then(loadArticle).catch(logError);
+                    .then(parseArticle).then(loadArticle).catch(logError);
             }
             catch(e) {
                 logError(e);
@@ -153,7 +153,7 @@ function setEventHandlers(): void {
             try {
                 const file = fetchers.getFileFromList(ev.dataTransfer.files);
                 fetchers.fetchRawArticleFromFile(file)
-                    .then(parse).then(loadArticle).catch(logError);
+                    .then(parseArticle).then(loadArticle).catch(logError);
             }
             catch(e) {
                 logError(e);
@@ -189,7 +189,7 @@ async function main(): Promise<void> {
         const fpath = fetchers.getArticlePathFromQString();
         if(fpath !== undefined) {
             const rawArticle = await fetchers.fetchRawArticleFromPath(fpath);
-            const articleInfo = parse(rawArticle);
+            const articleInfo = parseArticle(rawArticle);
             loadArticle(articleInfo);
         }
     } catch (e) {
