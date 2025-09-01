@@ -89,7 +89,7 @@ main {
     line-height: 1.6;
 }
 @media(min-width: 640px) {
-    body .inner, footer .spotlight {
+    body .inner, footer #spotlight {
         margin: 0 3em;
     }
     main {
@@ -104,7 +104,7 @@ footer {
     display: flex;
     flex-direction: column;
 }
-footer .spotlight {
+footer #spotlight {
     background-color: var(--light-shade);
     display: flex;
     padding: 1em;
@@ -284,6 +284,14 @@ svg.icon {
 }
 ol.orderable > li {
     padding: 0.5em;
+}
+
+.lang-box.selected, .lang-box:hover {
+    background-color: var(--medium-tint);
+    cursor: pointer;
+}
+.lang-box:active {
+    background-color: var(--heavy-tint);
 }
 
 /* generic ================================================================== */

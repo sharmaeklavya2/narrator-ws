@@ -15,9 +15,14 @@ interface TextSettings {
     trnLangOrder: string[];
 }
 
+interface State {
+    currSent: number;
+}
+
 interface Globals {
     articleInfo?: ArticleInfo;
     textSettings?: TextSettings;
+    state?: State;
 }
 
 const globals: Globals = {};
@@ -79,7 +84,7 @@ function loadArticle(articleInfo: ArticleInfo): void {
             uiMessage('warning', warning.message);
         }
     }
-    const mainElem = document.getElementById('main')!;
+
     const firstLang = articleInfo.langs.size > 0 ? articleInfo.langs.values().next().value : undefined;
     const preferredLang = articleInfo.defaultLang || firstLang;
     if(preferredLang) {
@@ -97,8 +102,64 @@ function loadArticle(articleInfo: ArticleInfo): void {
 
     console.debug(articleInfo);
     globals.articleInfo = articleInfo;
+    const mainElem = document.getElementById('main')!;
     mainElem.replaceChildren(articleInfo.root);
+
+    globals.state = {currSent: 0};
+    if(articleInfo.sockets.length === 0) {
+        uiMessage('warning', 'No tagged sentences found in article.');
+    }
+    else {
+        articleInfo.sockets[0].classList.add('selected');
+        showTrnInSpotlight(0);
+    }
+
+    for(const socket of articleInfo.sockets) {
+        socket.addEventListener('click', function(ev: Event) {
+            const sentId = Number(socket.dataset.sentId);
+            showSentence(sentId);
+        });
+    }
+
     enableButtons();
+}
+
+function showTrnInSpotlight(i: number) {
+    const d = globals.articleInfo!.kids2[i];
+    for(const lang of globals.textSettings!.trnLangOrder) {
+        const trnElem = d[lang];
+        if(trnElem !== undefined) {
+            const spotlightElem = document.getElementById('spotlight') as HTMLElement;
+            spotlightElem.replaceChildren(trnElem);
+            return;
+        }
+    }
+}
+
+function showSentence(j: number | '+' | '-'): void {
+    const sockets = globals.articleInfo!.sockets;
+    const i = globals.state!.currSent;
+    if(j === '+') {
+        if(i + 1 >= sockets.length) {
+            return;
+        }
+        else {
+            j = i + 1;
+        }
+    }
+    else if(j === '-') {
+        if(i === 0) {
+            return;
+        }
+        else {
+            j = i - 1;
+        }
+    }
+    sockets[i].classList.remove('selected');
+    sockets[j].classList.add('selected');
+    globals.state!.currSent = j;
+    sockets[j].scrollIntoView({'behavior': 'smooth', 'block': 'center', 'inline': 'nearest'});
+    showTrnInSpotlight(j);
 }
 
 function loadTextSettingsMenu(settings: TextSettings): void {
@@ -141,9 +202,28 @@ function trnLangClickHandler(ev: Event): void {
 }
 
 function enableButtons(): void {
+    let virgins = 0;
     for(const btnName of ['prev', 'play', 'next', 'text-settings', 'voice-settings']) {
         const elem = document.getElementById('button-' + btnName)!;
+        if(elem.hasAttribute('disabled')) {
+            virgins++;
+        }
         elem.removeAttribute('disabled');
+    }
+
+    if(virgins) {
+        document.getElementById('button-prev')!.addEventListener('click', () => showSentence('-'));
+        document.getElementById('button-next')!.addEventListener('click', () => showSentence('+'));
+        document.addEventListener('keydown', function (ev: KeyboardEvent) {
+            if(ev.key === "ArrowRight") {
+                showSentence('+');
+                ev.preventDefault();
+            }
+            else if(ev.key === 'ArrowLeft') {
+                showSentence('-');
+                ev.preventDefault();
+            }
+        });
     }
 }
 
