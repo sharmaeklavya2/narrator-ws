@@ -40,13 +40,6 @@ function postProcess(articleInfo: ArticleInfo): void {
     }
 }
 
-function csvLineToCells(line: string, delimiter: string): string[] {
-    if(line.includes('"')) {
-        throw new Error('Quotes are not yet implemented in CSV parsing.');
-    }
-    return line.split(delimiter);
-}
-
 function valuesAreEmpty(d: Record<string, string>): boolean {
     for(const [k, v] of Object.entries(d)) {
         if(v !== '') {
