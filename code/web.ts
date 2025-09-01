@@ -4,6 +4,13 @@ import * as fetchers from "./fetchers.js";
 type Status = 'danger' | 'warning' | 'success';
 let gArticleInfo: ArticleInfo | undefined = undefined;
 
+const langNames = {
+    'en': 'English',
+    'te': 'Telugu',
+    'hi': 'Hindi',
+    'kn': 'Kannada',
+}
+
 function msgCloseBtnClickHandler(ev: Event): void {
     let closeBtn = ev.currentTarget as HTMLElement;  // will always be a span.close-btn element
     let LiElem = closeBtn.parentElement!;
