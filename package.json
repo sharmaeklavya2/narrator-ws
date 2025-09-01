@@ -4,7 +4,7 @@
   "description": "Narrator with Subtitles",
   "type": "module",
   "scripts": {
-    "clean": "rm -f src/*.js src/*.js.map"
+    "clean": "rm -f code/*.js code/*.js.map"
   },
   "author": "Eklavya Sharma",
   "license": "MIT",
