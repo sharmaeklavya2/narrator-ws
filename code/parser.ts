@@ -5,6 +5,7 @@ export interface RawArticle {
 
 export interface ArticleInfo {
     defaultLang?: string;
+    langs: Set<string>;
     root: HTMLElement;
     sockets: HTMLElement[];
     kids: Record<string, HTMLElement>[];
@@ -26,7 +27,7 @@ function parseHtml(text: string): ArticleInfo {
     const defaultLang = articleDoc.documentElement.getAttribute('lang')
     const newRoot = document.createElement('div');
     const articleInfo: ArticleInfo = {defaultLang: defaultLang ?? undefined, root: newRoot,
-        sockets: [], kids: [], kids2: [], warnings: []};
+        langs: new Set(), sockets: [], kids: [], kids2: [], warnings: []};
     outerParseHelper(articleDoc.body, newRoot, articleDoc, articleInfo);
     for(const kid of articleInfo.kids) {
         const kid2: Record<string, HTMLElement> = {};
@@ -67,6 +68,7 @@ function outerParseHelper(source: HTMLElement, dest: HTMLElement,
                 dest.appendChild(destChild);
             }
             else {
+                articleInfo.langs.add(lang);
                 assertNoLangInDescendants(srcChild);
                 const prevLangChild = langKids[lang];
                 // refresh langBox and langKids
