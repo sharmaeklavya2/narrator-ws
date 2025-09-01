@@ -71,7 +71,7 @@ function parseArticleFromCsv(text: string, delimiter: string): ArticleInfo {
                 newRoot.appendChild(p);
             }
             langBox = document.createElement('span');
-            langBox.id = 'sent-' + articleInfo.sockets.length;
+            langBox.dataset.sentId = '' + articleInfo.sockets.length;
             langBox.classList.add('lang-box');
             articleInfo.sockets.push(langBox);
             p.appendChild(langBox);
@@ -150,7 +150,7 @@ function outerHtmlParseHelper(source: HTMLElement, dest: HTMLElement,
                 }
                 if(langBox === undefined) {
                     langBox = articleDoc.createElement('span');
-                    langBox.id = 'sent-' + articleInfo.sockets.length;
+                    langBox.dataset.sentId = '' + articleInfo.sockets.length;
                     langBox.classList.add('lang-box');
                     articleInfo.sockets.push(langBox);
                     articleInfo.kids.push(langKids);
@@ -203,7 +203,7 @@ function parseArticleFromTxt(text: string): ArticleInfo {
 
         for(const sentence of sentences) {
             const langBox = document.createElement('span');
-            langBox.id = 'sent-' + articleInfo.sockets.length;
+            langBox.dataset.sentId = 'sent-' + articleInfo.sockets.length;
             langBox.classList.add('lang-box');
             articleInfo.sockets.push(langBox);
             pElem.appendChild(langBox);
