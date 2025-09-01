@@ -2,8 +2,6 @@
 __pycache__
 .mypy_cache
 /node_modules
-/code/*.js
-/code/*.js.map
 
 /secret
 /output
