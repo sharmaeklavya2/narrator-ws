@@ -126,6 +126,10 @@ function loadArticle(articleInfo: ArticleInfo): void {
 
 function showTrnInSpotlight(i: number) {
     const d = globals.articleInfo!.kids2[i];
+    if(d === undefined) {
+        console.warn(`showTrnInSpotlight: sentence ${i} doesn't exist.`);
+        return;
+    }
     const spotlightElem = document.getElementById('spotlight') as HTMLElement;
     spotlightElem.replaceChildren();
     for(const lang of globals.textSettings!.trnLangOrder) {
@@ -200,6 +204,7 @@ function trnLangClickHandler(ev: Event): void {
     liElem.dataset.rank = '' + (rank - 1);
     (liElem.previousElementSibling as HTMLElement).dataset.rank = '' + rank;
     olElem.insertBefore(liElem, liElem.previousElementSibling);
+    showTrnInSpotlight(globals.state!.currSent);
 }
 
 function enableButtons(): void {
