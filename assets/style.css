@@ -84,9 +84,10 @@ body {
     font-size: 2em;
     padding: 0.1em 0 0.1em 0;
 }
-main {
+main, #spotlight {
     padding: 0.2em 1em;
-    line-height: 1.6;
+    line-height: 2;
+    font-size: 1.2em;
 }
 @media(min-width: 640px) {
     body .inner, footer #spotlight {
@@ -288,6 +289,9 @@ ol.orderable > li {
 
 .lang-box.selected, .lang-box:hover {
     background-color: var(--medium-tint);
+    box-shadow: 0 0 0 0.2em var(--medium-tint);
+    outline-offset: 0.2em;
+    outline: 3px solid rgba(0, 0, 255, 0.4);
     cursor: pointer;
 }
 .lang-box:active {
