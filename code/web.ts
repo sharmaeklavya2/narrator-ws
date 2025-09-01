@@ -66,7 +66,7 @@ function loadArticle(articleInfo: ArticleInfo): void {
     }
     console.debug(articleInfo);
     gArticleInfo = articleInfo;
-    mainElem.appendChild(articleInfo.root);
+    mainElem.replaceChildren(articleInfo.root);
     enableButtons();
 }
 
