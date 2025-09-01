@@ -3,6 +3,7 @@ import {RawArticle, ArticleInfo} from "./parser.js";
 const articlesMap: Record<string, string> = {
     'ict-20': 'articles/ict/l20.html',
     'sk1-02-sahakaara': 'articles/sk1/02-sahakaara.csv',
+    'lipsum': 'articles/lipsum.txt',
 };
 
 function getExt(fname: string): string | undefined {
@@ -13,9 +14,7 @@ function getExt(fname: string): string | undefined {
     return fname.slice(i+1).toLowerCase();
 }
 
-function isValidExt(ext?: string): boolean {
-    return ext !== undefined && (ext === 'html' || ext === 'csv' || ext === 'tsv');
-}
+const validExtSet = new Set(['html', 'csv', 'tsv', 'txt']);
 
 export function getArticlePathFromQString(): string | undefined {
     const urlParams = new URLSearchParams(window.location.search);
@@ -28,7 +27,7 @@ export function getArticlePathFromQString(): string | undefined {
         throw new Error(`Article ${param} not found.`);
     }
     const ext = getExt(fpath);
-    if(!isValidExt(ext)) {
+    if(ext === undefined || !validExtSet.has(ext)) {
         throw new Error(`File extension ${ext} is unsupported.`);
     }
     return fpath;
@@ -46,7 +45,7 @@ export async function fetchRawArticleFromPath(fpath: string): Promise<RawArticle
 
 export async function fetchRawArticleFromFile(file: File): Promise<RawArticle> {
     const ext = getExt(file.name);
-    if(!isValidExt(ext)) {
+    if(ext === undefined || !validExtSet.has(ext)) {
         throw new Error(`File extension ${ext} is unsupported.`);
     }
     const text = await file.text();

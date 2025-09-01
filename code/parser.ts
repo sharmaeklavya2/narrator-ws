@@ -25,6 +25,9 @@ export function parseArticle(rawArticle: RawArticle): ArticleInfo {
     else if(rawArticle.ext === 'tsv') {
         return parseArticleFromCsv(rawArticle.text, '\t');
     }
+    else if(rawArticle.ext === 'txt') {
+        return parseArticleFromTxt(rawArticle.text);
+    }
     else {
         throw new Error(`Invalid file extension ${rawArticle.ext}.`);
     }
@@ -165,6 +168,55 @@ function outerHtmlParseHelper(source: HTMLElement, dest: HTMLElement,
             throw new Error(`Unidentified node type ${srcChild}.`);
         }
     }
+}
+
+function textToSentences(text: string): string[] {
+    let parts = [];
+    const puncs = '.!?।';
+    const n = text.length;
+    let i = 0;
+    while(i < n) {
+        let j = n;
+        for(const ch of puncs) {
+            const j2 = text.indexOf(ch, i);
+            if(j2 !== -1 && j2 < j) {
+                j = j2;
+            }
+        }
+        parts.push(text.slice(i, j+1));
+        i = j + 1;
+    }
+    return parts;
+}
+
+function parseArticleFromTxt(text: string): ArticleInfo {
+    const paras = text.trim().split('\n\n');
+
+    const newRoot = document.createElement('div');
+    const articleInfo: ArticleInfo = {defaultLang: undefined, root: newRoot,
+        langs: new Set('?'), sockets: [], kids: [], kids2: [], warnings: []};
+
+    for(const para of paras) {
+        const sentences = textToSentences(para.trim());
+        const pElem = document.createElement('p');
+        newRoot.appendChild(pElem);
+
+        for(const sentence of sentences) {
+            const langBox = document.createElement('span');
+            langBox.id = 'sent-' + articleInfo.sockets.length;
+            langBox.classList.add('lang-box');
+            articleInfo.sockets.push(langBox);
+            pElem.appendChild(langBox);
+            pElem.appendChild(document.createTextNode(' '));
+
+            const kidElem = document.createElement('span');
+            kidElem.innerText = sentence;
+            articleInfo.kids.push({'?': kidElem});
+        }
+    }
+
+    postProcess(articleInfo);
+    return articleInfo;
 }
 
 export function populate(articleInfo: ArticleInfo, lang: string): number {

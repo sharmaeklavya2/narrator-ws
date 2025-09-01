@@ -58,10 +58,12 @@ function loadArticle(articleInfo: ArticleInfo): void {
         }
     }
     const mainElem = document.getElementById('main')!;
-    if(articleInfo.defaultLang) {
-        const fails = populate(articleInfo, articleInfo.defaultLang);
+    const firstLang = articleInfo.langs.size > 0 ? articleInfo.langs.values().next().value : undefined;
+    const preferredLang = articleInfo.defaultLang || firstLang;
+    if(preferredLang) {
+        const fails = populate(articleInfo, preferredLang);
         if(fails > 0) {
-            uiMessage('warning', `${fails} sentences missing in lang ${articleInfo.defaultLang}.`);
+            uiMessage('warning', `${fails} sentences missing in lang ${preferredLang}.`);
         }
     }
     console.debug(articleInfo);
