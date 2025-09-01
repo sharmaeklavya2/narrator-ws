@@ -87,11 +87,51 @@ function loadArticle(articleInfo: ArticleInfo): void {
     }
     gTextSettings = {srcLang: preferredLang, trnLangOrder: Array.from(articleInfo.langs)};
     deleteFromArray(gTextSettings.trnLangOrder, preferredLang);
+    loadTextSettingsMenu(gTextSettings);
 
     console.debug(articleInfo);
     gArticleInfo = articleInfo;
     mainElem.replaceChildren(articleInfo.root);
     enableButtons();
+}
+
+function loadTextSettingsMenu(settings: TextSettings): void {
+    const srcLang = settings.srcLang;
+    document.getElementById('src-lang')!.innerText = langNames[srcLang] ?? srcLang;
+    const trnLangOrder = settings.trnLangOrder;
+    const olElem = document.getElementById('trn-lang-list')!;
+    olElem.replaceChildren();
+    let i = 0;
+    for(const trnLang of trnLangOrder) {
+        const liElem = document.createElement('li');
+        liElem.dataset.lang = trnLang;
+        liElem.dataset.rank = '' + i;
+        liElem.innerText = langNames[trnLang] ?? trnLang;
+        olElem.appendChild(liElem);
+        i++;
+    }
+}
+
+function trnLangClickHandler(ev: Event): void {
+    const trnLangOrder = gTextSettings!.trnLangOrder;
+    const liElem = ev.target! as HTMLElement;
+    if(liElem.tagName === 'OL') {
+        return;
+    }
+    const olElem = liElem.parentElement!;
+    const trnLang = liElem.dataset.lang;
+    const rank = Number(liElem.dataset.rank);
+    if(trnLang !== trnLangOrder[rank]) {
+        throw new Error("Assertion error: data-lang and data-rank don't match");
+    }
+    if(rank === 0) {
+        return;
+    }
+    trnLangOrder[rank] = trnLangOrder[rank-1];
+    trnLangOrder[rank-1] = trnLang;
+    liElem.dataset.rank = '' + (rank - 1);
+    (liElem.previousElementSibling as HTMLElement).dataset.rank = '' + rank;
+    olElem.insertBefore(liElem, liElem.previousElementSibling);
 }
 
 function enableButtons(): void {
@@ -204,6 +244,8 @@ function setEventHandlers(): void {
         () => menuManager.show('voice-settings-menu'));
     document.getElementById('button-about')!.addEventListener('click',
         () => menuManager.show('about-menu'));
+
+    document.getElementById('trn-lang-list')!.addEventListener('click', trnLangClickHandler);
 }
 
 async function main(): Promise<void> {

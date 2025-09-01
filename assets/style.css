@@ -140,11 +140,11 @@ footer .spotlight {
 .toolbar button[disabled] .icon {
     fill: var(--text-secondary);
 }
-.toolbar button:not([disabled]):hover {
+.toolbar button:not([disabled]):hover, ol.orderable > li:hover {
     background-color: var(--light-tint);
     cursor: pointer;
 }
-.toolbar button:not([disabled]):active {
+.toolbar button:not([disabled]):active, ol.orderable > li:active {
     background-color: var(--medium-tint);
 }
 
@@ -278,9 +278,12 @@ svg.icon {
 .menu-body {
     overflow-y: auto;
 }
-.menu-body p {
+.menu-body p, .menu-body ol {
     margin: 1em;
     max-width: 600px;
+}
+ol.orderable > li {
+    padding: 0.5em;
 }
 
 /* generic ================================================================== */
