@@ -2,7 +2,6 @@ import {RawArticle, ArticleInfo, parseArticle, populate} from "./parser.js";
 import * as fetchers from "./fetchers.js";
 
 type Status = 'danger' | 'warning' | 'success';
-let gArticleInfo: ArticleInfo | undefined;
 
 const langNames: Record<string, string> = {
     'en': 'English',
@@ -16,7 +15,14 @@ interface TextSettings {
     trnLangOrder: string[];
 }
 
-let gTextSettings: TextSettings | undefined;
+interface Globals {
+    articleInfo?: ArticleInfo;
+    textSettings?: TextSettings;
+}
+
+const globals: Globals = {};
+// @ts-ignore
+window.globals = globals;
 
 function msgCloseBtnClickHandler(ev: Event): void {
     let closeBtn = ev.currentTarget as HTMLElement;  // will always be a span.close-btn element
@@ -85,12 +91,12 @@ function loadArticle(articleInfo: ArticleInfo): void {
             uiMessage('warning', `${fails} sentences missing in lang ${preferredLang}.`);
         }
     }
-    gTextSettings = {srcLang: preferredLang, trnLangOrder: Array.from(articleInfo.langs)};
-    deleteFromArray(gTextSettings.trnLangOrder, preferredLang);
-    loadTextSettingsMenu(gTextSettings);
+    globals.textSettings = {srcLang: preferredLang, trnLangOrder: Array.from(articleInfo.langs)};
+    deleteFromArray(globals.textSettings.trnLangOrder, preferredLang);
+    loadTextSettingsMenu(globals.textSettings);
 
     console.debug(articleInfo);
-    gArticleInfo = articleInfo;
+    globals.articleInfo = articleInfo;
     mainElem.replaceChildren(articleInfo.root);
     enableButtons();
 }
@@ -113,7 +119,7 @@ function loadTextSettingsMenu(settings: TextSettings): void {
 }
 
 function trnLangClickHandler(ev: Event): void {
-    const trnLangOrder = gTextSettings!.trnLangOrder;
+    const trnLangOrder = globals.textSettings!.trnLangOrder;
     const liElem = ev.target! as HTMLElement;
     if(liElem.tagName === 'OL') {
         return;
