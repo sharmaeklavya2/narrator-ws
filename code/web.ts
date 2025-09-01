@@ -170,7 +170,6 @@ function setEventHandlers(): void {
 
     document.getElementById('modal-overlay')!.addEventListener('click', hideMenus);
     for(const [id, elem] of menuManager.menus.entries()) {
-        console.log(id, elem);
         const closeBtn = elem.firstElementChild!.lastElementChild!;
         closeBtn.addEventListener('click', hideMenus);
     }
