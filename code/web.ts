@@ -2,14 +2,21 @@ import {RawArticle, ArticleInfo, parseArticle, populate} from "./parser.js";
 import * as fetchers from "./fetchers.js";
 
 type Status = 'danger' | 'warning' | 'success';
-let gArticleInfo: ArticleInfo | undefined = undefined;
+let gArticleInfo: ArticleInfo | undefined;
 
-const langNames = {
+const langNames: Record<string, string> = {
     'en': 'English',
     'te': 'Telugu',
     'hi': 'Hindi',
     'kn': 'Kannada',
 }
+
+interface TextSettings {
+    srcLang: string;
+    trnLangOrder: string[];
+}
+
+let gTextSettings: TextSettings | undefined;
 
 function msgCloseBtnClickHandler(ev: Event): void {
     let closeBtn = ev.currentTarget as HTMLElement;  // will always be a span.close-btn element
@@ -51,6 +58,15 @@ function logError(e: unknown): void {
     throw e;
 }
 
+function deleteFromArray(a: string[], x?: string) {
+    if(x !== undefined) {
+        const i = a.indexOf(x);
+        if(i !== -1) {
+            a.splice(i, 1);
+        }
+    }
+}
+
 function loadArticle(articleInfo: ArticleInfo): void {
     if(articleInfo.warnings.length > 0) {
         for(const warning of articleInfo.warnings) {
@@ -61,11 +77,17 @@ function loadArticle(articleInfo: ArticleInfo): void {
     const firstLang = articleInfo.langs.size > 0 ? articleInfo.langs.values().next().value : undefined;
     const preferredLang = articleInfo.defaultLang || firstLang;
     if(preferredLang) {
+        if(langNames[preferredLang] === undefined) {
+            uiMessage('warning', `Unrecognized language ${preferredLang}.`);
+        }
         const fails = populate(articleInfo, preferredLang);
         if(fails > 0) {
             uiMessage('warning', `${fails} sentences missing in lang ${preferredLang}.`);
         }
     }
+    gTextSettings = {srcLang: preferredLang, trnLangOrder: Array.from(articleInfo.langs)};
+    deleteFromArray(gTextSettings.trnLangOrder, preferredLang);
+
     console.debug(articleInfo);
     gArticleInfo = articleInfo;
     mainElem.replaceChildren(articleInfo.root);
