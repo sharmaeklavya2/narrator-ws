@@ -3,6 +3,10 @@ function myIndexOf(line: string, query: string, start: number): number {
     return j === -1 ? line.length : j;
 }
 
+export function splitIntoLines(text: string): string[] {
+    return text.split('\r').join('').split('\n');
+}
+
 export function parseLine(line: string, delimiter: string): string[] {
     if(!line.includes('"')) {
         return line.split(delimiter);
@@ -75,7 +79,7 @@ function guessDelimiter(line: string): string {
 }
 
 export default function parse(text: string, delimiter?: string): [string[], Record<string, string>[]] {
-    const lines = text.trim().split('\n');
+    const lines = splitIntoLines(text.trim());
     if(lines.length === 0) {
         throw new Error('Empty CSV file.');
     }
