@@ -126,11 +126,12 @@ function loadArticle(articleInfo: ArticleInfo): void {
 
 function showTrnInSpotlight(i: number) {
     const d = globals.articleInfo!.kids2[i];
+    const spotlightElem = document.getElementById('spotlight') as HTMLElement;
+    spotlightElem.replaceChildren();
     for(const lang of globals.textSettings!.trnLangOrder) {
         const trnElem = d[lang];
         if(trnElem !== undefined) {
-            const spotlightElem = document.getElementById('spotlight') as HTMLElement;
-            spotlightElem.replaceChildren(trnElem);
+            spotlightElem.appendChild(trnElem);
             return;
         }
     }

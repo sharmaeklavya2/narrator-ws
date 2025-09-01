@@ -79,10 +79,12 @@ function parseArticleFromCsv(text: string, delimiter: string): ArticleInfo {
 
             const kids: Record<string, HTMLElement> = {};
             for(const [lang, sentence] of Object.entries(row)) {
-                const langKid = document.createElement('span');
-                langKid.setAttribute('lang', lang);
-                langKid.innerText = sentence;
-                kids[lang] = langKid;
+                if(sentence !== '') {
+                    const langKid = document.createElement('span');
+                    langKid.setAttribute('lang', lang);
+                    langKid.innerText = sentence;
+                    kids[lang] = langKid;
+                }
             }
             articleInfo.kids.push(kids);
         }
