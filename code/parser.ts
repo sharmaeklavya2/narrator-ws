@@ -2,6 +2,7 @@ import {default as parseCsv} from "./csv.js";
 
 export interface RawArticle {
     ext?: string;
+    lang?: string;
     text: string;
 }
 
@@ -26,7 +27,7 @@ export function parseArticle(rawArticle: RawArticle): ArticleInfo {
         return parseArticleFromCsv(rawArticle.text, '\t');
     }
     else if(rawArticle.ext === 'txt') {
-        return parseArticleFromTxt(rawArticle.text);
+        return parseArticleFromTxt(rawArticle.text, rawArticle.lang);
     }
     else {
         throw new Error(`Invalid file extension ${rawArticle.ext}.`);
@@ -191,12 +192,12 @@ function textToSentences(text: string): string[] {
     return parts;
 }
 
-function parseArticleFromTxt(text: string): ArticleInfo {
-    const paras = text.trim().split('\n\n');
+function parseArticleFromTxt(text: string, lang?: string): ArticleInfo {
+    const paras = text.trim().split('\r').join('').split('\n\n');
 
     const newRoot = document.createElement('div');
-    const articleInfo: ArticleInfo = {defaultLang: undefined, root: newRoot,
-        langs: new Set('?'), sockets: [], kids: [], kids2: [], warnings: []};
+    const articleInfo: ArticleInfo = {defaultLang: lang, root: newRoot,
+        langs: new Set(lang ?? '?'), sockets: [], kids: [], kids2: [], warnings: []};
 
     for(const para of paras) {
         const sentences = textToSentences(para.trim());
@@ -213,7 +214,12 @@ function parseArticleFromTxt(text: string): ArticleInfo {
 
             const kidElem = document.createElement('span');
             kidElem.innerText = sentence;
-            articleInfo.kids.push({'?': kidElem});
+            if(lang !== undefined) {
+                kidElem.setAttribute('lang', lang);
+            }
+            const kids: Record<string, HTMLElement> = {};
+            kids[lang ?? '?'] = kidElem;
+            articleInfo.kids.push(kids);
         }
     }
 

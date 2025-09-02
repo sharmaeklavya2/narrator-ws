@@ -407,6 +407,7 @@ function setEventHandlers(): void {
 
     const menuManager = new MenuManager();
     globals.menuManager = menuManager;
+    menuManager.add('edit-menu');
     menuManager.add('text-settings-menu');
     menuManager.add('voice-settings-menu');
     menuManager.add('about-menu');
@@ -425,6 +426,8 @@ function setEventHandlers(): void {
         () => menuManager.show('voice-settings-menu'));
     document.getElementById('button-about')!.addEventListener('click',
         () => menuManager.show('about-menu'));
+    document.getElementById('button-edit')!.addEventListener('click',
+        () => menuManager.show('edit-menu'));
 
     document.getElementById('trn-lang-list')!.addEventListener('click', trnLangClickHandler);
 
@@ -433,6 +436,30 @@ function setEventHandlers(): void {
     voiceSpeedElem.addEventListener('input', (ev) => {
             voiceSpeedNumber.innerText = (ev.currentTarget as HTMLInputElement).value;
         });
+
+    const editForm = document.getElementById('edit-form') as HTMLFormElement;
+    const editLangSelect = document.getElementById('edit-lang') as HTMLElement;
+    for(const [lang, langName] of Object.entries(langNames)) {
+        const optionElem = document.createElement('option');
+        optionElem.setAttribute('value', lang);
+        optionElem.innerText = langName;
+        editLangSelect.appendChild(optionElem);
+    }
+    editForm.addEventListener('submit', (ev) => {
+        ev.preventDefault();
+        try {
+            const formData = new FormData(editForm);
+            const rawArticle = {'ext': 'txt',
+                'lang': formData.get('edit-lang') as string,
+                'text': formData.get('edit-text') as string};
+            const article = parseArticle(rawArticle);
+            console.log(rawArticle);
+            loadArticle(article);
+        }
+        catch (e) {
+            logError(e);
+        }
+    });
 }
 
 function setVoice(): void {
