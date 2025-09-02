@@ -228,6 +228,7 @@ function keyHandler(ev: KeyboardEvent) {
     }
     else if(ev.key === ' ') {
         playButtonClick();
+        ev.preventDefault();
     }
 }
 
