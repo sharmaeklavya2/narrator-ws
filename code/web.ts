@@ -233,7 +233,7 @@ function keyHandler(ev: KeyboardEvent) {
 
 function enableButtons(): void {
     let virgins = 0;
-    for(const btnName of ['prev', 'next', 'text-settings', 'voice-settings']) {
+    for(const btnName of ['prev', 'next', 'text-settings']) {
         const elem = document.getElementById('button-' + btnName)!;
         if(elem.hasAttribute('disabled')) {
             virgins++;
@@ -247,10 +247,17 @@ function enableButtons(): void {
         window.addEventListener('keydown', keyHandler);
     }
 
+    const playButton = document.getElementById('button-play')!;
+    const voiceSettingsButton = document.getElementById('button-voice-settings')!;
     if(globals.settings !== undefined && globals.settings.voice !== undefined) {
-        const playButton = document.getElementById('button-play')!;
         playButton.onclick = playButtonClick;
         playButton.removeAttribute('disabled');
+        voiceSettingsButton.removeAttribute('disabled');
+    }
+    else {
+        playButton.onclick = null;
+        playButton.setAttribute('disabled', '');
+        voiceSettingsButton.setAttribute('disabled', '');
     }
 }
 
