@@ -267,6 +267,7 @@ class MenuManager {
         if(id !== undefined) {
             const elem = this.menus.get(id);
             elem!.classList.add('disabled');
+            this.selected = undefined;
         }
     }
 
