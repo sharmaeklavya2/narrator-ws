@@ -34,9 +34,12 @@
         <svg class="icon" id="icon-next"><use xlink:href="assets/icons.svg#fa-step-forward"/></svg>
     </button>
 </div>
-<div class="toolbar-section" style="--n-kids: 4;">
+<div class="toolbar-section" style="--n-kids: 5;">
     <button id="button-open" title="Open">
         <svg class="icon" id="icon-open"><use xlink:href="assets/icons.svg#fa-file-circle-plus"/></svg>
+    </button>
+    <button id="button-edit" title="Edit">
+        <svg class="icon" id="icon-edit"><use xlink:href="assets/icons.svg#fa-edit"/></svg>
     </button>
     <button disabled id="button-text-settings" title="Text Settings">
         <svg class="icon" id="icon-text-settings"><use xlink:href="assets/icons.svg#fa-gear"/></svg>
@@ -55,15 +58,30 @@
     <input type="file" id="file-loader" accept=".html,application/html,.csv,text/csv" />
 </div>
 <div id="modal-group">
+    <div id="edit-menu" class="menu disabled">
+        <header>
+            <div class="heading">Paste or write text</div>
+            <div class="close-btn"></div>
+        </header>
+        <form id="edit-form" class="menu-body">
+            <div class="menu-row">
+                <label class="menu-item" for="edit-lang">Language</label>
+                <select class="menu-item" id="edit-lang" name="edit-lang" required="required"></select>
+            </div>
+            <textarea id="edit-text" class="menu-item"
+                name="edit-text" rows="8" cols="80" required="required"></textarea>
+            <button id="edit-submit" class="menu-item" type="submit">Submit</button>
+        </form>
+    </div>
     <div id="text-settings-menu" class="menu disabled">
         <header>
             <div class="heading">Text settings</div>
             <div class="close-btn"></div>
         </header>
         <div id="text-settings-form" class="menu-body">
-            <p>Language: <span id="src-lang"></span></p>
-            <p>Translation language preference order (click to move up):</p>
-            <ol id="trn-lang-list" class="orderable"></ol>
+            <div class="menu-item">Language: <span id="src-lang"></span></div>
+            <div class="menu-item">Translation language preference order (click to move up):</div>
+            <ol id="trn-lang-list" class="menu-item orderable"></ol>
         </div>
     </div>
     <div id="voice-settings-menu" class="menu disabled">
@@ -72,11 +90,11 @@
             <div class="close-btn"></div>
         </header>
         <div id="voice-settings-form" class="menu-body">
-            <p>Voice: <span id="voice-info"></span></p>
-            <div class="input-tuple">
-                <label for="voice-speed">Speed:</label>
-                <input id="voice-speed" type="range" min="0.1" max="1" value="0.8" step="0.1"/>
-                <span id="voice-speed-number">0.8</span>
+            <div class="menu-item">Voice: <span id="voice-info"></span></div>
+            <div class="menu-row">
+                <label class="menu-item" for="voice-speed">Speed:</label>
+                <input class="menu-item" id="voice-speed" type="range" min="0.1" max="1" value="0.8" step="0.1"/>
+                <span class="menu-item" id="voice-speed-number">0.8</span>
             </div>
         </div>
     </div>
@@ -86,7 +104,7 @@
             <div class="close-btn"></div>
         </header>
         <div class="menu-body">
-            <p>
+            <p class="menu-item">
 <strong>Narrator with Subtitles</strong> is a web application to aid in language learning.
 It is especially useful for languages that have good textual resources
 but not enough beginner-friendly resources to practice listening skills.
@@ -94,7 +112,7 @@ It speaks out text using a text-to-speech engine, and offers control to
 adjust speech speed and navigate across sentences.
 It optionally shows translations too.
             </p>
-            <p>
+            <p class="menu-item">
 To use this web application, you must upload a txt, html, or csv file containing the text you want spoken.
 Documentation regarding file formats and source code can be found at
 <a href="https://github.com/sharmaeklavya2/narrator-ws">

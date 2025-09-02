@@ -93,7 +93,7 @@ main, #spotlight {
     body .inner, footer #spotlight {
         margin: 0 3em;
     }
-    main {
+    main, .menu-body p {
         text-align: justify;
     }
 }
@@ -277,29 +277,61 @@ svg.icon {
     justify-content: space-around;
 }
 .menu-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0.5em;
     overflow-y: auto;
+    max-width: 640px;
 }
-.menu-body p, .menu-body ol {
-    margin: 1em;
-    max-width: 600px;
+form.menu-body {
+    display: flex;
+}
+.menu-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.menu-item {
+    margin: 0.5em;
 }
 ol.orderable > li {
     padding: 0.5em;
-}
-.menu-body .input-tuple {
-    display: flex;
-    align-items: space-between;
-    justify-content: center;
-    margin: 1em 0.5em;
-    max-width: 600px;
-}
-.menu-body .input-tuple > * {
-    margin: 0 0.5em;
+    background-color: var(--light-tint);
+    border-radius: var(--border-radius);
 }
 #voice-speed-number {
     min-width: 2em;
     display: flex;
     justify-content: center;
+}
+textarea {
+    box-sizing: border-box;
+    width: calc(100% - 2rem);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--text-secondary);
+    font-size: 1em;
+}
+select {
+    font-size: 1em;
+}
+form button {
+    padding: 0.2em 1em;
+    font-size: 1em;
+    background-color: var(--medium-tint);
+    border: 1px solid var(--heavy-tint);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    max-width: 5em;
+    align-self: center;
+}
+form button:hover {
+    background-color: var(--heavy-tint);
+}
+form button:active {
+    background-color: var(--vheavy-tint);
 }
 
 .lang-box.selected, .lang-box:hover {
