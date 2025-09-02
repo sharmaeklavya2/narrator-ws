@@ -127,12 +127,7 @@ function loadArticle(articleInfo: ArticleInfo): void {
         });
     }
 
-    if(globals.voicesByLang !== undefined) {
-        const voiceList = globals.voicesByLang.get(preferredLang);
-        if(voiceList !== undefined && voiceList.length > 0) {
-            globals.settings.voice = voiceList[0];
-        }
-    }
+    setVoice();
     enableButtons();
 }
 
@@ -419,6 +414,15 @@ function setEventHandlers(): void {
     document.getElementById('trn-lang-list')!.addEventListener('click', trnLangClickHandler);
 }
 
+function setVoice(): void {
+    if(globals.voicesByLang !== undefined && globals.settings !== undefined) {
+        const voiceList = globals.voicesByLang.get(globals.settings.srcLang);
+        if(voiceList !== undefined && voiceList.length > 0) {
+            globals.settings.voice = voiceList[0];
+        }
+    }
+}
+
 function registerVoices(): void {
     if(globals.voicesByLang === undefined || globals.voicesByLang.size === 0) {
         const voices = speechSynthesis.getVoices();
@@ -440,12 +444,7 @@ function registerVoices(): void {
             voiceList.push(...defaultVoices, ...nonDefaultVoices);
         }
         globals.voicesByLang = voicesByLang;
-        if(globals.settings !== undefined) {
-            const voiceList = voicesByLang.get(globals.settings.srcLang);
-            if(voiceList !== undefined && voiceList.length > 0) {
-                globals.settings.voice = voiceList[0];
-            }
-        }
+        setVoice();
     }
 }
 
