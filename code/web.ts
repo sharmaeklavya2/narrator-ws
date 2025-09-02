@@ -10,7 +10,7 @@ const langNames: Record<string, string> = {
     'kn': 'Kannada',
 }
 
-interface TextSettings {
+interface Settings {
     srcLang: string;
     trnLangOrder: string[];
 }
@@ -21,7 +21,7 @@ interface State {
 
 interface Globals {
     articleInfo?: ArticleInfo;
-    textSettings?: TextSettings;
+    settings?: Settings;
     state?: State;
 }
 
@@ -96,9 +96,9 @@ function loadArticle(articleInfo: ArticleInfo): void {
             uiMessage('warning', `${fails} sentences missing in lang ${preferredLang}.`);
         }
     }
-    globals.textSettings = {srcLang: preferredLang, trnLangOrder: Array.from(articleInfo.langs)};
-    deleteFromArray(globals.textSettings.trnLangOrder, preferredLang);
-    loadTextSettingsMenu(globals.textSettings);
+    globals.settings = {srcLang: preferredLang, trnLangOrder: Array.from(articleInfo.langs)};
+    deleteFromArray(globals.settings.trnLangOrder, preferredLang);
+    loadTextSettingsMenu(globals.settings);
 
     console.debug(articleInfo);
     globals.articleInfo = articleInfo;
@@ -132,7 +132,7 @@ function showTrnInSpotlight(i: number) {
     }
     const spotlightElem = document.getElementById('spotlight') as HTMLElement;
     spotlightElem.replaceChildren();
-    for(const lang of globals.textSettings!.trnLangOrder) {
+    for(const lang of globals.settings!.trnLangOrder) {
         const trnElem = d[lang];
         if(trnElem !== undefined) {
             spotlightElem.appendChild(trnElem);
@@ -167,7 +167,7 @@ function showSentence(j: number | '+' | '-'): void {
     showTrnInSpotlight(j);
 }
 
-function loadTextSettingsMenu(settings: TextSettings): void {
+function loadTextSettingsMenu(settings: Settings): void {
     const srcLang = settings.srcLang;
     document.getElementById('src-lang')!.innerText = langNames[srcLang] ?? srcLang;
     const trnLangOrder = settings.trnLangOrder;
@@ -185,7 +185,7 @@ function loadTextSettingsMenu(settings: TextSettings): void {
 }
 
 function trnLangClickHandler(ev: Event): void {
-    const trnLangOrder = globals.textSettings!.trnLangOrder;
+    const trnLangOrder = globals.settings!.trnLangOrder;
     const liElem = ev.target! as HTMLElement;
     if(liElem.tagName === 'OL') {
         return;
