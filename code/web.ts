@@ -18,6 +18,8 @@ interface Settings {
 
 interface State {
     currSent: number;
+    speaking: boolean;
+    speakingSent?: number;
 }
 
 interface Globals {
@@ -109,7 +111,7 @@ function loadArticle(articleInfo: ArticleInfo): void {
     const mainElem = document.getElementById('main')!;
     mainElem.replaceChildren(articleInfo.root);
 
-    globals.state = {currSent: 0};
+    globals.state = {currSent: 0, speaking: false};
     if(articleInfo.sockets.length === 0) {
         uiMessage('warning', 'No tagged sentences found in article.');
     }
@@ -217,7 +219,7 @@ function trnLangClickHandler(ev: Event): void {
     showTrnInSpotlight(globals.state!.currSent);
 }
 
-function arrowKeyHandler(ev: KeyboardEvent) {
+function keyHandler(ev: KeyboardEvent) {
     if(globals.menuManager && globals.menuManager.selected) {
         return;
     }
@@ -228,6 +230,9 @@ function arrowKeyHandler(ev: KeyboardEvent) {
     else if(ev.key === 'ArrowLeft') {
         showSentence('-');
         ev.preventDefault();
+    }
+    else if(ev.key === ' ') {
+        playButtonClick();
     }
 }
 
@@ -244,7 +249,59 @@ function enableButtons(): void {
     if(virgins) {
         document.getElementById('button-prev')!.addEventListener('click', () => showSentence('-'));
         document.getElementById('button-next')!.addEventListener('click', () => showSentence('+'));
-        window.addEventListener('keydown', arrowKeyHandler);
+        document.getElementById('button-play')!.addEventListener('click', playButtonClick);
+        window.addEventListener('keydown', keyHandler);
+    }
+}
+
+function getCurrentUtterance(): SpeechSynthesisUtterance | undefined {
+    if(globals.settings !== undefined && globals.settings.voice !== undefined) {
+        const lang = globals.settings.srcLang;
+        const sentId = globals.state!.currSent;
+        const text = globals.articleInfo!.kids[sentId][lang].innerText;
+        const voice = globals.settings.voice;
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang;
+        utterance.voice = voice;
+        // TODO: set volume, rate, pitch.
+        utterance.addEventListener('error', (ev) => uiMessage('danger', `Speech error code ${ev.error}.`));
+        utterance.addEventListener('end', (ev) => {
+            globals.state!.speaking = false;
+            globals.state!.speakingSent = undefined;
+            document.getElementById('button-play')!.dataset.state = 'paused';
+        });
+        return utterance;
+    }
+}
+
+function playButtonClick(): void {
+    if(globals.voicesByLang !== undefined && globals.state !== undefined) {
+        const playButton = document.getElementById('button-play')!;
+        if(speechSynthesis.speaking && !speechSynthesis.paused) {
+            speechSynthesis.pause();
+            globals.state.speaking = false;
+            playButton.dataset.state = 'paused';
+        }
+        else {
+            if(speechSynthesis.speaking && speechSynthesis.paused) {  // paused
+                if(globals.state.speakingSent === globals.state.currSent) {
+                    speechSynthesis.resume();
+                }
+                else {
+                    speechSynthesis.cancel();
+                    const utterance = getCurrentUtterance()!;
+                    speechSynthesis.speak(utterance);
+                }
+            }
+            else {  // stopped
+                const utterance = getCurrentUtterance()!;
+                speechSynthesis.speak(utterance);
+            }
+            globals.state.speakingSent = globals.state.currSent;
+            globals.state.speaking = true;
+            playButton.dataset.state = 'playing';
+        }
     }
 }
 
@@ -359,9 +416,9 @@ function setEventHandlers(): void {
 
 function registerVoices(): void {
     if(globals.voicesByLang === undefined || globals.voicesByLang.size === 0) {
-        globals.voices = speechSynthesis.getVoices();
+        const voices = speechSynthesis.getVoices();
         const voicesByLang = new Map<string, SpeechSynthesisVoice[]>();
-        for(const voice of globals.voices) {
+        for(const voice of voices) {
             const lang = voice.lang.slice(0, 2);
             const voiceList = voicesByLang.get(lang);
             if(voiceList === undefined) {
