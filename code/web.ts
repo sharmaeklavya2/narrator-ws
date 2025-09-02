@@ -238,7 +238,7 @@ function keyHandler(ev: KeyboardEvent) {
 
 function enableButtons(): void {
     let virgins = 0;
-    for(const btnName of ['prev', 'play', 'next', 'text-settings', 'voice-settings']) {
+    for(const btnName of ['prev', 'next', 'text-settings', 'voice-settings']) {
         const elem = document.getElementById('button-' + btnName)!;
         if(elem.hasAttribute('disabled')) {
             virgins++;
@@ -249,8 +249,13 @@ function enableButtons(): void {
     if(virgins) {
         document.getElementById('button-prev')!.addEventListener('click', () => showSentence('-'));
         document.getElementById('button-next')!.addEventListener('click', () => showSentence('+'));
-        document.getElementById('button-play')!.addEventListener('click', playButtonClick);
         window.addEventListener('keydown', keyHandler);
+    }
+
+    if(globals.settings !== undefined && globals.settings.voice !== undefined) {
+        const playButton = document.getElementById('button-play')!;
+        playButton.onclick = playButtonClick;
+        playButton.removeAttribute('disabled');
     }
 }
 
@@ -276,7 +281,7 @@ function getCurrentUtterance(): SpeechSynthesisUtterance | undefined {
 }
 
 function playButtonClick(): void {
-    if(globals.voicesByLang !== undefined && globals.state !== undefined) {
+    if(globals.state !== undefined && globals.settings!.voice !== undefined) {
         const playButton = document.getElementById('button-play')!;
         if(speechSynthesis.speaking && !speechSynthesis.paused) {
             speechSynthesis.pause();
