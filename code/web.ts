@@ -275,9 +275,12 @@ function getCurrentUtterance(): SpeechSynthesisUtterance | undefined {
         // TODO: set volume, rate, pitch.
         utterance.addEventListener('error', (ev) => uiMessage('danger', `Speech error code ${ev.error}.`));
         utterance.addEventListener('end', (ev) => {
-            globals.state!.speaking = false;
-            globals.state!.speakingSent = undefined;
-            document.getElementById('button-play')!.dataset.state = 'paused';
+            console.debug(`Playback of sentence ${sentId} ended.`);
+            if(!speechSynthesis.pending && !speechSynthesis.speaking) {
+                globals.state!.speaking = false;
+                globals.state!.speakingSent = undefined;
+                document.getElementById('button-play')!.dataset.state = 'paused';
+            }
         });
         return utterance;
     }
@@ -297,14 +300,17 @@ function playButtonClick(): void {
                     speechSynthesis.resume();
                 }
                 else {
+                    console.debug(`cancelling speech of sentence ${globals.state.speakingSent}.`);
                     speechSynthesis.cancel();
                     const utterance = getCurrentUtterance()!;
                     speechSynthesis.speak(utterance);
+                    console.debug(`Initiated speaking sentence ${globals.state.currSent}.`);
                 }
             }
             else {  // stopped
                 const utterance = getCurrentUtterance()!;
                 speechSynthesis.speak(utterance);
+                console.debug(`Initiated speaking sentence ${globals.state.currSent}.`);
             }
             globals.state.speakingSent = globals.state.currSent;
             globals.state.speaking = true;
