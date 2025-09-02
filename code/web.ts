@@ -268,11 +268,12 @@ function getCurrentUtterance(): SpeechSynthesisUtterance | undefined {
         const sentId = globals.state!.currSent;
         const text = globals.articleInfo!.kids[sentId][lang].innerText;
         const voice = globals.settings.voice;
+        const voiceSpeedElem = document.getElementById('voice-speed') as HTMLInputElement;
 
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = lang;
         utterance.voice = voice;
-        // TODO: set volume, rate, pitch.
+        utterance.rate = Number(voiceSpeedElem.value);
         utterance.addEventListener('error', (ev) => uiMessage('danger', `Speech error code ${ev.error}.`));
         utterance.addEventListener('end', (ev) => {
             console.debug(`Playback of sentence ${sentId} ended.`);
@@ -426,13 +427,22 @@ function setEventHandlers(): void {
         () => menuManager.show('about-menu'));
 
     document.getElementById('trn-lang-list')!.addEventListener('click', trnLangClickHandler);
+
+    const voiceSpeedElem = document.getElementById('voice-speed')!;
+    const voiceSpeedNumber = document.getElementById('voice-speed-number')!;
+    voiceSpeedElem.addEventListener('input', (ev) => {
+            voiceSpeedNumber.innerText = (ev.currentTarget as HTMLInputElement).value;
+        });
 }
 
 function setVoice(): void {
     if(globals.voicesByLang !== undefined && globals.settings !== undefined) {
         const voiceList = globals.voicesByLang.get(globals.settings.srcLang);
         if(voiceList !== undefined && voiceList.length > 0) {
-            globals.settings.voice = voiceList[0];
+            const voice = voiceList[0];
+            globals.settings.voice = voice;
+            const voiceInfoElem = document.getElementById('voice-info')!;
+            voiceInfoElem.innerText = `${voice.name} (${voice.lang})`;
         }
     }
 }
