@@ -13,6 +13,7 @@ const langNames: Record<string, string> = {
 interface Settings {
     srcLang: string;
     trnLangOrder: string[];
+    voice?: SpeechSynthesisVoice;
 }
 
 interface State {
@@ -23,6 +24,8 @@ interface Globals {
     articleInfo?: ArticleInfo;
     settings?: Settings;
     state?: State;
+    voices?: SpeechSynthesisVoice[];
+    voicesByLang?: Map<string, SpeechSynthesisVoice[]>;
 }
 
 const globals: Globals = {};
@@ -121,6 +124,12 @@ function loadArticle(articleInfo: ArticleInfo): void {
         });
     }
 
+    if(globals.voicesByLang !== undefined) {
+        const voiceList = globals.voicesByLang.get(preferredLang);
+        if(voiceList !== undefined && voiceList.length > 0) {
+            globals.settings.voice = voiceList[0];
+        }
+    }
     enableButtons();
 }
 
@@ -340,8 +349,45 @@ function setEventHandlers(): void {
     document.getElementById('trn-lang-list')!.addEventListener('click', trnLangClickHandler);
 }
 
+function registerVoices(): void {
+    if(globals.voicesByLang === undefined || globals.voicesByLang.size === 0) {
+        globals.voices = speechSynthesis.getVoices();
+        const voicesByLang = new Map<string, SpeechSynthesisVoice[]>();
+        for(const voice of globals.voices) {
+            const lang = voice.lang.slice(0, 2);
+            const voiceList = voicesByLang.get(lang);
+            if(voiceList === undefined) {
+                voicesByLang.set(lang, [voice]);
+            }
+            else {
+                voiceList.push(voice);
+            }
+        }
+        for(const [lang, voiceList] of voicesByLang.entries()) {
+            const defaultVoices = voiceList.filter(voice => voice.default);
+            const nonDefaultVoices = voiceList.filter(voice => !voice.default);
+            voiceList.length = 0;
+            voiceList.push(...defaultVoices, ...nonDefaultVoices);
+        }
+        globals.voicesByLang = voicesByLang;
+        if(globals.settings !== undefined) {
+            const voiceList = voicesByLang.get(globals.settings.srcLang);
+            if(voiceList !== undefined && voiceList.length > 0) {
+                globals.settings.voice = voiceList[0];
+            }
+        }
+    }
+}
+
 async function main(): Promise<void> {
     try {
+        if(typeof speechSynthesis !== "undefined") {
+            speechSynthesis.onvoiceschanged = registerVoices;
+            setTimeout(registerVoices, 0);
+        }
+        else {
+            console.log('speech unavailable');
+        }
         setEventHandlers();
         const fpath = fetchers.getArticlePathFromQString();
         if(fpath !== undefined) {
