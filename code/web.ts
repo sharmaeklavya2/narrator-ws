@@ -21,6 +21,7 @@ interface State {
 }
 
 interface Globals {
+    menuManager?: MenuManager;
     articleInfo?: ArticleInfo;
     settings?: Settings;
     state?: State;
@@ -216,6 +217,20 @@ function trnLangClickHandler(ev: Event): void {
     showTrnInSpotlight(globals.state!.currSent);
 }
 
+function arrowKeyHandler(ev: KeyboardEvent) {
+    if(globals.menuManager && globals.menuManager.selected) {
+        return;
+    }
+    if(ev.key === "ArrowRight") {
+        showSentence('+');
+        ev.preventDefault();
+    }
+    else if(ev.key === 'ArrowLeft') {
+        showSentence('-');
+        ev.preventDefault();
+    }
+}
+
 function enableButtons(): void {
     let virgins = 0;
     for(const btnName of ['prev', 'play', 'next', 'text-settings', 'voice-settings']) {
@@ -229,16 +244,7 @@ function enableButtons(): void {
     if(virgins) {
         document.getElementById('button-prev')!.addEventListener('click', () => showSentence('-'));
         document.getElementById('button-next')!.addEventListener('click', () => showSentence('+'));
-        document.addEventListener('keydown', function (ev: KeyboardEvent) {
-            if(ev.key === "ArrowRight") {
-                showSentence('+');
-                ev.preventDefault();
-            }
-            else if(ev.key === 'ArrowLeft') {
-                showSentence('-');
-                ev.preventDefault();
-            }
-        });
+        window.addEventListener('keydown', arrowKeyHandler);
     }
 }
 
@@ -328,6 +334,7 @@ function setEventHandlers(): void {
     });
 
     const menuManager = new MenuManager();
+    globals.menuManager = menuManager;
     menuManager.add('text-settings-menu');
     menuManager.add('voice-settings-menu');
     menuManager.add('about-menu');
