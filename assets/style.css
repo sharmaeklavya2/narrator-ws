@@ -84,10 +84,8 @@ body {
     font-size: 2em;
     padding: 0.1em 0 0.1em 0;
 }
-main, #spotlight {
+main {
     padding: 0.2em 1em;
-    line-height: 2;
-    font-size: 1.2em;
 }
 @media(min-width: 640px) {
     body .inner, footer {
@@ -105,12 +103,50 @@ footer {
     display: flex;
     flex-direction: column;
 }
-footer #spotlight {
+
+#spotlight-parent {
+    position: relative;
     background-color: var(--light-shade);
-    display: flex;
-    padding: 1em;
     border-radius: var(--border-radius);
 }
+#spotlight {
+    line-height: 2;
+    font-size: 1.2em;
+    margin: 0.8em 1em;
+}
+#spotlight-parent .collapse-btn {
+    cursor: pointer;
+    background-color: var(--light-tint);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2rem;
+    height: 2rem;
+}
+#spotlight-parent .collapse-btn:hover {
+    background-color: var(--medium-tint);
+}
+#spotlight-parent .collapse-btn:active {
+    background-color: var(--heavy-tint);
+}
+#spotlight-parent.collapsed {
+    height: 2rem;
+}
+#spotlight-parent.collapsed #spotlight {
+    display: none;
+}
+#spotlight-parent .collapse-btn::after {
+    content: "▼";
+}
+#spotlight-parent.collapsed .collapse-btn::after {
+    content: "▲";
+}
+
 .toolbar {
     background-color: var(--light-shade);
     display: flex;

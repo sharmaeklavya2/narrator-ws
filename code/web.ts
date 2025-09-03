@@ -619,6 +619,8 @@ function setEventHandlers(): void {
     else {
         console.log('speech unavailable');
     }
+    document.getElementById('spotlight-collapse-btn')!.addEventListener('click',
+        (ev) => {(ev.currentTarget as HTMLElement).parentElement!.classList.toggle('collapsed');});
 
     deployMenuSwitcher();
     setupFileLoaders();
