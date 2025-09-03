@@ -528,7 +528,11 @@ function getCurrentUtterance(): SpeechSynthesisUtterance | undefined {
         utterance.lang = lang;
         utterance.voice = voice;
         utterance.rate = globals.settings.voiceSpeed;
-        utterance.addEventListener('error', (ev) => uiMessage('danger', `Speech error code ${ev.error}.`));
+        utterance.addEventListener('error', (ev) => {
+            if(ev.error !== 'interrupted' && ev.error !== 'canceled') {
+                uiMessage('danger', `Speech error code ${ev.error}.`);
+            }
+        });
         utterance.addEventListener('end', (ev) => {
             console.debug(`Playback of sentence ${sentId} ended.`);
             if(!speechSynthesis.pending && !speechSynthesis.speaking) {
