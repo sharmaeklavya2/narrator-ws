@@ -606,6 +606,15 @@ function setupMenuListeners(): void {
         }
     });
 
+    const textSizeElem = document.getElementById('text-size')!;
+    const textSizeNumber = document.getElementById('text-size-number')!;
+    const mainElem = document.getElementById('main')!;
+    textSizeElem.addEventListener('input', (ev) => {
+        const textSizeText = (ev.currentTarget as HTMLInputElement).value;
+        textSizeNumber.innerText = textSizeText;
+        mainElem.style.fontSize = (Number(textSizeText) * 1.2) + 'em';
+    });
+
     document.getElementById('speech-policy-group')!.addEventListener('change', (ev: Event) => {
         if(globals.settings) {
             globals.settings.speechPolicy = getSpeechPolicy();
