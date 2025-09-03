@@ -16,6 +16,7 @@ interface Settings {
     trnLangOrder: string[];
     voice?: SpeechSynthesisVoice;
     speechPolicy: SpeechPolicy;
+    voiceSpeed: number;
 }
 
 interface State {
@@ -104,9 +105,10 @@ function loadArticle(articleInfo: ArticleInfo): void {
             uiMessage('warning', `${fails} sentences missing in lang ${preferredLang}.`);
         }
     }
-    globals.settings = {srcLang: preferredLang,
-        trnLangOrder: Array.from(articleInfo.langs),
-        speechPolicy: 'proactive'};
+    const voiceSpeedElem = document.getElementById('voice-speed') as HTMLInputElement;
+    const voiceSpeed = Number(voiceSpeedElem.value);
+    globals.settings = {srcLang: preferredLang, trnLangOrder: Array.from(articleInfo.langs),
+        speechPolicy: 'proactive', voiceSpeed: voiceSpeed};
     deleteFromArray(globals.settings.trnLangOrder, preferredLang);
     loadTextSettingsMenu(globals.settings);
 
@@ -276,12 +278,11 @@ function getCurrentUtterance(): SpeechSynthesisUtterance | undefined {
         const sentId = globals.state!.currSent;
         const text = globals.articleInfo!.kids[sentId][lang].innerText;
         const voice = globals.settings.voice;
-        const voiceSpeedElem = document.getElementById('voice-speed') as HTMLInputElement;
 
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = lang;
         utterance.voice = voice;
-        utterance.rate = Number(voiceSpeedElem.value);
+        utterance.rate = globals.settings.voiceSpeed;
         utterance.addEventListener('error', (ev) => uiMessage('danger', `Speech error code ${ev.error}.`));
         utterance.addEventListener('end', (ev) => {
             console.debug(`Playback of sentence ${sentId} ended.`);
@@ -457,7 +458,11 @@ function setEventHandlers(): void {
     const voiceSpeedElem = document.getElementById('voice-speed')!;
     const voiceSpeedNumber = document.getElementById('voice-speed-number')!;
     voiceSpeedElem.addEventListener('input', (ev) => {
-            voiceSpeedNumber.innerText = (ev.currentTarget as HTMLInputElement).value;
+            const voiceSpeedText = (ev.currentTarget as HTMLInputElement).value;
+            voiceSpeedNumber.innerText = voiceSpeedText;
+            if(globals.settings !== undefined) {
+                globals.settings.voiceSpeed = Number(voiceSpeedText);
+            }
         });
 
     const editForm = document.getElementById('edit-form') as HTMLFormElement;
