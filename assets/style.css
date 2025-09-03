@@ -22,7 +22,7 @@ body {
     --light-shade: hsl(0, 0%, 95%);
 
     --border-radius: 0.3rem;
-    --button-size: 3em;
+    --button-size: 4.5em;
 }
 @media (prefers-color-scheme: dark) {
     body {
@@ -90,7 +90,7 @@ main, #spotlight {
     font-size: 1.2em;
 }
 @media(min-width: 640px) {
-    body .inner, footer #spotlight {
+    body .inner, footer {
         margin: 0 3em;
     }
     main, .menu-body p {
@@ -114,26 +114,22 @@ footer #spotlight {
 .toolbar {
     background-color: var(--light-shade);
     display: flex;
-    justify-content: space-around;
 }
-.toolbar-section {
-    display: flex;
-    align-items: center;
-}
-.toolbar .toolbar-section {
-    width: 100%;
-    max-width: calc(var(--button-size) * var(--n-kids));
-    flex-basis: calc(var(--button-size) * var(--n-kids));
+.gas {
+    flex: 1 0 0;
 }
 .toolbar button {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
+    flex: 0 1 auto;
+    width: var(--button-size);
+    max-height: var(--button-size);
+    aspect-ratio: 1;
+
     background-color: transparent;
     border: 1px solid var(--heavy-tint);
-    width: 100%;
-    /* max-width: var(--button-size); */
-    aspect-ratio: 1;
+    padding: 0;
 }
 .toolbar button[disabled] {
     cursor: not-allowed;
@@ -148,10 +144,9 @@ footer #spotlight {
 .toolbar button:not([disabled]):active, ol.orderable > li:active {
     background-color: var(--medium-tint);
 }
-
-.icon {
-    max-width: 2.5em;
-    aspect-ratio: 1;
+button .icon {
+    max-height: 75%;
+    max-width: 75%;
 }
 svg.icon {
     fill: var(--text-color);
@@ -324,7 +319,6 @@ form button {
     border: 1px solid var(--heavy-tint);
     border-radius: var(--border-radius);
     cursor: pointer;
-    max-width: 5em;
     align-self: center;
 }
 form button:hover {
