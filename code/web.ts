@@ -288,6 +288,7 @@ function setupFileLoaders(): void {
             const article = parseArticle(rawArticle);
             console.log(rawArticle);
             loadArticle(article);
+            globals.menuSwitcher!.hide();
         }
         catch (e) {
             logError(e);
@@ -619,8 +620,8 @@ function setEventHandlers(): void {
         console.log('speech unavailable');
     }
 
-    setupFileLoaders();
     deployMenuSwitcher();
+    setupFileLoaders();
     setupMenuListeners();
 }
 
