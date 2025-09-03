@@ -275,7 +275,8 @@ svg.icon {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin: 0.5em;
+    align-items: start;
+    margin: 0.5em 1em;
     overflow-y: auto;
     max-width: 640px;
 }
@@ -284,9 +285,13 @@ form.menu-body {
 }
 .menu-row {
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: center;
+}
+.menu-col {
+    flex-direction: column;
+    display: flex;
+    align-items: start;
 }
 .menu-item {
     margin: 0.5em;

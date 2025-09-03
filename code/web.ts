@@ -3,6 +3,7 @@ import * as fetchers from "./fetchers.js";
 
 type Status = 'danger' | 'warning' | 'success';
 type SpeechPolicy = 'on-demand' | 'proactive' | 'continuous';
+const speechPolicyValues: SpeechPolicy[] = ['on-demand', 'proactive', 'continuous'];
 
 const langNames: Record<string, string> = {
     'en': 'English',
@@ -87,6 +88,16 @@ function deleteFromArray(a: string[], x?: string) {
     }
 }
 
+function getSpeechPolicy(): SpeechPolicy {
+    for(const speechPolicy of speechPolicyValues) {
+        const elem = document.getElementById('sp-' + speechPolicy) as HTMLInputElement;
+        if(elem.checked) {
+            return speechPolicy;
+        }
+    }
+    throw new Error('No speech policy is selected.');
+}
+
 function loadArticle(articleInfo: ArticleInfo): void {
     if(articleInfo.warnings.length > 0) {
         for(const warning of articleInfo.warnings) {
@@ -108,7 +119,7 @@ function loadArticle(articleInfo: ArticleInfo): void {
     const voiceSpeedElem = document.getElementById('voice-speed') as HTMLInputElement;
     const voiceSpeed = Number(voiceSpeedElem.value);
     globals.settings = {srcLang: preferredLang, trnLangOrder: Array.from(articleInfo.langs),
-        speechPolicy: 'proactive', voiceSpeed: voiceSpeed};
+        speechPolicy: getSpeechPolicy(), voiceSpeed: voiceSpeed};
     deleteFromArray(globals.settings.trnLangOrder, preferredLang);
     loadTextSettingsMenu(globals.settings);
 
@@ -486,6 +497,12 @@ function setEventHandlers(): void {
         }
         catch (e) {
             logError(e);
+        }
+    });
+
+    document.getElementById('speech-policy-group')!.addEventListener('change', (ev: Event) => {
+        if(globals.settings) {
+            globals.settings.speechPolicy = getSpeechPolicy();
         }
     });
 }
