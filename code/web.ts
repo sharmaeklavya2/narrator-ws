@@ -490,6 +490,12 @@ function setEventHandlers(): void {
     });
 }
 
+
+function voiceDescription(voice: SpeechSynthesisVoice): string {
+    const locality = voice.localService ? 'local' : 'remote';
+    return `${voice.name} (${voice.lang}, ${locality})`;
+}
+
 function setVoice(): void {
     if(globals.voicesByLang !== undefined && globals.settings !== undefined) {
         const voiceList = globals.voicesByLang.get(globals.settings.srcLang);
@@ -497,7 +503,7 @@ function setVoice(): void {
             const voice = voiceList[0];
             globals.settings.voice = voice;
             const voiceInfoElem = document.getElementById('voice-info')!;
-            voiceInfoElem.innerText = `${voice.name} (${voice.lang})`;
+            voiceInfoElem.innerText = voiceDescription(voice);
         }
     }
 }
