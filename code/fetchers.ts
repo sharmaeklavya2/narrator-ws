@@ -22,24 +22,24 @@ export function getArticlePathFromQString(): string | undefined {
     if(param === null) {
         return undefined;
     }
-    const fpath = articlesMap[param];
-    if(fpath === undefined) {
+    const path = articlesMap[param];
+    if(path === undefined) {
         throw new Error(`Article ${param} not found.`);
     }
-    const ext = getExt(fpath);
+    const ext = getExt(path);
     if(ext === undefined || !validExtSet.has(ext)) {
         throw new Error(`File extension ${ext} is unsupported.`);
     }
-    return fpath;
+    return path;
 }
 
-export async function fetchRawArticleFromPath(fpath: string): Promise<RawArticle> {
-    const response = await fetch(fpath);
+export async function fetchRawArticleFromUrl(path: string): Promise<RawArticle> {
+    const response = await fetch(path);
     if(!response.ok) {
-        throw new Error(`Fetch failed. status: ${response.status}, path: ${fpath}.`);
+        throw new Error(`Fetch failed. status: ${response.status}, path: ${path}.`);
     }
     const text = await response.text();
-    const ext = getExt(fpath);
+    const ext = getExt(path);
     return {ext: ext, text: text};
 }
 
