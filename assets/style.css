@@ -339,7 +339,7 @@ ol.orderable > li {
     background-color: var(--light-tint);
     border-radius: var(--border-radius);
 }
-#voice-speed-number {
+.slider-number {
     min-width: 2em;
     display: flex;
     justify-content: center;
