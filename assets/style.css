@@ -108,6 +108,7 @@ footer {
     position: relative;
     background-color: var(--light-shade);
     border-radius: var(--border-radius);
+    min-height: 2rem;
 }
 #spotlight {
     line-height: 2;
@@ -118,6 +119,9 @@ footer {
     cursor: pointer;
     background-color: var(--light-tint);
     color: var(--text-secondary);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--heavy-tint);
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -133,9 +137,6 @@ footer {
 }
 #spotlight-parent .collapse-btn:active {
     background-color: var(--heavy-tint);
-}
-#spotlight-parent.collapsed {
-    height: 2rem;
 }
 #spotlight-parent.collapsed #spotlight {
     display: none;
@@ -174,11 +175,11 @@ footer {
     fill: var(--text-secondary);
 }
 .toolbar button:not([disabled]):hover, ol.orderable > li:hover {
-    background-color: var(--light-tint);
+    background-color: var(--medium-tint);
     cursor: pointer;
 }
 .toolbar button:not([disabled]):active, ol.orderable > li:active {
-    background-color: var(--medium-tint);
+    background-color: var(--heavy-tint);
 }
 button .icon {
     max-height: 75%;
