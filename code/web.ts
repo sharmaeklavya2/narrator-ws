@@ -30,12 +30,48 @@ interface Globals {
     voicesByLang?: Map<string, SpeechSynthesisVoice[]>;
 }
 
-const langNames: Record<string, string> = {
-    'en': 'English',
-    'te': 'Telugu',
-    'hi': 'Hindi',
-    'kn': 'Kannada',
+interface LangInfo {
+    code: string;
+    name: string;
+    group?: string;
+    nativeName?: string;
 }
+
+const langsInfo: LangInfo[] = [
+{"code":"en", "name": "English"},
+
+{"code":"bn", "group": "Indian", "name":"Bengali", "nativeName":"বাংলা"},
+{"code":"gu", "group": "Indian", "name":"Gujarati", "nativeName":"ગુજરાતી"},
+{"code":"hi", "group": "Indian", "name":"Hindi", "nativeName":"हिंदी"},
+{"code":"kn", "group": "Indian", "name":"Kannada", "nativeName":"ಕನ್ನಡ"},
+{"code":"ml", "group": "Indian", "name":"Malayalam", "nativeName":"മലയാളം"},
+{"code":"mr", "group": "Indian", "name":"Marathi", "nativeName":"मराठी"},
+{"code":"or", "group": "Indian", "name":"Oriya", "nativeName":"ଓଡ଼ିଆ"},
+{"code":"pa", "group": "Indian", "name":"Punjabi", "nativeName":"ਪੰਜਾਬੀ"},
+{"code":"sa", "group": "Indian", "name":"Sanskrit", "nativeName":"संस्कृतम्"},
+{"code":"ta", "group": "Indian", "name":"Tamil", "nativeName":"தமிழ்"},
+{"code":"te", "group": "Indian", "name":"Telugu", "nativeName":"తెలుగు"},
+
+{"code":"fr", "group": "European", "name":"French", "nativeName":"Français"},
+{"code":"de", "group": "European", "name":"German", "nativeName":"Deutsch"},
+{"code":"it", "group": "European", "name":"Italian", "nativeName":"Italiano"},
+{"code":"es", "group": "European", "name":"Spanish", "nativeName":"Español"},
+
+{"code":"zh", "group": "East Asian", "name":"Chinese", "nativeName":"中文"},
+{"code":"ja", "group": "East Asian", "name":"Japanese", "nativeName":"日本語"},
+{"code":"ko", "group": "East Asian", "name":"Korean", "nativeName":"한국어"}
+];
+
+function getLangLabel(langInfo: LangInfo): string {
+    if(langInfo.nativeName) {
+        return `${langInfo.name} (${langInfo.nativeName})`;
+    }
+    else {
+        return langInfo.name;
+    }
+}
+
+const langNames = new Map(langsInfo.map((x) => [x.code, getLangLabel(x)]));
 
 const globals: Globals = {};
 // @ts-ignore
@@ -221,14 +257,27 @@ function setupFileLoaders(): void {
         }
     });
 
-    const editForm = document.getElementById('edit-form') as HTMLFormElement;
     const editLangSelect = document.getElementById('edit-lang') as HTMLElement;
-    for(const [lang, langName] of Object.entries(langNames)) {
+    let prevLangGroup: string | undefined, optGroup: HTMLElement | undefined;
+    for(const langInfo of langsInfo) {
         const optionElem = document.createElement('option');
-        optionElem.setAttribute('value', lang);
-        optionElem.innerText = langName;
-        editLangSelect.appendChild(optionElem);
+        optionElem.setAttribute('value', langInfo.code);
+        optionElem.innerText = getLangLabel(langInfo);
+        if(langInfo.group) {
+            if(langInfo.group !== prevLangGroup) {
+                optGroup = document.createElement('optgroup');
+                optGroup.setAttribute('label', langInfo.group);
+                editLangSelect.appendChild(optGroup);
+            }
+            optGroup!.appendChild(optionElem);
+        }
+        else {
+            editLangSelect.appendChild(optionElem);
+        }
+        prevLangGroup = langInfo.group;
     }
+
+    const editForm = document.getElementById('edit-form') as HTMLFormElement;
     editForm.addEventListener('submit', (ev) => {
         ev.preventDefault();
         try {
@@ -323,7 +372,7 @@ function loadArticle(articleInfo: ArticleInfo): void {
     const firstLang = articleInfo.langs.size > 0 ? articleInfo.langs.values().next().value : undefined;
     const preferredLang = articleInfo.defaultLang || firstLang;
     if(preferredLang) {
-        if(langNames[preferredLang] === undefined) {
+        if(langNames.get(preferredLang) === undefined) {
             uiMessage('warning', `Unrecognized language ${preferredLang}.`);
         }
         const fails = populate(articleInfo, preferredLang);
@@ -364,7 +413,7 @@ function loadArticle(articleInfo: ArticleInfo): void {
 
 function loadTextSettingsMenu(settings: Settings): void {
     const srcLang = settings.srcLang;
-    document.getElementById('src-lang')!.innerText = langNames[srcLang] ?? srcLang;
+    document.getElementById('src-lang')!.innerText = langNames.get(srcLang) ?? srcLang;
     const trnLangOrder = settings.trnLangOrder;
     const olElem = document.getElementById('trn-lang-list')!;
     olElem.replaceChildren();
@@ -373,7 +422,7 @@ function loadTextSettingsMenu(settings: Settings): void {
         const liElem = document.createElement('li');
         liElem.dataset.lang = trnLang;
         liElem.dataset.rank = '' + i;
-        liElem.innerText = langNames[trnLang] ?? trnLang;
+        liElem.innerText = langNames.get(trnLang) ?? trnLang;
         olElem.appendChild(liElem);
         i++;
     }
