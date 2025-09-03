@@ -2,6 +2,7 @@ import {RawArticle, ArticleInfo, parseArticle, populate} from "./parser.js";
 import * as fetchers from "./fetchers.js";
 
 type Status = 'danger' | 'warning' | 'success';
+type SpeechPolicy = 'on-demand' | 'proactive' | 'continuous';
 
 const langNames: Record<string, string> = {
     'en': 'English',
@@ -14,6 +15,7 @@ interface Settings {
     srcLang: string;
     trnLangOrder: string[];
     voice?: SpeechSynthesisVoice;
+    speechPolicy: SpeechPolicy;
 }
 
 interface State {
@@ -102,7 +104,9 @@ function loadArticle(articleInfo: ArticleInfo): void {
             uiMessage('warning', `${fails} sentences missing in lang ${preferredLang}.`);
         }
     }
-    globals.settings = {srcLang: preferredLang, trnLangOrder: Array.from(articleInfo.langs)};
+    globals.settings = {srcLang: preferredLang,
+        trnLangOrder: Array.from(articleInfo.langs),
+        speechPolicy: 'proactive'};
     deleteFromArray(globals.settings.trnLangOrder, preferredLang);
     loadTextSettingsMenu(globals.settings);
 
@@ -172,6 +176,10 @@ function showSentence(j: number | '+' | '-'): void {
     globals.state!.currSent = j;
     sockets[j].scrollIntoView({'behavior': 'smooth', 'block': 'center', 'inline': 'nearest'});
     showTrnInSpotlight(j);
+
+    if(globals.settings!.speechPolicy !== 'on-demand') {
+        playButtonClick(true);
+    }
 }
 
 function loadTextSettingsMenu(settings: Settings): void {
@@ -251,7 +259,7 @@ function enableButtons(): void {
     const playButton = document.getElementById('button-play')!;
     const voiceSettingsButton = document.getElementById('button-voice-settings')!;
     if(globals.settings !== undefined && globals.settings.voice !== undefined) {
-        playButton.onclick = playButtonClick;
+        playButton.onclick = (() => playButtonClick());
         playButton.removeAttribute('disabled');
         voiceSettingsButton.removeAttribute('disabled');
     }
@@ -281,34 +289,49 @@ function getCurrentUtterance(): SpeechSynthesisUtterance | undefined {
                 globals.state!.speaking = false;
                 globals.state!.speakingSent = undefined;
                 document.getElementById('button-play')!.dataset.state = 'paused';
+                if(globals.settings!.speechPolicy === 'continuous') {
+                    showSentence('+');
+                }
             }
         });
         return utterance;
     }
 }
 
-function playButtonClick(): void {
+function playButtonClick(force: boolean = false): void {
+    // force means cancel current speech (if speaking) and start speaking afresh
     if(globals.state !== undefined && globals.settings!.voice !== undefined) {
+        const speaking = speechSynthesis.speaking && !speechSynthesis.paused;
+        const paused = speechSynthesis.speaking && speechSynthesis.paused;
+        const stopped = !speechSynthesis.speaking;
+        const sentenceChanged = force || (globals.state.speakingSent !== undefined && globals.state.speakingSent !== globals.state.currSent);
+        if(Number(speaking) + Number(paused) + Number(stopped) !== 1) {
+            throw new Error(`Invalid speech state encountered: ss.speaking=${speechSynthesis.speaking}, ss.paused=${speechSynthesis.paused}, ss.pending=${speechSynthesis.pending}.`);
+        }
         const playButton = document.getElementById('button-play')!;
-        if(speechSynthesis.speaking && !speechSynthesis.paused) {
+
+        /* This table explains the 9 possibilities and the action to take in each.
+         *                          |   speaking   |    paused    | stopped |
+         * ------------------------------------------------------------------
+         *          force           | cancel+speak | cancel+speak |  speak  |
+         * !force & sentenceChanged |    pause     | cancel+speak |  speak  |
+         *     !sentenceChanged     |    pause     |    resume    |  speak  |
+         */
+        if(!force && speaking) {
             speechSynthesis.pause();
             globals.state.speaking = false;
             playButton.dataset.state = 'paused';
         }
         else {
-            if(speechSynthesis.speaking && speechSynthesis.paused) {  // paused
-                if(globals.state.speakingSent === globals.state.currSent) {
-                    speechSynthesis.resume();
-                }
-                else {
-                    console.debug(`cancelling speech of sentence ${globals.state.speakingSent}.`);
-                    speechSynthesis.cancel();
-                    const utterance = getCurrentUtterance()!;
-                    speechSynthesis.speak(utterance);
-                    console.debug(`Initiated speaking sentence ${globals.state.currSent}.`);
-                }
+            const cancelCondition = speaking || (paused && sentenceChanged);
+            if(cancelCondition) {
+                console.debug(`canceling speech of sentence ${globals.state.speakingSent}.`);
+                speechSynthesis.cancel();
             }
-            else {  // stopped
+            else if(paused) {
+                speechSynthesis.resume();
+            }
+            if(cancelCondition || stopped) {
                 const utterance = getCurrentUtterance()!;
                 speechSynthesis.speak(utterance);
                 console.debug(`Initiated speaking sentence ${globals.state.currSent}.`);
