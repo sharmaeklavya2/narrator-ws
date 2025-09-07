@@ -206,7 +206,7 @@ function parseArticleFromTxt(text: string, lang?: string): ArticleInfo {
 
         for(const sentence of sentences) {
             const langBox = document.createElement('span');
-            langBox.dataset.sentId = 'sent-' + articleInfo.sockets.length;
+            langBox.dataset.sentId = '' + articleInfo.sockets.length;
             langBox.classList.add('lang-box');
             articleInfo.sockets.push(langBox);
             pElem.appendChild(langBox);
