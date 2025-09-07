@@ -166,10 +166,12 @@ class MenuSwitcher {
 function deployMenuSwitcher(): void {
     const menuSwitcher = new MenuSwitcher();
     globals.menuSwitcher = menuSwitcher;
+    menuSwitcher.add('open-menu');
+    menuSwitcher.add('enlist-menu');
     menuSwitcher.add('edit-menu');
+    menuSwitcher.add('about-menu');
     menuSwitcher.add('text-settings-menu');
     menuSwitcher.add('voice-settings-menu');
-    menuSwitcher.add('about-menu');
 
     function hideMenus(): void {menuSwitcher.hide();}
 
@@ -185,8 +187,17 @@ function deployMenuSwitcher(): void {
         () => menuSwitcher.show('voice-settings-menu'));
     document.getElementById('button-about')!.addEventListener('click',
         () => menuSwitcher.show('about-menu'));
+    document.getElementById('button-open')!.addEventListener('click',
+        () => menuSwitcher.show('open-menu'));
+
+    document.getElementById('button-enlist')!.addEventListener('click',
+        () => menuSwitcher.show('enlist-menu'));
     document.getElementById('button-edit')!.addEventListener('click',
         () => menuSwitcher.show('edit-menu'));
+    document.getElementById('enlist-back')!.addEventListener('click',
+        () => menuSwitcher.show('open-menu'));
+    document.getElementById('edit-back')!.addEventListener('click',
+        () => menuSwitcher.show('open-menu'));
 }
 
 function registerVoices(): void {
@@ -227,7 +238,7 @@ function setupFileLoaders(): void {
             logError(e);
         }
     });
-    document.getElementById('button-open')!.addEventListener('click', function(ev: Event) {
+    document.getElementById('button-upload')!.addEventListener('click', function(ev: Event) {
         fileLoaderElem.click();
     });
 

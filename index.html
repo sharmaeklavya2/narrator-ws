@@ -34,9 +34,6 @@
     <button id="button-open" title="Open">
         <svg class="icon" id="icon-open"><use xlink:href="assets/icons.svg#fa-file-circle-plus"/></svg>
     </button>
-    <button id="button-edit" title="Edit">
-        <svg class="icon" id="icon-edit"><use xlink:href="assets/icons.svg#fa-edit"/></svg>
-    </button>
     <button id="button-about" title="About">
         <svg class="icon" id="icon-about"><use xlink:href="assets/icons.svg#fa-question"/></svg>
     </button>
@@ -68,8 +65,28 @@
     <input type="file" id="file-loader" accept=".html,application/html,.csv,text/csv" />
 </div>
 <div id="modal-group">
+    <div id="open-menu" class="menu disabled">
+        <header>
+            <div class="heading">Load an article</div>
+            <div class="close-btn"></div>
+        </header>
+        <div id="open-body" class="menu-body button-group">
+            <div id="button-enlist" class="menu-item">Choose from built-in collection</div>
+            <div id="button-upload" class="menu-item">Upload an article</div>
+            <div id="button-edit" class="menu-item">Paste or write text</div>
+        </div>
+    </div>
+    <div id="enlist-menu" class="menu disabled">
+        <header>
+            <div id="enlist-back" class="back-btn"></div>
+            <div class="heading">Built-in articles</div>
+            <div class="close-btn"></div>
+        </header>
+        <div id="enlist-body" class="menu-body button-group"></div>
+    </div>
     <div id="edit-menu" class="menu disabled">
         <header>
+            <div id="edit-back" class="back-btn"></div>
             <div class="heading">Paste or write text</div>
             <div class="close-btn"></div>
         </header>
@@ -82,6 +99,28 @@
                 name="edit-text" rows="8" cols="80" required="required"></textarea>
             <button id="edit-submit" class="menu-item" type="submit">Submit</button>
         </form>
+    </div>
+    <div id="about-menu" class="menu disabled">
+        <header>
+            <div class="heading">About</div>
+            <div class="close-btn"></div>
+        </header>
+        <div class="menu-body">
+            <p class="menu-item">
+<strong>Narrator with Subtitles</strong> is a web application to aid in language learning.
+It is especially useful for languages that have good textual resources
+but not enough beginner-friendly resources to practice listening skills.
+It speaks out text using a text-to-speech engine, and offers control to
+adjust speech speed and navigate across sentences.
+It optionally shows translations too.
+            </p>
+            <p class="menu-item">
+To use this web application, you must upload a txt, html, or csv file containing the text you want spoken.
+Documentation regarding file formats and source code can be found at
+<a href="https://github.com/sharmaeklavya2/narrator-ws">
+https://github.com/sharmaeklavya2/narrator-ws</a>.
+            </p>
+        </div>
     </div>
     <div id="text-settings-menu" class="menu disabled">
         <header>
@@ -133,28 +172,6 @@
                 <input class="menu-item" id="voice-speed" type="range" min="0.1" max="1" value="0.8" step="0.1"/>
                 <span class="menu-item" id="voice-speed-number" class="slider-number">0.8</span>
             </div>
-        </div>
-    </div>
-    <div id="about-menu" class="menu disabled">
-        <header>
-            <div class="heading">About</div>
-            <div class="close-btn"></div>
-        </header>
-        <div class="menu-body">
-            <p class="menu-item">
-<strong>Narrator with Subtitles</strong> is a web application to aid in language learning.
-It is especially useful for languages that have good textual resources
-but not enough beginner-friendly resources to practice listening skills.
-It speaks out text using a text-to-speech engine, and offers control to
-adjust speech speed and navigate across sentences.
-It optionally shows translations too.
-            </p>
-            <p class="menu-item">
-To use this web application, you must upload a txt, html, or csv file containing the text you want spoken.
-Documentation regarding file formats and source code can be found at
-<a href="https://github.com/sharmaeklavya2/narrator-ws">
-https://github.com/sharmaeklavya2/narrator-ws</a>.
-            </p>
         </div>
     </div>
     <div id="modal-overlay" class="overlay"></div>
