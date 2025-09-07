@@ -10,17 +10,11 @@ export const articleEntries: ArticleEntry[] = [
     {id: 'ict-20', path: 'articles/ict/20.html', label: 'ICT Lesson 20'},
     {id: 'ict-33', path: 'articles/ict/33.html', label: 'ICT Lesson 33'},
     {id: 'sk1-02', path: 'articles/sk1/02.csv', label: 'SK1 Chapter 2'},
+    {id: 'clarinette', path: 'articles/clarinette.fr.txt',
+        label: "J'ai perdue le do de ma clarinette"},
 ];
 
 const idToArticleEntry = new Map(articleEntries.map(ba => [ba.id, ba]));
-
-function getExt(fname: string): string | undefined {
-    const i = fname.lastIndexOf('.');
-    if (i === -1) {
-        return undefined;
-    }
-    return fname.slice(i+1).toLowerCase();
-}
 
 const validExtSet = new Set(['html', 'csv', 'tsv', 'txt']);
 
@@ -48,6 +42,14 @@ export async function fetchRawArticleFromId(id: string): Promise<RawArticle> {
     }
 }
 
+function getExt(fname: string): string | undefined {
+    const i = fname.lastIndexOf('.');
+    if (i === -1) {
+        return undefined;
+    }
+    return fname.slice(i+1).toLowerCase();
+}
+
 export async function fetchRawArticleFromUrl(path: string): Promise<RawArticle> {
     const response = await fetch(path);
     if(!response.ok) {
@@ -55,7 +57,8 @@ export async function fetchRawArticleFromUrl(path: string): Promise<RawArticle> 
     }
     const text = await response.text();
     const ext = getExt(path);
-    return {ext: ext, text: text};
+    const lang = ext === 'txt' ? getExt(path.slice(0, path.length - 4)) : undefined;
+    return {ext: ext, text: text, lang: lang};
 }
 
 export async function fetchRawArticleFromFile(file: File): Promise<RawArticle> {
