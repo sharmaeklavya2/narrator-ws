@@ -24,6 +24,8 @@ body {
 
     --border-radius: 0.3rem;
     --button-size: 4.5em;
+    --line-height: 1.6;
+    --outline-offset: 0.15em;
 }
 @media (prefers-color-scheme: dark) {
     body {
@@ -89,6 +91,7 @@ body {
 main {
     padding: 0.2em 1em;
     font-size: 1.2em;
+    line-height: var(--line-height);
 }
 @media(min-width: 640px) {
     body .inner, footer {
@@ -114,7 +117,7 @@ footer {
     min-height: 2rem;
 }
 #spotlight {
-    line-height: 2;
+    line-height: var(--line-height);
     font-size: 1.2em;
     margin: 0.8em 1em;
 }
@@ -389,8 +392,8 @@ form button:active {
 
 .lang-box.selected, .lang-box:hover {
     background-color: var(--medium-tint);
-    box-shadow: 0 0 0 0.2em var(--medium-tint);
-    outline-offset: 0.2em;
+    box-shadow: 0 0 0 var(--outline-offset) var(--medium-tint);
+    outline-offset: var(--outline-offset);
     outline: 3px solid rgba(0, 0, 255, 0.4);
     cursor: pointer;
 }
