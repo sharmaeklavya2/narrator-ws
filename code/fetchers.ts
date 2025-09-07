@@ -7,9 +7,9 @@ interface BuiltinArticle {
 };
 
 export const builtinArticles = [
-    {id: 'ict-20', path: 'articles/ict/l20.html', label: 'ICT Lesson 20'},
-    {id: 'ict-33', path: 'articles/ict/l33.html', label: 'ICT Lesson 33'},
-    {id: 'sk1-02', path: 'articles/sk1/02-sahakaara.csv', label: 'SK1 Chapter 2'},
+    {id: 'ict-20', path: 'articles/ict/20.html', label: 'ICT Lesson 20'},
+    {id: 'ict-33', path: 'articles/ict/33.html', label: 'ICT Lesson 33'},
+    {id: 'sk1-02', path: 'articles/sk1/02.csv', label: 'SK1 Chapter 2'},
 ];
 
 const builtinArticlesIdToPath = new Map(builtinArticles.map(ba => [ba.id, ba.path]));
