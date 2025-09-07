@@ -319,14 +319,15 @@ svg.icon {
 .menu-body {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: start;
-    margin: 0.5em 1em;
+    margin: 0;
+    padding: 0.5em 1em;
     overflow-y: auto;
     max-width: 640px;
 }
 .menu-body.button-group {
     margin: 0;
+    padding: 0;
     align-items: stretch;
 }
 form.menu-body {
@@ -343,12 +344,28 @@ form.menu-body {
     align-items: start;
 }
 .menu-item {
+    margin: 0;
+    padding: 0.5em;
+}
+ol.menu-item {
+    margin-left: 1.5em;
+}
+select.menu-item {
+    padding: 0;
     margin: 0.5em;
+}
+input.menu-item {
+    padding: 0;
+    margin-left: 0.8em;
 }
 .menu-body.button-group > .menu-item {
     margin: 0;
     padding: 0.75em 1.5em;
-    user-select: none
+    user-select: none;
+}
+textarea.menu-item {
+    align-self: center;
+    margin: 0.5em;
 }
 .menu-body.button-group > .menu-item:last-child {
     border-radius: 0 0 var(--border-radius) var(--border-radius);
@@ -374,8 +391,9 @@ textarea {
 select {
     font-size: 1em;
 }
-form button {
+form button.menu-item {
     padding: 0.2em 1em;
+    margin: 0.5em;
     font-size: 1em;
     background-color: var(--medium-tint);
     border: 1px solid var(--heavy-tint);
