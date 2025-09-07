@@ -1,7 +1,9 @@
 import {RawArticle, ArticleInfo, parseArticle, populate} from "./parser.js";
 import {scriptsInfo} from "./trin.js";
 import {buildScaffolding, trinAll} from "./trinUI.js";
-import * as fetchers from "./fetchers.js";
+import {getFileFromList, fetchRawArticleFromFile,
+    builtinArticles, fetchBuiltinRawArticleFromId,
+    getArticlePathFromQString, fetchRawArticleFromUrl} from "./fetchers.js";
 
 //=[ Interfaces and global variables ]==========================================
 
@@ -230,8 +232,8 @@ function setupFileLoaders(): void {
     fileLoaderElem.addEventListener('change', function(ev: Event) {
         try {
             const files = (ev.currentTarget! as HTMLInputElement).files;
-            const file = fetchers.getFileFromList(files);
-            fetchers.fetchRawArticleFromFile(file)
+            const file = getFileFromList(files);
+            fetchRawArticleFromFile(file)
                 .then(parseArticle).then(loadArticle).catch(logError);
         }
         catch(e) {
@@ -260,8 +262,8 @@ function setupFileLoaders(): void {
         if(ev.dataTransfer) {
             ev.dataTransfer.dropEffect = 'copy';
             try {
-                const file = fetchers.getFileFromList(ev.dataTransfer.files);
-                fetchers.fetchRawArticleFromFile(file)
+                const file = getFileFromList(ev.dataTransfer.files);
+                fetchRawArticleFromFile(file)
                     .then(parseArticle).then(loadArticle).catch(logError);
             }
             catch(e) {
@@ -626,7 +628,41 @@ function playButtonClick(force: boolean = false): void {
     }
 }
 
+function getParentIfNeeded(ev: EventTarget | null): HTMLElement | null {
+    if(ev === null || ev instanceof HTMLElement) {
+        return ev;
+    }
+    else if(ev instanceof Text) {
+        return ev.parentElement;
+    }
+    else {
+        return null;
+    }
+}
+
 function setupMenuListeners(): void {
+    const menuSwitcher = globals.menuSwitcher!;
+    function hideMenus(): void {menuSwitcher.hide();}
+
+    const builtinsMenu = document.getElementById('enlist-body')!;
+    const baIdPrefix = 'ba-';
+    for(const ba of builtinArticles) {
+        const baElem = document.createElement('div');
+        baElem.id = baIdPrefix + ba.id;
+        baElem.classList.add('menu-item');
+        baElem.textContent = ba.label;
+        builtinsMenu.appendChild(baElem);
+    }
+    builtinsMenu.addEventListener('click', (ev) => {
+        const elem = getParentIfNeeded(ev.target);
+        if(elem === null || !elem.classList.contains('menu-item')) {
+            return;
+        }
+        const id = elem.id.slice(baIdPrefix.length);
+        fetchBuiltinRawArticleFromId(id)
+            .then(parseArticle).then(loadArticle).then(hideMenus).catch(logError);
+    });
+
     document.getElementById('trn-lang-list')!.addEventListener('click', trnLangClickHandler);
 
     const voiceSpeedElem = document.getElementById('voice-speed')!;
@@ -698,9 +734,9 @@ function setEventHandlers(): void {
 function main(): void {
     try {
         setEventHandlers();
-        const path = fetchers.getArticlePathFromQString();
+        const path = getArticlePathFromQString();
         if(path !== undefined) {
-            fetchers.fetchRawArticleFromUrl(path)
+            fetchRawArticleFromUrl(path)
                 .then(parseArticle).then(loadArticle).catch(logError);
         }
     } catch (e) {
