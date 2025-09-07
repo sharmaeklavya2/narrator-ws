@@ -197,7 +197,7 @@ function parseArticleFromTxt(text: string, lang?: string): ArticleInfo {
 
     const newRoot = document.createElement('div');
     const articleInfo: ArticleInfo = {defaultLang: lang, root: newRoot,
-        langs: new Set(lang ?? '?'), sockets: [], kids: [], kids2: [], warnings: []};
+        langs: new Set([lang ?? '?']), sockets: [], kids: [], kids2: [], warnings: []};
 
     for(const para of paras) {
         const sentences = textToSentences(para.trim());
