@@ -1,4 +1,6 @@
 import {RawArticle, ArticleInfo, parseArticle, populate} from "./parser.js";
+import {scriptsInfo} from "./trin.js";
+import {buildScaffolding, trinAll} from "./trinUI.js";
 import * as fetchers from "./fetchers.js";
 
 //=[ Interfaces and global variables ]==========================================
@@ -521,7 +523,7 @@ function getCurrentUtterance(): SpeechSynthesisUtterance | undefined {
     if(globals.settings !== undefined && globals.settings.voice !== undefined) {
         const lang = globals.settings.srcLang;
         const sentId = globals.state!.currSent;
-        const text = globals.articleInfo!.kids[sentId][lang].innerText;
+        const text = globals.articleInfo!.kids2[sentId][lang].textContent ?? '';
         const voice = globals.settings.voice;
 
         const utterance = new SpeechSynthesisUtterance(text);
@@ -620,7 +622,29 @@ function setupMenuListeners(): void {
             globals.settings.speechPolicy = getSpeechPolicy();
         }
     });
+
+    const trinLangElem = document.getElementById('trin-lang') as HTMLSelectElement;
+    const noTrinElem = document.createElement('option');
+    noTrinElem.setAttribute('value', 'none');
+    noTrinElem.textContent = '(None)';
+    noTrinElem.setAttribute('selected', 'selected');
+    trinLangElem.appendChild(noTrinElem);
+    for(const scriptInfo of scriptsInfo) {
+        const optionElem = document.createElement('option');
+        optionElem.setAttribute('value', scriptInfo.code);
+        optionElem.textContent = scriptInfo.name;
+        trinLangElem.appendChild(optionElem);
+    }
+    const trinHovElem = document.getElementById('trin-hov') as HTMLInputElement;
+    function trinMain(): void {
+        const lang = trinLangElem.value === 'none' ? undefined : trinLangElem.value;
+        buildScaffolding(mainElem);
+        trinAll(lang, trinHovElem.checked);
+    }
+    trinLangElem.addEventListener('input', trinMain);
+    trinHovElem.addEventListener('input', trinMain);
 }
+
 
 //=[ main ]=====================================================================
 

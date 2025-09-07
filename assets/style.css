@@ -20,6 +20,7 @@ body {
     --heavy-tint: rgba(0, 0, 0, 0.1);
     --vheavy-tint: rgba(0, 0, 0, 0.2);
     --light-shade: hsl(0, 0%, 95%);
+    --tooltip-bg-color: #c0c0c0;
 
     --border-radius: 0.3rem;
     --button-size: 4.5em;
@@ -41,6 +42,7 @@ body {
         --heavy-tint: rgba(255, 255, 255, 0.1);
         --vheavy-tint: rgba(255, 255, 255, 0.2);
         --light-shade: hsl(0, 0%, 20%);
+        --tooltip-bg-color: #303030;
     }
     .darken {
         filter: brightness(.8) contrast(1.2);
@@ -380,6 +382,28 @@ form button:active {
 }
 .lang-box:active {
     background-color: var(--heavy-tint);
+}
+
+.trin-scaff-elem {
+    position: relative;
+}
+.trin-scaff-elem:hover > .trin-hover,
+.trin-scaff-elem:focus > .trin-hover {
+    visibility: visible;
+}
+.trin-hover {
+    visibility: hidden;
+    position: absolute;
+    top: 1.1em;
+    left: 0.5em;
+    z-index: 100;
+
+    color: var(--text-color);
+    background-color: var(--tooltip-bg-color);
+    opacity: 0.9;
+    border-radius: 0.2em;
+    padding: 0.2em 0.3em;
+    white-space: nowrap;
 }
 
 /* generic ================================================================== */
