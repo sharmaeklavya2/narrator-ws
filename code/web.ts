@@ -101,7 +101,7 @@ function uiMessage(status: Status | undefined, text: string | string[]): void {
         }
         let msgSpan = document.createElement('span');
         msgSpan.classList.add('msg-text');
-        msgSpan.innerText = text;
+        msgSpan.textContent = text;
         liElem.appendChild(msgSpan);
         let closeButton = document.createElement('span');
         closeButton.classList.add('close-btn');
@@ -262,7 +262,7 @@ function setupFileLoaders(): void {
     for(const langInfo of langsInfo) {
         const optionElem = document.createElement('option');
         optionElem.setAttribute('value', langInfo.code);
-        optionElem.innerText = getLangLabel(langInfo);
+        optionElem.textContent = getLangLabel(langInfo);
         if(langInfo.group) {
             if(langInfo.group !== prevLangGroup) {
                 optGroup = document.createElement('optgroup');
@@ -331,14 +331,14 @@ function setVoice(): void {
         if(voiceList !== undefined && voiceList.length > 0) {
             const voice = voiceList[0];
             globals.settings.voice = voice;
-            voiceInfoElem.innerText = voiceDescription(voice);
+            voiceInfoElem.textContent = voiceDescription(voice);
             playButton.onclick = (() => playButtonClick());
             playButton.removeAttribute('disabled');
             voiceSettingsButton.removeAttribute('disabled');
         }
         else {
             globals.settings.voice = undefined;
-            voiceInfoElem.innerText = '';
+            voiceInfoElem.textContent = '';
             playButton.onclick = null;
             playButton.setAttribute('disabled', '');
             voiceSettingsButton.setAttribute('disabled', '');
@@ -414,7 +414,7 @@ function loadArticle(articleInfo: ArticleInfo): void {
 
 function loadTextSettingsMenu(settings: Settings): void {
     const srcLang = settings.srcLang;
-    document.getElementById('src-lang')!.innerText = langNames.get(srcLang) ?? srcLang;
+    document.getElementById('src-lang')!.textContent = langNames.get(srcLang) ?? srcLang;
     const trnLangOrder = settings.trnLangOrder;
     const olElem = document.getElementById('trn-lang-list')!;
     olElem.replaceChildren();
@@ -423,7 +423,7 @@ function loadTextSettingsMenu(settings: Settings): void {
         const liElem = document.createElement('li');
         liElem.dataset.lang = trnLang;
         liElem.dataset.rank = '' + i;
-        liElem.innerText = langNames.get(trnLang) ?? trnLang;
+        liElem.textContent = langNames.get(trnLang) ?? trnLang;
         olElem.appendChild(liElem);
         i++;
     }
@@ -600,7 +600,7 @@ function setupMenuListeners(): void {
     const voiceSpeedNumber = document.getElementById('voice-speed-number')!;
     voiceSpeedElem.addEventListener('input', (ev) => {
         const voiceSpeedText = (ev.currentTarget as HTMLInputElement).value;
-        voiceSpeedNumber.innerText = voiceSpeedText;
+        voiceSpeedNumber.textContent = voiceSpeedText;
         if(globals.settings !== undefined) {
             globals.settings.voiceSpeed = Number(voiceSpeedText);
         }
@@ -611,7 +611,7 @@ function setupMenuListeners(): void {
     const mainElem = document.getElementById('main')!;
     textSizeElem.addEventListener('input', (ev) => {
         const textSizeText = (ev.currentTarget as HTMLInputElement).value;
-        textSizeNumber.innerText = textSizeText;
+        textSizeNumber.textContent = textSizeText;
         mainElem.style.fontSize = (Number(textSizeText) * 1.2) + 'em';
     });
 

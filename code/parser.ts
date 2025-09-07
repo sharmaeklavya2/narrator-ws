@@ -83,7 +83,7 @@ function parseArticleFromCsv(text: string, delimiter: string): ArticleInfo {
                 if(sentence !== '') {
                     const langKid = document.createElement('span');
                     langKid.setAttribute('lang', lang);
-                    langKid.innerText = sentence;
+                    langKid.textContent = sentence;
                     kids[lang] = langKid;
                 }
             }
@@ -213,7 +213,7 @@ function parseArticleFromTxt(text: string, lang?: string): ArticleInfo {
             pElem.appendChild(document.createTextNode(' '));
 
             const kidElem = document.createElement('span');
-            kidElem.innerText = sentence;
+            kidElem.textContent = sentence;
             if(lang !== undefined) {
                 kidElem.setAttribute('lang', lang);
             }
