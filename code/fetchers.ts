@@ -2,6 +2,7 @@ import {RawArticle, ArticleInfo} from "./parser.js";
 
 const articlesMap: Record<string, string> = {
     'ict-20': 'articles/ict/l20.html',
+    'ict-33': 'articles/ict/l33.html',
     'sk1-02-sahakaara': 'articles/sk1/02-sahakaara.csv',
     'lipsum': 'articles/lipsum.txt',
 };
