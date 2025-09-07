@@ -327,7 +327,7 @@ function voiceDescription(voice: SpeechSynthesisVoice): string {
 function setVoice(): void {
     if(globals.voicesByLang !== undefined && globals.settings !== undefined) {
         const voiceList = globals.voicesByLang.get(globals.settings.srcLang);
-        const playButton = document.getElementById('button-play')!;
+        const playButton = document.getElementById('button-play') as HTMLButtonElement;
         const voiceSettingsButton = document.getElementById('button-voice-settings')!;
         const voiceInfoElem = document.getElementById('voice-info')!;
         if(voiceList !== undefined && voiceList.length > 0) {
@@ -335,7 +335,7 @@ function setVoice(): void {
             globals.settings.voice = voice;
             voiceInfoElem.textContent = voiceDescription(voice);
             playButton.onclick = (() => playButtonClick());
-            playButton.removeAttribute('disabled');
+            playButton.disabled = globals.articleInfo!.sockets.length === 0;
             voiceSettingsButton.removeAttribute('disabled');
         }
         else {
@@ -348,21 +348,39 @@ function setVoice(): void {
     }
 }
 
-function enableButtons(): void {
-    let virgins = 0;
-    for(const btnName of ['prev', 'next', 'text-settings']) {
-        const elem = document.getElementById('button-' + btnName)!;
-        if(elem.hasAttribute('disabled')) {
-            virgins++;
-        }
-        elem.removeAttribute('disabled');
+function togglePrevNextButtons(): void {
+    const prevButton = document.getElementById('button-prev')!;
+    const nextButton = document.getElementById('button-next')!;
+    const currSent = globals.state!.currSent;
+    const totalSents = globals.articleInfo!.sockets.length;
+    if(totalSents === 0) {
+        prevButton.setAttribute('disabled', '');
+        nextButton.setAttribute('disabled', '');
     }
+    else if(currSent === 0) {
+        prevButton.setAttribute('disabled', '');
+        nextButton.removeAttribute('disabled');
+    }
+    else if(currSent + 1 === totalSents) {
+        prevButton.removeAttribute('disabled');
+        nextButton.setAttribute('disabled', '');
+    }
+    else {
+        prevButton.removeAttribute('disabled');
+        nextButton.removeAttribute('disabled');
+    }
+}
 
-    if(virgins) {
+function enableButtons(): void {
+    const textSettingsButton = document.getElementById('button-text-settings')!;
+    if(textSettingsButton.hasAttribute('disabled')) {
+        // textSettingsButton is disabled iff we have not loaded any article yet.
         document.getElementById('button-prev')!.onclick = () => showSentence('-');
         document.getElementById('button-next')!.onclick = () => showSentence('+');
         window.addEventListener('keydown', keyHandler);
     }
+    textSettingsButton.removeAttribute('disabled');
+    togglePrevNextButtons();
 }
 
 function loadArticle(articleInfo: ArticleInfo): void {
@@ -398,6 +416,7 @@ function loadArticle(articleInfo: ArticleInfo): void {
     globals.state = {currSent: 0, speaking: false};
     if(articleInfo.sockets.length === 0) {
         uiMessage('warning', 'No tagged sentences found in article.');
+        document.getElementById('spotlight')!.replaceChildren();
     }
     else {
         articleInfo.sockets[0].classList.add('selected');
@@ -473,6 +492,7 @@ function showSentence(j: number | '+' | '-'): void {
     sockets[j].scrollIntoView({'behavior': 'smooth', 'block': 'center', 'inline': 'nearest'});
     showTrnInSpotlight(j);
 
+    togglePrevNextButtons();
     if(globals.settings!.speechPolicy !== 'on-demand') {
         playButtonClick(true);
     }
