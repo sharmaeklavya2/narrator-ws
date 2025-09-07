@@ -2,8 +2,8 @@ import {RawArticle, ArticleInfo, parseArticle, populate} from "./parser.js";
 import {scriptsInfo} from "./trin.js";
 import {buildScaffolding, trinAll} from "./trinUI.js";
 import {getFileFromList, fetchRawArticleFromFile,
-    builtinArticles, fetchBuiltinRawArticleFromId,
-    getArticlePathFromQString, fetchRawArticleFromUrl} from "./fetchers.js";
+    articleEntries, fetchRawArticleFromId,
+    getArticleEntryFromQString, fetchRawArticleFromUrl} from "./fetchers.js";
 
 //=[ Interfaces and global variables ]==========================================
 
@@ -646,7 +646,7 @@ function setupMenuListeners(): void {
 
     const builtinsMenu = document.getElementById('enlist-body')!;
     const baIdPrefix = 'ba-';
-    for(const ba of builtinArticles) {
+    for(const ba of articleEntries) {
         const baElem = document.createElement('div');
         baElem.id = baIdPrefix + ba.id;
         baElem.classList.add('menu-item');
@@ -659,7 +659,7 @@ function setupMenuListeners(): void {
             return;
         }
         const id = elem.id.slice(baIdPrefix.length);
-        fetchBuiltinRawArticleFromId(id)
+        fetchRawArticleFromId(id)
             .then(parseArticle).then(loadArticle).then(hideMenus).catch(logError);
     });
 
@@ -734,9 +734,9 @@ function setEventHandlers(): void {
 function main(): void {
     try {
         setEventHandlers();
-        const path = getArticlePathFromQString();
-        if(path !== undefined) {
-            fetchRawArticleFromUrl(path)
+        const ae = getArticleEntryFromQString();
+        if(ae !== undefined) {
+            fetchRawArticleFromUrl(ae.path)
                 .then(parseArticle).then(loadArticle).catch(logError);
         }
     } catch (e) {

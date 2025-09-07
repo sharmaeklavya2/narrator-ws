@@ -1,18 +1,18 @@
 import {RawArticle, ArticleInfo} from "./parser.js";
 
-interface BuiltinArticle {
+interface ArticleEntry {
     id: string;
     path: string;
     label: string;
 };
 
-export const builtinArticles = [
+export const articleEntries: ArticleEntry[] = [
     {id: 'ict-20', path: 'articles/ict/20.html', label: 'ICT Lesson 20'},
     {id: 'ict-33', path: 'articles/ict/33.html', label: 'ICT Lesson 33'},
     {id: 'sk1-02', path: 'articles/sk1/02.csv', label: 'SK1 Chapter 2'},
 ];
 
-const builtinArticlesIdToPath = new Map(builtinArticles.map(ba => [ba.id, ba.path]));
+const idToArticleEntry = new Map(articleEntries.map(ba => [ba.id, ba]));
 
 function getExt(fname: string): string | undefined {
     const i = fname.lastIndexOf('.');
@@ -24,30 +24,27 @@ function getExt(fname: string): string | undefined {
 
 const validExtSet = new Set(['html', 'csv', 'tsv', 'txt']);
 
-export function getArticlePathFromQString(): string | undefined {
+export function getArticleEntryFromQString(): ArticleEntry | undefined {
     const urlParams = new URLSearchParams(window.location.search);
     const param = urlParams.get('article');
-    if(param === null) {
+    if(param === null || param === '') {
         return undefined;
     }
-    const path = builtinArticlesIdToPath.get(param);
-    if(path === undefined) {
+    const ae = idToArticleEntry.get(param);
+    if(ae === undefined) {
         throw new Error(`Article ${param} not found.`);
     }
-    const ext = getExt(path);
-    if(ext === undefined || !validExtSet.has(ext)) {
-        throw new Error(`File extension ${ext} is unsupported.`);
-    }
-    return path;
+    return ae;
 }
 
-export async function fetchBuiltinRawArticleFromId(id: string): Promise<RawArticle> {
-    const path = builtinArticlesIdToPath.get(id);
-    if(path === undefined) {
+export async function fetchRawArticleFromId(id: string): Promise<RawArticle> {
+    const ae = idToArticleEntry.get(id);
+    if(ae === undefined) {
         throw new Error(`Article with ID ${id} not found.`);
     }
     else {
-        return await fetchRawArticleFromUrl(path);
+        const rawArticle = await fetchRawArticleFromUrl(ae.path);
+        return rawArticle;
     }
 }
 
