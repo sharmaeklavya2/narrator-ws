@@ -437,3 +437,8 @@ td, th {
     color: var(--text-secondary);
     font-size: 0.9em;
 }
+
+.speaker {
+    color: var(--emph-color);
+    margin-right: 0.4em;
+}
