@@ -29,7 +29,7 @@ const startPosToScript = new Map(scriptsInfo.map(scriptInfo => [scriptInfo.start
 export function getScriptAndOffset(codePoint: number): [string | undefined, number] {
     const blockOffset = codePoint & (blockSize - 1);
     if(devPunctCodePoints.has(codePoint)) {
-        return ['devDot', blockOffset];
+        return [undefined, blockOffset];
     }
     const blockStartPoint = codePoint & (-blockSize);
     const script = startPosToScript.get(blockStartPoint);
