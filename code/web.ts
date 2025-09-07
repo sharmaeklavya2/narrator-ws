@@ -653,4 +653,9 @@ function main(): void {
     }
 }
 
-main();
+if(document.readyState === 'interactive') {
+    main();
+}
+else {
+    document.addEventListener('DOMContentLoaded', main);
+}
