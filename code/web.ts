@@ -297,9 +297,9 @@ function setupFileLoaders(): void {
         ev.preventDefault();
         try {
             const formData = new FormData(editForm);
-            const rawArticle = {'ext': 'txt',
-                'lang': formData.get('edit-lang') as string,
-                'text': formData.get('edit-text') as string};
+            const rawArticle = {ext: 'txt', trust: false,
+                lang: formData.get('edit-lang') as string,
+                text: formData.get('edit-text') as string};
             const article = parseArticle(rawArticle);
             console.log(rawArticle);
             loadArticle(article);
@@ -738,7 +738,7 @@ function main(): void {
         setEventHandlers();
         const ae = getArticleEntryFromQString();
         if(ae !== undefined) {
-            fetchRawArticleFromUrl(ae.path)
+            fetchRawArticleFromUrl(ae.path, true)
                 .then(parseArticle).then(loadArticle).catch(logError);
         }
     } catch (e) {

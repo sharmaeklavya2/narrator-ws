@@ -37,7 +37,7 @@ export async function fetchRawArticleFromId(id: string): Promise<RawArticle> {
         throw new Error(`Article with ID ${id} not found.`);
     }
     else {
-        const rawArticle = await fetchRawArticleFromUrl(ae.path);
+        const rawArticle = await fetchRawArticleFromUrl(ae.path, true);
         return rawArticle;
     }
 }
@@ -50,7 +50,7 @@ function getExt(fname: string): string | undefined {
     return fname.slice(i+1).toLowerCase();
 }
 
-export async function fetchRawArticleFromUrl(path: string): Promise<RawArticle> {
+export async function fetchRawArticleFromUrl(path: string, trust: boolean): Promise<RawArticle> {
     const response = await fetch(path);
     if(!response.ok) {
         throw new Error(`Fetch failed. status: ${response.status}, path: ${path}.`);
@@ -58,7 +58,7 @@ export async function fetchRawArticleFromUrl(path: string): Promise<RawArticle> 
     const text = await response.text();
     const ext = getExt(path);
     const lang = ext === 'txt' ? getExt(path.slice(0, path.length - 4)) : undefined;
-    return {ext: ext, text: text, lang: lang};
+    return {ext: ext, text: text, trust: trust, lang: lang};
 }
 
 export async function fetchRawArticleFromFile(file: File): Promise<RawArticle> {
@@ -67,7 +67,7 @@ export async function fetchRawArticleFromFile(file: File): Promise<RawArticle> {
         throw new Error(`File extension ${ext} is unsupported.`);
     }
     const text = await file.text();
-    return {ext: ext, text: text};
+    return {ext: ext, text: text, trust: false};
 }
 
 export function getFileFromList(files: FileList | null | undefined): File {

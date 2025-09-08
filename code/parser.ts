@@ -1,9 +1,11 @@
 import {default as parseCsv} from "./csv.js";
+import {sanitize} from "./sanitizeHtml.js";
 
 export interface RawArticle {
     ext?: string;
     lang?: string;
     text: string;
+    trust: boolean;
 }
 
 export interface ArticleInfo {
@@ -18,7 +20,7 @@ export interface ArticleInfo {
 
 export function parseArticle(rawArticle: RawArticle): ArticleInfo {
     if(rawArticle.ext === 'html') {
-        return parseArticleFromHtml(rawArticle.text);
+        return parseArticleFromHtml(rawArticle.text, rawArticle.trust);
     }
     else if(rawArticle.ext === 'csv') {
         return parseArticleFromCsv(rawArticle.text, ',');
@@ -94,24 +96,27 @@ function parseArticleFromCsv(text: string, delimiter: string): ArticleInfo {
     return articleInfo;
 }
 
-function parseArticleFromHtml(text: string): ArticleInfo {
+function parseArticleFromHtml(text: string, trust: boolean): ArticleInfo {
     // console.log('text:', text.slice(0, 200));
     const parser = new DOMParser();
     const articleDoc = parser.parseFromString(text, 'text/html');
     const defaultLang = articleDoc.documentElement.getAttribute('lang')
     const newRoot = document.createElement('div');
+
+    let articleDocBody: HTMLElement;
+    let warnings: Error[];
+    if(trust) {
+        articleDocBody = articleDoc.body;
+        warnings = [];
+    }
+    else {
+        [articleDocBody, warnings] = sanitize(articleDoc.body);
+    }
     const articleInfo: ArticleInfo = {defaultLang: defaultLang ?? undefined, root: newRoot,
-        langs: new Set(), sockets: [], kids: [], kids2: [], warnings: []};
-    outerHtmlParseHelper(articleDoc.body, newRoot, articleDoc, articleInfo);
+        langs: new Set(), sockets: [], kids: [], kids2: [], warnings: warnings};
+    outerHtmlParseHelper(articleDocBody, newRoot, articleInfo);
     postProcess(articleInfo);
     return articleInfo;
-}
-
-function shallowCloneElem(elem: HTMLElement): HTMLElement {
-    const elem2 = elem.cloneNode(false) as HTMLElement;
-    elem2.removeAttribute('id');
-    elem2.removeAttribute('lang');
-    return elem2;
 }
 
 function assertNoLangInDescendants(elem: Element) {
@@ -123,16 +128,15 @@ function assertNoLangInDescendants(elem: Element) {
     }
 }
 
-function outerHtmlParseHelper(source: HTMLElement, dest: HTMLElement,
-        articleDoc: HTMLDocument, articleInfo: ArticleInfo): void {
+function outerHtmlParseHelper(source: HTMLElement, dest: HTMLElement, articleInfo: ArticleInfo): void {
     let langKids: Record<string, HTMLElement> = {};
     let langBox: HTMLElement | undefined = undefined;
     for(const srcChild of source.childNodes) {
         if(srcChild instanceof HTMLElement) {
             const lang = srcChild.getAttribute('lang');
             if(lang === null) {
-                const destChild = shallowCloneElem(srcChild);
-                outerHtmlParseHelper(srcChild, destChild, articleDoc, articleInfo);
+                const destChild = srcChild.cloneNode(false) as HTMLElement;
+                outerHtmlParseHelper(srcChild, destChild, articleInfo);
                 dest.appendChild(destChild);
             }
             else {
@@ -152,7 +156,7 @@ function outerHtmlParseHelper(source: HTMLElement, dest: HTMLElement,
                     }
                 }
                 if(langBox === undefined) {
-                    langBox = articleDoc.createElement('span');
+                    langBox = document.createElement('span');
                     langBox.dataset.sentId = '' + articleInfo.sockets.length;
                     langBox.classList.add('lang-box');
                     articleInfo.sockets.push(langBox);
