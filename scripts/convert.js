@@ -23,7 +23,11 @@ async function main() {
 
     const ext = getExt(args.input);
     if(ext === 'csv' || ext === 'tsv') {
-        const input = await readFile(args.input, {encoding: 'utf8'});
+        let input = await readFile(args.input, {encoding: 'utf8'});
+        // remove the Byte-Order-Mark if present. See https://www.npmjs.com/package/strip-bom.
+        if(input.charCodeAt(0) === 0xFEFF) {
+            input = input.slice(1);
+        }
         const lines = csvToHtml(input);
         await writeFile(args.output, lines.join('\n'));
     }
