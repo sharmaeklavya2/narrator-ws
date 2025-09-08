@@ -1,17 +1,4 @@
-/* color scheme ============================================================= */
-
 body {
-    --text-color: #202020;
-    --emph-color: #101010;
-    --link-color: #1a0dab;
-    --vlink-color: #681da8;
-    --text-danger: #dc3545;
-    --text-warning: #ffc107;
-    --text-success: #198754;
-    --text-blue: #0d6efd;
-    --text-secondary: #888;
-
-    --bg-color: white;
     --danger-tint: rgba(255, 0, 0, 0.1);
     --warning-tint: rgba(255, 150, 0, 0.1);
     --success-tint: rgba(0, 255, 0, 0.1);
@@ -21,24 +8,9 @@ body {
     --vheavy-tint: rgba(0, 0, 0, 0.2);
     --light-shade: hsl(0, 0%, 95%);
     --tooltip-bg-color: #c0c0c0;
-
-    --border-radius: 0.3rem;
-    --button-size: 4.5em;
-    --line-height: 1.6;
-    --outline-offset: 0.15em;
 }
 @media (prefers-color-scheme: dark) {
     body {
-        --text-color: #c8c8c8;
-        --emph-color: #e4e4e4;
-        --link-color: #8ab4f8;
-        --vlink-color: #c58af9;
-        --text-danger: #e74c3c;
-        --text-warning: #f39c12;
-        --text-success: #00bc8c;
-        --text-blue: #3498db;
-
-        --bg-color: #1b1e20;
         --light-tint: rgba(255, 255, 255, 0.02);
         --medium-tint: rgba(255, 255, 255, 0.05);
         --heavy-tint: rgba(255, 255, 255, 0.1);
@@ -46,20 +18,9 @@ body {
         --light-shade: hsl(0, 0%, 20%);
         --tooltip-bg-color: #303030;
     }
-    .darken {
-        filter: brightness(.8) contrast(1.2);
-    }
-    .white-back {
-        background-color: white;
-    }
-    .dark-invert {
-        filter: brightness(.85) invert(1) brightness(.75) hue-rotate(180deg);
-    }
 }
 
-/* structural =============================================================== */
-
-html, body {
+html {
     height: 100%;
 }
 body, #non-footer, .inner {
@@ -67,14 +28,12 @@ body, #non-footer, .inner {
     flex-direction: column;
 }
 body {
+    --border-radius: 0.3rem;
+    --button-size: 4.5em;
+    --line-height: 1.6;
+    --outline-offset: 0.15em;
+    height: 100%;
     margin: 0;
-    font-size: 1.2em;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    font-family: BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Open Sans", "Helvetica Neue", sans-serif;
-}
-.hidden {
-    display: none;
 }
 #non-footer, .inner, main {
     flex: 1;
@@ -439,62 +398,6 @@ form button:active {
     border-radius: 0.2em;
     padding: 0.2em 0.3em;
     white-space: nowrap;
-}
-
-/* generic ================================================================== */
-
-a {
-    color: var(--link-color);
-}
-a:visited {
-    color: var(--vlink-color);
-}
-a:not(:hover) {
-    text-decoration: none;
-}
-h1, h2, h3, h4, h5, h6 {
-    font-weight: 600;
-    line-height: initial;
-    color: var(--emph-color);
-}
-.danger {
-    color: var(--text-danger);
-}
-.success {
-    color: var(--text-success);
-}
-.warning {
-    color: var(--text-warning);
-}
-.secondary {
-    color: var(--text-secondary);
-}
-strong, em {
-    color: var(--emph-color);
-}
-table {
-    border-collapse: collapse;
-}
-td, th {
-    border: 1px solid var(--text-color);
-    padding: 0.1rem 0.5rem;
-}
-
-/* numbered headings */
-.numheads {counter-reset: section;}
-.numheads h2 {counter-reset: subsection;}
-
-.numheads h2::before {
-    counter-increment: section;
-    content: counter(section) ". ";
-}
-.numheads h3::before {
-    counter-increment: subsection;
-    content: counter(section) "." counter(subsection) ". ";
-}
-.numheads h2::before, .numheads h3::before {
-    color: var(--text-secondary);
-    font-size: 0.9em;
 }
 
 .speaker {
