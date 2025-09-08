@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="dark light" />
+<link rel="stylesheet" href="assets/common.css" />
+<title>Docs for Narrator WS</title>
+<style>
+@media(min-width: 640px) {
+    body {margin: 0 3em;}
+}
+body {
+    padding: 0 1em 1em 1em;
+    line-height: 1.4;
+}
+</style>
+</head>
+<body class="numheads">
+<h1>Documentation for Narrator with Subtitles</h1>
+
+<h2 id="about">About</h2>
+
+<p>
+<a href=".">Narrator with Subtitles</a> is a web application to help with language learning.
+</p>
+
+<p>
+For some languages (like those of India other than Hindi), there are very few resources to practice listening skills. Listening to everyday conversations or watching videos may be difficult for beginners because natural conversations are fast, use a wide vocabulary, and may have non-standard accents and slang. Often, only English subtitles are available, which helps understand the meaning but may not be good for understand the words.
+</p>
+
+<p>
+Some languages have good text-based resources but not good audio-based resources. This is where <em>Narrator with Subtitles</em> can help. It speaks out text using a text-to-speech engine and enables easy navigation across sentences in a lesson. Other features:
+</p>
+
+<ol>
+    <li>Adjust speech speed.</li>
+    <li>See translations of sentences (if available).</li>
+    <li>Transliterate among Indic scripts.</li>
+</ol>
+
+<p>
+This web app's source code can be found at
+<a href="https://github.com/sharmaeklavya2/narrator-ws">github:<wbr>sharmaeklavya2/narrator-ws</a>.
+</p>
+
+<h2 id="how-to-open">How to Open an Article</h2>
+
+<p>
+To use this web application, you must <em>open an article</em>.
+An article is a file containing text, along with other information like
+which language it is in and translations for each sentence.
+This app supports three article formats: CSV, HTML, and plain text (TXT).
+</p>
+
+<p>
+To open an article, click the leftmost button. You can then either:
+</p>
+
+<ol>
+<li>Pick from existing articles bundled with this web app.</li>
+<li>Upload your own article file.</li>
+<li>Type (or paste) text.</li>
+</ol>
+
+<p>You can also drag-and-drop files onto the web page.</p>
+
+<p>
+Another way to open an article bundled with this web app is using querystrings.
+Appending <a href=".?article=ict-20"><code class="nowrap">?article=ict-20</code></a> to the URL
+will open &lsquo;ICT Lesson 20&rsquo;.
+The codes for all built-in articles can be found in
+<a href="https://github.com/sharmaeklavya2/narrator-ws/blob/main/code/fetchers.ts">fetchers.ts</a>.
+</p>
+
+<h2 id="how-to-use">How to Use</h2>
+
+<p>
+The app&rsquo;s interface consists of three main parts. They are (from top to bottom):
+</p>
+
+<ol>
+<li><em>Reader</em>: this is where the article is displayed once it is opened.</li>
+<li><em>Spotlight</em>: this is where translations are displayed (if available).</li>
+<li><em>Toolbar</em>: contains buttons.</li>
+</ol>
+
+<p>
+After an article is opened, at any point in time,
+one of the sentences is <em>selected</em>.
+The selected sentence is highlighted in blue.
+You can select a different sentence by clicking it,
+by using the <em>Previous</em> and <em>Next</em> buttons,
+or using the left and right arrow keys.
+</p>
+
+<p>
+Every article has an associated <em>primary language</em>.
+The article may include translations of text from the primary language
+to one or more <em>secondary lanuages</em>.
+For example, <a href=".?article=ict-20">ICT Lesson 20</a>&rsquo;s primary language is Telugu.
+It provides translations in Hindi and English, so those are secondary languages.
+</p>
+
+<p>
+The spotlight shows the translation of the currently selected sentence in one of the secondary languages.
+You can specify your preference order for secondary languages in <em>Text Settings</em>
+(accessible by clicking the gear icon in the toolbar).
+Text Settings also displays the primary language at the top.
+</p>
+
+<h2 id="text-to-speech">Text-to-Speech</h2>
+
+<p>
+Pressing the play button in the toolbar (or pressing spacebar on the keyboard)
+will speak the currently selected sentence, or pause it if it is already speaking.
+However, for this to work, a text-to-speech engine must be available for the primary language.
+If it is unavailable, the play button and the voice settings button will be disabled.
+<p>
+
+<p>
+This web app relies on the web browser&rsquo;s
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis">Speech Synthesis</a> service,
+which in turn (usually) relies on the operating system&rsquo;s text-to-speech service.
+If a text-to-speech engine is not available for the primary language, you may be able to install it.
+Keep in mind that after this installation, for the changes to take effect,
+you may have to restart your web browser.
+</p>
+
+<h3 id="voice-install">Installing Additional Text-to-Speech Engines</h3>
+
+<p>(Instructions tested on <time datetime="2025-09-08">08 September 2025</time>.)</p>
+
+<ul>
+    <li>Windows: Follow steps 1 to 6 on
+        <a href="https://texttospeech.io/how-to-add-more-voices-for-speech-synthesis-reader-p10">
+        this blog post</a> by texttospeech.io.</li>
+    <li><p>macOS (Sonoma):</p>
+        <ol>
+        <li>Go to System Settings &gt; Accessibility &gt; Spoken Content.</li>
+        <li>Click on the drop-down for &lsquo;System voice&rsquo;.</li>
+        <li>You will see a large list of voices (mostly for English).
+            At the bottom of this list, click &lsquo;Manage voices…&rsquo;.</li>
+        <li>A new window will open. In the left sidebar, select your language.
+            In the right sidebar, click the download icon on the voice you wish to install.</li>
+        </ol>
+    </li>
+</ul>
+
+<h2 id="creating-articles">Article File Formats</h2>
+
+<p>
+This app supports three article formats: CSV, HTML, and plain text (TXT).
+The built-in articles have an example of each:
+</p>
+<ul>
+<li><a href="https://github.com/sharmaeklavya2/narrator-ws/blob/main/articles/sk1/02.csv">SK1 Chapter 2 (csv).</a></li>
+<li><a href="https://github.com/sharmaeklavya2/narrator-ws/blob/main/articles/ict/33.html">ICT Lesson 33 (html).</a></li>
+<li><a href="https://github.com/sharmaeklavya2/narrator-ws/blob/main/articles/clarinette.fr.txt">Clarinette (txt).</a></li>
+</ul>
+
+<p>
+Each format has its unique advantages.
+TXT is the simplest, but it doesn't allow providing translations.
+CSV is also quite simple, and it allows providing translations.
+HTML is the most expressive (allowing arbitrary document markup).
+</p>
+
+<p>
+In all formats, languages are specified by their two-letter
+<a href="https://en.wikipedia.org/wiki/IETF_language_tag">IETF language tags</a>.
+E.g., the tag for English is <code>en</code> and the tag for Hindi is <code>hi</code>.
+</p>
+
+<h3 id="csv-format">CSV</h3>
+
+<p>
+CSV stands for &lsquo;Comma-Separated Values&rsquo;.
+It is a format for representing tables.
+Each line of the file is a row, and the cells of the row are separated by commas.
+For example, here is a table and its CSV.
+</p>
+
+<table>
+<tr><td>A1</td><td>A2</td><td>A3</td></tr>
+<tr><td>B1</td><td>B2</td><td>B3</td></tr>
+</table>
+
+<pre>
+<code>A1,A2,A3
+B1,B2,B3</code>
+</pre>
+
+<p>
+The CSV article has a column or each language:
+the first column for the primary language and the remaining columns for secondary languages.
+The first row contains the IETF codes for the languages.
+Each subsequent row contains a sentence and its translations.
+A line with blank cells marks the end of a paragraph.
+See <a href="https://github.com/sharmaeklavya2/narrator-ws/blob/main/articles/sk1/02.csv">SK1 Chapter 2 (csv)</a>
+for an example (the opened article can be seen <a href=".?article=sk1-02">here</a>).
+</p>
+
+<p>
+You can view and edit CSV files using a text editor,
+<a href="https://sheets.google.com">Google Sheets</a>, or macOS Numbers.
+Microsoft Excel also works, but you may have to work around encoding-related issues.
+When saving a CSV file in Excel, ensure that you select &lsquo;CSV UTF-8&rsquo; as the file format.
+If you have trouble opening CSV files in Excel, follow
+<a href="https://support.microsoft.com/en-us/office/opening-csv-utf-8-files-correctly-in-excel-8a935af5-3416-4edd-ba7e-3dfd2bc4a032">these steps by Microsoft</a>.
+</p>
+
+<h3 id="txt-format">TXT</h3>
+
+<p>
+A plain text (txt) article just contains text in the primary language.
+A blank line (two newline characters) marks the end of a paragraph.
+See <a href="https://github.com/sharmaeklavya2/narrator-ws/blob/main/articles/clarinette.fr.txt">
+Clarinette (txt)</a> for an example.
+</p>
+
+<p>
+Unlike CSV and HTML, the file's contents do not specify the primary language,
+so it must be deduced through other means.
+When uploading a txt file, the file's name should be of the form <code>A.B.txt</code>,
+where <code>B</code> is the IETF tag for the language.
+The &lsquo;Paste or write text&rsquo; option for opening an article uses the txt format.
+</p>
+
+<h3 id="html-format">HTML</h3>
+
+<p>
+In the HTML article format, the primary language is specified via the <code>lang</code>
+attribute of the <code>&lt;html&gt;</code> element.
+The article's contents are in the <code>&lt;body&gt;</code> element.
+The <code>&lt;head&gt;</code> can be empty.
+</p>
+
+<p>
+Any HTML element containing the <code>lang</code> attribute is a <em>tagged sentence</em>.
+Tagged sentences must not be nested.
+When the article is opened, only tagged sentences can be selected and spoken.
+If the value of the <code>lang</code> attribute of an element is the same as the primary language,
+the element will show up in the reader, otherwise it is a translation of its
+closest previous sibling with the primary language.
+See <a href="https://github.com/sharmaeklavya2/narrator-ws/blob/main/articles/ict/33.html">
+ICT Lesson 33 (html)</a> for an example.
+</p>
+
+<p>
+To prevent <a href="https://en.wikipedia.org/wiki/Cross-site_scripting">XSS</a> attacks,
+the HTML is aggressively sanitized. If the sanitization alters the document,
+a warning will be displayed in the reader. Built-in articles are not sanitized.
+</p>
+
+<p>
+The nodeJS script <a href="https://github.com/sharmaeklavya2/narrator-ws/blob/main/scripts/convert.js">
+convert.js</a> can convert a CSV article to an HTML article.
+This script is useful if you want to create a first version of the article using CSV
+and then switch to HTML later for its expressiveness.
+</p>
+
+</body>
+</html>
