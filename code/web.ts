@@ -640,6 +640,16 @@ function getParentIfNeeded(ev: EventTarget | null): HTMLElement | null {
     }
 }
 
+function setupSlider(sliderId: string, numberId: string, f: (x: number) => void): void {
+    const sliderElem = document.getElementById(sliderId) as HTMLInputElement;
+    const numberElem = document.getElementById(numberId)!;
+    numberElem.textContent = sliderElem.value;
+    sliderElem.addEventListener('input', (ev) => {
+        numberElem.textContent = sliderElem.value;
+        f(Number(sliderElem.value));
+    });
+}
+
 function setupMenuListeners(): void {
     const menuSwitcher = globals.menuSwitcher!;
     function hideMenus(): void {menuSwitcher.hide();}
@@ -665,27 +675,19 @@ function setupMenuListeners(): void {
 
     document.getElementById('trn-lang-list')!.addEventListener('click', trnLangClickHandler);
 
-    const voiceSpeedElem = document.getElementById('voice-speed')!;
-    const voiceSpeedNumber = document.getElementById('voice-speed-number')!;
-    voiceSpeedElem.addEventListener('input', (ev) => {
-        const voiceSpeedText = (ev.currentTarget as HTMLInputElement).value;
-        voiceSpeedNumber.textContent = voiceSpeedText;
+    setupSlider('voice-speed', 'voice-speed-number', (x: number) => {
         if(globals.settings !== undefined) {
-            globals.settings.voiceSpeed = Number(voiceSpeedText);
+            globals.settings.voiceSpeed = x;
         }
     });
 
-    const textSizeElem = document.getElementById('text-size')!;
-    const textSizeNumber = document.getElementById('text-size-number')!;
     const mainElem = document.getElementById('main')!;
-    textSizeElem.addEventListener('input', (ev) => {
-        const textSizeText = (ev.currentTarget as HTMLInputElement).value;
-        textSizeNumber.textContent = textSizeText;
-        mainElem.style.fontSize = (Number(textSizeText) * 1.2) + 'em';
+    setupSlider('text-size', 'text-size-number', (x: number) => {
+        mainElem.style.fontSize = (x * 1.2) + 'em';
     });
 
     document.getElementById('speech-policy-group')!.addEventListener('change', (ev: Event) => {
-        if(globals.settings) {
+        if(globals.settings !== undefined) {
             globals.settings.speechPolicy = getSpeechPolicy();
         }
     });
