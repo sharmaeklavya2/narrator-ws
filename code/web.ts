@@ -589,10 +589,19 @@ function playButtonClick(force: boolean = false): void {
         const speaking = speechSynthesis.speaking && !speechSynthesis.paused;
         const paused = speechSynthesis.speaking && speechSynthesis.paused;
         const stopped = !speechSynthesis.speaking;
-        const sentenceChanged = force || (globals.state.speakingSent !== undefined && globals.state.speakingSent !== globals.state.currSent);
         if(Number(speaking) + Number(paused) + Number(stopped) !== 1) {
             throw new Error(`Invalid speech state encountered: ss.speaking=${speechSynthesis.speaking}, ss.paused=${speechSynthesis.paused}, ss.pending=${speechSynthesis.pending}.`);
         }
+        if(globals.state.speaking !== speaking) {
+            console.warn('Speech state inconsistency detected.',
+                'Using force mode for current invocation.', 'Debug info:',
+                `speaking=${globals.state.speaking},`,
+                `ss.speaking=${speechSynthesis.speaking},`,
+                `ss.paused=${speechSynthesis.paused},`,
+                `ss.pending=${speechSynthesis.pending}.`);
+            force = true;
+        }
+        const sentenceChanged = force || (globals.state.speakingSent !== undefined && globals.state.speakingSent !== globals.state.currSent);
         const playButton = document.getElementById('button-play')!;
 
         /* This table explains the 9 possibilities and the action to take in each.
@@ -603,6 +612,7 @@ function playButtonClick(force: boolean = false): void {
          *     !sentenceChanged     |    pause     |    resume    |  speak  |
          */
         if(!force && speaking) {
+            console.debug('pausing speech');
             speechSynthesis.pause();
             globals.state.speaking = false;
             playButton.dataset.state = 'paused';
@@ -614,12 +624,13 @@ function playButtonClick(force: boolean = false): void {
                 speechSynthesis.cancel();
             }
             else if(paused) {
+                console.debug('resuming speech');
                 speechSynthesis.resume();
             }
             if(cancelCondition || stopped) {
                 const utterance = getCurrentUtterance()!;
-                speechSynthesis.speak(utterance);
                 console.debug(`Initiated speaking sentence ${globals.state.currSent}.`);
+                speechSynthesis.speak(utterance);
             }
             globals.state.speakingSent = globals.state.currSent;
             globals.state.speaking = true;
