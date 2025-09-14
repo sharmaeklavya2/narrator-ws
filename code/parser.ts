@@ -128,6 +128,12 @@ function assertNoLangInDescendants(elem: Element) {
     }
 }
 
+function modifyElem(elem: HTMLElement): void {
+    if(elem.tagName === 'A' && !elem.hasAttribute('target')) {
+        elem.setAttribute('target', '_blank');
+    }
+}
+
 function outerHtmlParseHelper(source: HTMLElement, dest: HTMLElement, articleInfo: ArticleInfo): void {
     let langKids: Record<string, HTMLElement> = {};
     let langBox: HTMLElement | undefined = undefined;
@@ -136,6 +142,7 @@ function outerHtmlParseHelper(source: HTMLElement, dest: HTMLElement, articleInf
             const lang = srcChild.getAttribute('lang');
             if(lang === null) {
                 const destChild = srcChild.cloneNode(false) as HTMLElement;
+                modifyElem(destChild);
                 outerHtmlParseHelper(srcChild, destChild, articleInfo);
                 dest.appendChild(destChild);
             }
@@ -165,6 +172,7 @@ function outerHtmlParseHelper(source: HTMLElement, dest: HTMLElement, articleInf
                 }
                 // register current tag
                 const langKid = srcChild.cloneNode(true) as HTMLElement;
+                modifyElem(langKid);
                 langKids[lang] = langKid;
             }
         }
