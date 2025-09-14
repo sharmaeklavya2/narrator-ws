@@ -2,19 +2,12 @@ body {
     --danger-tint: rgba(255, 0, 0, 0.1);
     --warning-tint: rgba(255, 150, 0, 0.1);
     --success-tint: rgba(0, 255, 0, 0.1);
-    --light-tint: rgba(0, 0, 0, 0.02);
-    --medium-tint: rgba(0, 0, 0, 0.05);
-    --heavy-tint: rgba(0, 0, 0, 0.1);
-    --vheavy-tint: rgba(0, 0, 0, 0.2);
+
     --light-shade: hsl(0, 0%, 95%);
     --tooltip-bg-color: #c0c0c0;
 }
 @media (prefers-color-scheme: dark) {
     body {
-        --light-tint: rgba(255, 255, 255, 0.02);
-        --medium-tint: rgba(255, 255, 255, 0.05);
-        --heavy-tint: rgba(255, 255, 255, 0.1);
-        --vheavy-tint: rgba(255, 255, 255, 0.2);
         --light-shade: hsl(0, 0%, 20%);
         --tooltip-bg-color: #303030;
     }

@@ -9,6 +9,11 @@ body {
     --text-success: #198754;
     --text-blue: #0d6efd;
     --text-secondary: #888;
+
+    --light-tint: rgba(0, 0, 0, 0.02);
+    --medium-tint: rgba(0, 0, 0, 0.05);
+    --heavy-tint: rgba(0, 0, 0, 0.1);
+    --vheavy-tint: rgba(0, 0, 0, 0.2);
 }
 @media (prefers-color-scheme: dark) {
     body {
@@ -21,6 +26,11 @@ body {
         --text-warning: #f39c12;
         --text-success: #00bc8c;
         --text-blue: #3498db;
+
+        --light-tint: rgba(255, 255, 255, 0.02);
+        --medium-tint: rgba(255, 255, 255, 0.05);
+        --heavy-tint: rgba(255, 255, 255, 0.1);
+        --vheavy-tint: rgba(255, 255, 255, 0.2);
     }
     .darken {
         filter: brightness(.8) contrast(1.2);
@@ -84,6 +94,27 @@ td, th {
 }
 
 /* numbered headings */
+.toc {
+    background-color: var(--heavy-tint);
+    padding: 1em 1em 1em 3em;
+}
+.toc li {
+    padding-left: 0.5em;
+    margin-bottom: 0.4em;
+    margin-top: 0.4em;
+}
+.toc::before {
+    content: "Table of Contents";
+    display: block;
+    margin-bottom: 0.5em;
+    color: var(--emph-color);
+    font-size: 1.5em;
+}
+h2:target, h3:target, h4:target, h5:target, h6:target, li:target {
+    background-color: var(--heavy-tint);
+    box-shadow: 0px 0px 5px 10px var(--heavy-tint);
+}
+
 .numheads {counter-reset: section;}
 .numheads h2 {counter-reset: subsection;}
 
