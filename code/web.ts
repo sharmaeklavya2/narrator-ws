@@ -425,6 +425,8 @@ function loadArticle(articleInfo: ArticleInfo): void {
     globals.articleInfo = articleInfo;
     const mainElem = document.getElementById('main')!;
     mainElem.replaceChildren(articleInfo.root);
+    const newbieElem = document.getElementById('newbie-info')!;
+    newbieElem.classList.add('hidden');
 
     globals.state = {currSent: 0, speaking: false};
     if(articleInfo.sockets.length === 0) {

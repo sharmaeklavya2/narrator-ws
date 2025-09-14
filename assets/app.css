@@ -40,11 +40,15 @@ body {
     font-size: 2em;
     padding: 0.1em 0 0.1em 0;
 }
-main {
+main, #newbie-info {
     padding: 0.2em 1em;
     font-size: 1.2em;
     line-height: var(--line-height);
 }
+#newbie-info {
+    color: var(--text-secondary);
+}
+
 @media(min-width: 640px) {
     body .inner, footer {
         margin: 0 3em;
