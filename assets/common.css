@@ -113,6 +113,7 @@ td, th {
 h2:target, h3:target, h4:target, h5:target, h6:target, li:target {
     background-color: var(--heavy-tint);
     box-shadow: 0px 0px 5px 10px var(--heavy-tint);
+    scroll-margin-top: 1em;
 }
 
 .numheads {counter-reset: section;}

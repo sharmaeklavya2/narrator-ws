@@ -246,6 +246,7 @@ svg.icon {
     justify-content: center;
     z-index: 2000;
     pointer-events: none;
+    line-height: 1.4;
 }
 #modal-group > .overlay {
     position: fixed;
@@ -317,18 +318,18 @@ form.menu-body {
     display: flex;
     align-items: start;
 }
-.menu-item {
+.menu-item, .all-ch-mi > * {
     margin: 0;
     padding: 0.5em;
 }
-ol.menu-item {
+ol.menu-item, .all-ch-mi > ol {
     margin-left: 1.5em;
 }
-select.menu-item {
+select.menu-item, .all-ch-mi > select {
     padding: 0;
     margin: 0.5em;
 }
-input.menu-item {
+input.menu-item, .all-ch-mi > input {
     padding: 0;
     margin-left: 0.8em;
 }
