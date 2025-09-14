@@ -29,7 +29,7 @@ body, #non-footer, .inner {
 }
 body {
     --border-radius: 0.3rem;
-    --button-size: 4.5em;
+    --button-size: 3em;
     --line-height: 1.6;
     --outline-offset: 0.15em;
     height: 100%;
@@ -122,16 +122,28 @@ footer {
 }
 .toolbar button {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     flex: 0 1 auto;
     width: var(--button-size);
     max-height: var(--button-size);
-    aspect-ratio: 1;
+    /*aspect-ratio: 1;*/
+    font-size: 1em;
 
     background-color: transparent;
     border: 1px solid var(--heavy-tint);
     padding: 0;
+}
+@media(max-width: 400px) {
+    .toolbar button > .label {
+        font-size: 0.5em;
+    }
+}
+@media(min-width: 400px) {
+    .toolbar button > .label {
+        font-size: 0.7em;
+    }
 }
 .toolbar button[disabled] {
     cursor: not-allowed;
@@ -156,8 +168,14 @@ svg.icon {
 #button-play[data-state="paused"] #icon-pause {
     display: none;
 }
+#button-play[data-state="paused"] > .label::after {
+    content: "Play";
+}
 #button-play[data-state="playing"] #icon-play {
     display: none;
+}
+#button-play[data-state="playing"] > .label::after {
+    content: "Pause";
 }
 
 /* messages */
