@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="dark light" />
+<link rel="stylesheet" href="assets/common.css" />
+<title>Contributing to Narrator WS</title>
+<style>
+@media(min-width: 640px) {
+    body {margin: 0 3em;}
+}
+body {
+    padding: 0 1em 1em 1em;
+    line-height: 1.4;
+}
+</style>
+</head>
+<body class="numheads">
+<h1>Contributing to Narrator with Subtitles</h1>
+
+<p>
+Thanks for taking the time to contribute to Narrator with Subtitles!
+</p>
+
+<ol class="toc">
+<li><a href="#ict">Digitizing 'An Intensive Course in Telugu'</a></li>
+<li><a href="#sk1">Digitizing 'Savi Kannada: Class 1'</a></li>
+<li><a href="#alt-tts">Alternate Text-to-Speech technologies</a></li>
+</ol>
+
+<h2 id="ict">Digitizing 'An Intensive Course in Telugu'</h2>
+
+<p>
+'An Intensive Course in Telugu' by Parimi Ramanarasimham is an awesome book for learning Telugu.
+It covers various aspects of Telugu in simple bite-sized lessons.
+However, a major problem with learning from this book is that, well, it's a book.
+It will help with reading and writing skills, but not listening skills.
+</p>
+
+<p>
+My idea was to use text-to-speech engines to listen to this book (which is why I created Narrator WS).
+But the book is not machine-readable. Text cannot be copied from the book's PDF
+(apparently due to custom font encondings).
+So, I want to (with your help) type the book so that it can be fed to Narrator WS,
+and other Telugu-learners can benefit from it.
+</p>
+
+<h3>How to help</h3>
+
+<p><strong>Step 1</strong>: Get the book.</p>
+<ul>
+<li><a href="https://sharmaeklavya2.github.io/dl/books/ict.pdf">Full book PDF</a></li>
+<li><a href="https://sharmaeklavya2.github.io/dl/books/ict/">Chapter PDFs</a></li>
+<li><a href="https://sharmaeklavya2.github.io/dl/books/ict.zip">Zip archive of chapter PDFs</a></li>
+</ul>
+
+<p><strong>Step 2</strong>:
+Find a lesson that needs digitization.
+You can view the status of each lesson on <a href="https://docs.google.com/spreadsheets/d/15w2LwOiZ9LIa8zv42e3LZEdwvboGz8I5kirGTcv3GwQ/edit?usp=sharing">this Google sheet</a>.
+</p>
+
+<p><strong>Step 3</strong>:
+Open <a href="https://drive.google.com/drive/folders/1pJaPHrDwSTaS_JgTH7AgbI0QwXCE4GRJ?usp=sharing">this Google Drive folder</a>. It contains a Google sheet for each lesson.
+Open the Google sheet for your lesson.
+</p>
+
+<p><strong>Step 4</strong>:
+The Google sheet contains a row for each sentence and a column for each language
+(<code>te</code> is Telugu, <code>en</code> is English, and <code>hi</code> is Hindi).
+Start reading the lesson from the book PDF.
+Add Telugu sentences and their translations in whichever languages you know how to translate into.
+(For example, if you don't know Hindi, you can just leave the cells in the <code>hi</code> column blank.)
+</p>
+
+<p>How to type in Indian languages:</p>
+<ol>
+<li>Add <a href="https://support.microsoft.com/en-us/windows/how-to-set-up-and-use-indic-phonetic-keyboards-7c4d2e8a-abf2-f200-9866-1a4cead7b127">phonetic keyboards on Windows</a>.</li>
+<li>Add input sources on macOS: <a href="https://discussions.apple.com/docs/DOC-250006842">[1]</a>,
+    <a href="https://support.apple.com/en-in/guide/mac-help/mchlp1406/mac">[2]</a>.</li>
+<li>Add a <a href="https://support.google.com/gboard/answer/7068494">keyboard language on Android</a>.</li>
+<li>Add a <a href="https://support.apple.com/guide/iphone/add-or-change-keyboards-iph73b71eb/ios">keyboard on iPhone/iPad</a>.</li>
+<li>Use <a href="https://www.google.com/inputtools/try/">Google input tools</a> on the web.</li>
+</ol>
+
+<h2 id="sk1">Digitizing 'Savi Kannada: Class 1'</h2>
+
+<p class="secondary">(Instructions coming soon.)</p>
+
+<h2 id="alt-tts">Alternate Text-to-Speech technologies</h2>
+
+<p>
+This web app relies on the web browser's
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis">Speech Synthesis</a> service,
+which in turn (usually) relies on the operating system's text-to-speech service.
+If a text-to-speech engine is not available with the operating system,
+this app's text-to-speech functionality won't work.
+</p>
+
+<p>
+Kannada and Telugu text-to-speech don't work in Windows and iOS. This is a major limitation.
+If you can help implement other text-to-speech technologies, please let me know.
+</p>
+
+</body>
+</html>
