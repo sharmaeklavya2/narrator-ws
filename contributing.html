@@ -24,23 +24,23 @@ Thanks for taking the time to contribute to <a href=".">Narrator with Subtitles<
 </p>
 
 <ol class="toc">
-<li><a href="#ict">Digitizing 'An Intensive Course in Telugu'</a></li>
-<li><a href="#sk1">Digitizing 'Savi Kannada: Class 1'</a></li>
+<li><a href="#ict">Digitizing ‘An Intensive Course in Telugu’</a></li>
+<li><a href="#sk1">Digitizing ‘Savi Kannada: Class 1’</a></li>
 <li><a href="#alt-tts">Alternate Text-to-Speech technologies</a></li>
 </ol>
 
-<h2 id="ict">Digitizing 'An Intensive Course in Telugu'</h2>
+<h2 id="ict">Digitizing ‘An Intensive Course in Telugu’</h2>
 
 <p>
-'An Intensive Course in Telugu' by Parimi Ramanarasimham is an awesome book for learning Telugu.
+<em>An Intensive Course in Telugu</em> by Parimi Ramanarasimham is an awesome book for learning Telugu.
 It covers various aspects of Telugu in simple bite-sized lessons.
-However, a major problem with learning from this book is that, well, it's a book.
+However, a major problem with learning from this book is that, well, it’s a book.
 It will help with reading and writing skills, but not listening skills.
 </p>
 
 <p>
 My idea was to use text-to-speech engines to listen to this book (which is why I created Narrator WS).
-But the book is not machine-readable. Text cannot be copied from the book's PDF
+But the book is not machine-readable. Text cannot be copied from the book’s PDF
 (apparently due to custom font encondings).
 So, I want to (with your help) type the book so that it can be fed to Narrator WS,
 and other Telugu-learners can benefit from it.
@@ -70,7 +70,7 @@ The Google sheet contains a row for each sentence and a column for each language
 (<code>te</code> is Telugu, <code>en</code> is English, and <code>hi</code> is Hindi).
 Start reading the lesson from the book.
 Add Telugu sentences and their translations to the Google sheet in whichever languages you know how to translate into.
-(For example, if you don't know Hindi, you can just leave the cells in the <code>hi</code> column blank.)
+(For example, if you don’t know Hindi, you can just leave the cells in the <code>hi</code> column blank.)
 Blank lines mark the end of a paragraph.
 </p>
 
@@ -84,22 +84,22 @@ Blank lines mark the end of a paragraph.
 <li>Use <a href="https://www.google.com/inputtools/try/">Google input tools</a> on the web.</li>
 </ol>
 
-<h2 id="sk1">Digitizing 'Savi Kannada: Class 1'</h2>
+<h2 id="sk1">Digitizing ‘Savi Kannada: Class 1’</h2>
 
 <p class="secondary">(Instructions coming soon.)</p>
 
 <h2 id="alt-tts">Alternate Text-to-Speech technologies</h2>
 
 <p>
-This web app relies on the web browser's
+This web app relies on the web browser’s
 <a href="https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis">Speech Synthesis</a> service,
-which in turn (usually) relies on the operating system's text-to-speech service.
+which in turn (usually) relies on the operating system’s text-to-speech service.
 If a text-to-speech engine is not available with the operating system,
-this app's text-to-speech functionality won't work.
+this app’s text-to-speech functionality won’t work.
 </p>
 
 <p>
-Kannada and Telugu text-to-speech don't work in Windows and iOS. This is a major limitation.
+Kannada and Telugu text-to-speech don’t work in Windows and iOS. This is a major limitation.
 If you can help implement other text-to-speech technologies, please let me know.
 </p>
 

@@ -56,7 +56,7 @@ Some languages have good textual resources but not good spoken resources. This i
 </ol>
 
 <p>
-This web app's source code can be found at
+This web app’s source code can be found at
 <a href="https://github.com/sharmaeklavya2/narrator-ws">github:<wbr>sharmaeklavya2/narrator-ws</a>.
 </p>
 
@@ -88,7 +88,7 @@ To open an article, click the leftmost button. You can then either:
 <p>
 Another way to open an article bundled with this web app is using querystrings.
 Appending <a href=".?article=ict-20"><code class="nowrap">?article=ict-20</code></a> to the URL
-will open &lsquo;ICT Lesson 20&rsquo;.
+will open ‘ICT Lesson 20’.
 The codes for all built-in articles can be found in
 <a href="https://github.com/sharmaeklavya2/narrator-ws/blob/main/code/fetchers.ts">fetchers.ts</a>.
 </p>
@@ -96,7 +96,7 @@ The codes for all built-in articles can be found in
 <h2 id="how-to-use">How to Use</h2>
 
 <p>
-The app&rsquo;s interface consists of three main parts. They are (from top to bottom):
+The app’s interface consists of three main parts. They are (from top to bottom):
 </p>
 
 <ol>
@@ -118,7 +118,7 @@ or using the left and right arrow keys.
 Every article has an associated <em>primary language</em>.
 The article may include translations of text from the primary language
 to one or more <em>secondary lanuages</em>.
-For example, <a href=".?article=ict-20">ICT Lesson 20</a>&rsquo;s primary language is Telugu.
+For example, <a href=".?article=ict-20">ICT Lesson 20</a>’s primary language is Telugu.
 It provides translations in Hindi and English, so those are secondary languages.
 </p>
 
@@ -139,9 +139,9 @@ If it is unavailable, the play button and the voice settings button will be disa
 <p>
 
 <p>
-This web app relies on the web browser&rsquo;s
+This web app relies on the web browser’s
 <a href="https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis">Speech Synthesis</a> service,
-which in turn (usually) relies on the operating system&rsquo;s text-to-speech service.
+which in turn (usually) relies on the operating system’s text-to-speech service.
 If a text-to-speech engine is not available for the primary language, you may be able to install it.
 Keep in mind that after this installation, for the changes to take effect,
 you may have to restart your web browser.
@@ -158,9 +158,9 @@ you may have to restart your web browser.
     <li><p>macOS (Sonoma):</p>
         <ol>
         <li>Go to System Settings &gt; Accessibility &gt; Spoken Content.</li>
-        <li>Click on the drop-down for &lsquo;System voice&rsquo;.</li>
+        <li>Click on the drop-down for ‘System voice’.</li>
         <li>You will see a large list of voices (mostly for English).
-            At the bottom of this list, click &lsquo;Manage voices…&rsquo;.</li>
+            At the bottom of this list, click ‘Manage voices…’.</li>
         <li>A new window will open. In the left sidebar, select your language.
             In the right sidebar, click the download icon on the voice you wish to install.</li>
         </ol>
@@ -181,7 +181,7 @@ The built-in articles have an example of each:
 
 <p>
 Each format has its unique advantages.
-TXT is the simplest, but it doesn't allow providing translations.
+TXT is the simplest, but it doesn’t allow providing translations.
 CSV is also quite simple, and it allows providing translations.
 HTML is the most expressive (allowing arbitrary document markup).
 </p>
@@ -195,7 +195,7 @@ E.g., the tag for English is <code>en</code> and the tag for Hindi is <code>hi</
 <h3 id="csv-format">CSV</h3>
 
 <p>
-CSV stands for &lsquo;Comma-Separated Values&rsquo;.
+CSV stands for ‘Comma-Separated Values’.
 It is a format for representing tables.
 Each line of the file is a row, and the cells of the row are separated by commas.
 For example, here is a table and its CSV.
@@ -225,7 +225,7 @@ for an example (the opened article can be seen <a href=".?article=sk1-02">here</
 You can view and edit CSV files using a text editor,
 <a href="https://sheets.google.com">Google Sheets</a>, or macOS Numbers.
 Microsoft Excel also works, but you may have to work around encoding-related issues.
-When saving a CSV file in Excel, ensure that you select &lsquo;CSV UTF-8&rsquo; as the file format.
+When saving a CSV file in Excel, ensure that you select ‘CSV UTF-8’ as the file format.
 If you have trouble opening CSV files in Excel, follow
 <a href="https://support.microsoft.com/en-us/office/opening-csv-utf-8-files-correctly-in-excel-8a935af5-3416-4edd-ba7e-3dfd2bc4a032">these steps by Microsoft</a>.
 </p>
@@ -240,11 +240,11 @@ Clarinette (txt)</a> for an example.
 </p>
 
 <p>
-Unlike CSV and HTML, the file's contents do not specify the primary language,
+Unlike CSV and HTML, the file’s contents do not specify the primary language,
 so it must be deduced through other means.
-When uploading a txt file, the file's name should be of the form <code>A.B.txt</code>,
+When uploading a txt file, the file’s name should be of the form <code>A.B.txt</code>,
 where <code>B</code> is the IETF tag for the language.
-The &lsquo;Paste or write text&rsquo; option for opening an article uses the txt format.
+The ‘Paste or write text’ option for opening an article uses the txt format.
 </p>
 
 <h3 id="html-format">HTML</h3>
@@ -252,7 +252,7 @@ The &lsquo;Paste or write text&rsquo; option for opening an article uses the txt
 <p>
 In the HTML article format, the primary language is specified via the <code>lang</code>
 attribute of the <code>&lt;html&gt;</code> element.
-The article's contents are in the <code>&lt;body&gt;</code> element.
+The article’s contents are in the <code>&lt;body&gt;</code> element.
 The <code>&lt;head&gt;</code> can be empty.
 </p>
 
