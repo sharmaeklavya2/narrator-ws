@@ -242,7 +242,7 @@ function parseArticleFromTxt(text: string, lang?: string): ArticleInfo {
 export function populate(articleInfo: ArticleInfo, lang: string): number {
     let fails = 0;
     const n = articleInfo.sockets.length;
-    for(let i=0; i<n; ++i) {
+    for(let i=0; i < n; ++i) {
         const socket = articleInfo.sockets[i];
         const kid = articleInfo.kids[i][lang];
         if(kid === undefined) {
