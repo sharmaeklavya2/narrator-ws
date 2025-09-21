@@ -46,13 +46,25 @@ function postProcess(articleInfo: ArticleInfo): void {
     }
 }
 
-function valuesAreEmpty(d: Record<string, string>): boolean {
+const knownTags = new Set(['ul', 'ol', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
+
+function tagFromValues(d: Record<string, string>): string | undefined {
+    let tag: string | undefined;
     for(const [k, v] of Object.entries(d)) {
         if(v !== '') {
-            return false;
+            if(tag !== undefined || v.length < 2 || v[0] !== '<' || v[v.length - 1] !== '>') {
+                return undefined;
+            }
+            const vTag = v.slice(1, v.length - 1);
+            if(knownTags.has(vTag)) {
+                tag = vTag;
+            }
+            else {
+                return undefined;
+            }
         }
     }
-    return true;
+    return tag ?? 'p';
 }
 
 function parseArticleFromCsv(text: string, delimiter: string): ArticleInfo {
@@ -64,16 +76,20 @@ function parseArticleFromCsv(text: string, delimiter: string): ArticleInfo {
     let langKids: Record<string, HTMLElement> = {};
     let langBox: HTMLElement | undefined = undefined;
     let p: HTMLElement | undefined = undefined;
+    let outerTag = 'p', innerTag = 'span';
     for(const row of data) {
-        if(valuesAreEmpty(row)) {
+        const foundTag = tagFromValues(row);
+        if(foundTag) {
             p = undefined;
+            outerTag = foundTag;
+            innerTag = (foundTag === 'ol' || foundTag === 'ul') ? 'li' : 'span';
         }
         else {
             if(p === undefined) {
-                p = document.createElement('p');
+                p = document.createElement(outerTag);
                 newRoot.appendChild(p);
             }
-            langBox = document.createElement('span');
+            langBox = document.createElement(innerTag);
             langBox.dataset.sentId = '' + articleInfo.sockets.length;
             langBox.classList.add('lang-box');
             articleInfo.sockets.push(langBox);
