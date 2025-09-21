@@ -9,11 +9,13 @@ import {getFileFromList, fetchRawArticleFromFile,
 
 type Status = 'danger' | 'warning' | 'success';
 type SpeechPolicy = 'on-demand' | 'proactive' | 'continuous';
+const defaultNTrnLangs = 2;
 const speechPolicyValues: SpeechPolicy[] = ['on-demand', 'proactive', 'continuous'];
 
 interface Settings {
     srcLang: string;
-    trnLangOrder: string[];
+    trnLangs: string[];
+    pickedTrnLangs: string[];
     voice?: SpeechSynthesisVoice;
     speechPolicy: SpeechPolicy;
     voiceSpeed: number;
@@ -32,6 +34,7 @@ interface Globals {
     state?: State;
     voices?: SpeechSynthesisVoice[];
     voicesByLang?: Map<string, SpeechSynthesisVoice[]>;
+    trnLangSelects?: HTMLSelectElement[];
 }
 
 interface LangInfo {
@@ -397,45 +400,44 @@ function enableButtons(): void {
 }
 
 function loadArticle(articleInfo: ArticleInfo): void {
+    // show parsing warnings
     if(articleInfo.warnings.length > 0) {
         for(const warning of articleInfo.warnings) {
             uiMessage('warning', warning.message);
         }
     }
-
-    const firstLang = articleInfo.langs.size > 0 ? articleInfo.langs.values().next().value : undefined;
-    const preferredLang = articleInfo.defaultLang || firstLang;
-    if(preferredLang) {
-        if(langNames.get(preferredLang) === undefined) {
-            uiMessage('warning', `Unrecognized language ${preferredLang}.`);
-        }
-        const fails = populate(articleInfo, preferredLang);
-        if(fails > 0) {
-            uiMessage('warning', `${fails} sentences missing in lang ${preferredLang}.`);
-        }
-    }
-    const voiceSpeedElem = document.getElementById('voice-speed') as HTMLInputElement;
-    const voiceSpeed = Number(voiceSpeedElem.value);
-    globals.settings = {srcLang: preferredLang, trnLangOrder: Array.from(articleInfo.langs),
-        speechPolicy: getSpeechPolicy(), voiceSpeed: voiceSpeed};
-    deleteFromArray(globals.settings.trnLangOrder, preferredLang);
-    loadTextSettingsMenu(globals.settings);
-
-    console.debug(articleInfo);
     globals.articleInfo = articleInfo;
+    console.debug(articleInfo);
+
+    // figure out the set of languages
+    const firstLang: string | undefined = (articleInfo.langs.size > 0 ?
+        articleInfo.langs.values().next().value : undefined);
+    const srcLang = articleInfo.defaultLang || firstLang;
+    if(srcLang === undefined) {
+        throw new Error('No language found in text.');
+    }
+    if(langNames.get(srcLang) === undefined) {
+        uiMessage('warning', `Unrecognized language ${srcLang}.`);
+    }
+    const trnLangs = Array.from(articleInfo.langs);
+    deleteFromArray(trnLangs, srcLang);
+    const pickedTrnLangs = trnLangs.slice(0, defaultNTrnLangs);
+
+    // show content in reader
+    const fails = populate(articleInfo, srcLang);
+    if(fails > 0) {
+        uiMessage('warning', `${fails} sentences missing in lang ${srcLang}.`);
+    }
     const mainElem = document.getElementById('main')!;
     mainElem.replaceChildren(articleInfo.root);
     const newbieElem = document.getElementById('newbie-info')!;
     newbieElem.classList.add('hidden');
-
-    globals.state = {currSent: 0, speaking: false};
-    if(articleInfo.sockets.length === 0) {
+    const articleIsEmpty = articleInfo.sockets.length === 0;
+    if(articleIsEmpty) {
         uiMessage('warning', 'No tagged sentences found in article.');
-        document.getElementById('spotlight')!.replaceChildren();
     }
     else {
         articleInfo.sockets[0].classList.add('selected');
-        showTrnInSpotlight(0);
     }
     for(const socket of articleInfo.sockets) {
         socket.addEventListener('click', function(ev: Event) {
@@ -444,40 +446,115 @@ function loadArticle(articleInfo: ArticleInfo): void {
         });
     }
 
+    // set settings and state
+    const voiceSpeedElem = document.getElementById('voice-speed') as HTMLInputElement;
+    const voiceSpeed = Number(voiceSpeedElem.value);
+    globals.settings = {
+        srcLang: srcLang,
+        trnLangs: trnLangs,
+        pickedTrnLangs: pickedTrnLangs,
+        speechPolicy: getSpeechPolicy(),
+        voiceSpeed: voiceSpeed
+    };
+    globals.state = {currSent: 0, speaking: false};
+
+    // enable menus, buttons, voice
+    document.getElementById('src-lang')!.textContent = langNames.get(srcLang) ?? srcLang;
+    loadTextSettingsMenu();
     setVoice();
     enableButtons();
+
+    // show spotlight
+    updatePickedLangs();
 }
 
-function loadTextSettingsMenu(settings: Settings): void {
-    const srcLang = settings.srcLang;
-    document.getElementById('src-lang')!.textContent = langNames.get(srcLang) ?? srcLang;
-    const trnLangOrder = settings.trnLangOrder;
-    const olElem = document.getElementById('trn-lang-list')!;
-    olElem.replaceChildren();
-    let i = 0;
-    for(const trnLang of trnLangOrder) {
-        const liElem = document.createElement('li');
-        liElem.dataset.lang = trnLang;
-        liElem.dataset.rank = '' + i;
-        liElem.textContent = langNames.get(trnLang) ?? trnLang;
-        olElem.appendChild(liElem);
-        i++;
+function loadTextSettingsMenu(): void {
+    const trnLangs = globals.settings!.trnLangs;
+
+    // hide/unhide relevant parts in text-settings
+    const trnLangsNone = document.getElementById('trn-langs-none')!;
+    const trnLangsOne = document.getElementById('trn-langs-one')!;
+    const trnLangsMultiple = document.getElementById('trn-langs-multiple')!;
+    if(trnLangs.length === 0) {
+        trnLangsNone.classList.remove('hidden');
+        trnLangsOne.classList.add('hidden');
+        trnLangsMultiple.classList.add('hidden');
     }
+    else if(trnLangs.length === 1) {
+        trnLangsNone.classList.add('hidden');
+        trnLangsOne.classList.remove('hidden');
+        trnLangsMultiple.classList.add('hidden');
+        document.getElementById('trn-lang-default')!.textContent = langNames.get(trnLangs[0]) ?? trnLangs[0];
+    }
+    else {
+        trnLangsNone.classList.add('hidden');
+        trnLangsOne.classList.add('hidden');
+        trnLangsMultiple.classList.remove('hidden');
+    }
+
+    // add <select> menus in text-settings
+    const trnLangSelects: HTMLSelectElement[] = [];
+    trnLangsMultiple.replaceChildren();
+    const pickedTrnLangs = globals.settings!.pickedTrnLangs;
+    for(let i=0; i < trnLangs.length; ++i) {
+        const menuRow = document.createElement('div');
+        menuRow.classList.add('menu-row');
+        const id = 'trn-lang-' + (i+1);
+        const label = document.createElement('label');
+        label.classList.add('menu-item');
+        label.setAttribute('for', id);
+        label.textContent = `Translation language ${i+1}:`;
+        const select = document.createElement('select');
+        select.classList.add('menu-item');
+        select.setAttribute('id', id);
+        select.setAttribute('name', id);
+        select.addEventListener('change', updatePickedLangs);
+        trnLangSelects.push(select);
+
+        const noneOptionElem = document.createElement('option');
+        noneOptionElem.value = 'none';
+        noneOptionElem.textContent = '(None)';
+        if(pickedTrnLangs[i] === undefined) {
+            noneOptionElem.setAttribute('selected', '');
+        }
+        select.appendChild(noneOptionElem);
+
+        for(const lang of trnLangs) {
+            const optionElem = document.createElement('option');
+            optionElem.value = lang;
+            optionElem.textContent = langNames.get(lang) ?? lang;
+            if(pickedTrnLangs[i] === lang) {
+                optionElem.setAttribute('selected', '');
+            }
+            select.appendChild(optionElem);
+        }
+
+        menuRow.appendChild(label);
+        menuRow.appendChild(select);
+        trnLangsMultiple.appendChild(menuRow);
+    }
+    globals.trnLangSelects = trnLangSelects;
 }
 
 function showTrnInSpotlight(i: number) {
-    const d = globals.articleInfo!.kids2[i];
-    if(d === undefined) {
+    const d: Record<string, HTMLElement> | undefined = globals.articleInfo!.kids2[i];
+    if(d === undefined && i > 0) {
         console.warn(`showTrnInSpotlight: sentence ${i} doesn't exist.`);
-        return;
     }
-    const spotlightElem = document.getElementById('spotlight') as HTMLElement;
-    spotlightElem.replaceChildren();
-    for(const lang of globals.settings!.trnLangOrder) {
-        const trnElem = d[lang];
-        if(trnElem !== undefined) {
-            spotlightElem.appendChild(trnElem);
-            return;
+    const spotlightInner = document.getElementById('spotlight-inner')!;
+    const pickedTrnLangs = globals.settings!.pickedTrnLangs;
+    if(spotlightInner.children.length !== pickedTrnLangs.length) {
+        throw new Error('spotlightInner.children.length !== pickedTrnLangs.length');
+    }
+    for(let j=0; j < pickedTrnLangs.length; ++j) {
+        const trnLang = pickedTrnLangs[j];
+        const trnContainer = spotlightInner.children.item(j)!;
+        trnContainer.replaceChildren();
+        if(d !== undefined) {
+            const trnElem = d[trnLang];
+            if(trnElem) {
+                trnContainer.appendChild(trnElem);
+            }
         }
     }
 }
@@ -504,8 +581,8 @@ function showSentence(j: number | '+' | '-'): void {
     sockets[i].classList.remove('selected');
     sockets[j].classList.add('selected');
     globals.state!.currSent = j;
-    sockets[j].scrollIntoView({'behavior': 'smooth', 'block': 'center', 'inline': 'nearest'});
     showTrnInSpotlight(j);
+    sockets[j].scrollIntoView({'behavior': 'smooth', 'block': 'center', 'inline': 'nearest'});
 
     togglePrevNextButtons();
     if(globals.settings!.speechPolicy !== 'on-demand') {
@@ -513,26 +590,35 @@ function showSentence(j: number | '+' | '-'): void {
     }
 }
 
-function trnLangClickHandler(ev: Event): void {
-    const trnLangOrder = globals.settings!.trnLangOrder;
-    const liElem = ev.target! as HTMLElement;
-    if(liElem.tagName === 'OL') {
-        return;
+function updatePickedLangs(): void {
+    // get langs from <select> menus
+    const pickedTrnLangs = globals.settings!.pickedTrnLangs;
+    pickedTrnLangs.length = 0;
+    const seenSet = new Set();
+    for(const select of globals.trnLangSelects!) {
+        const lang = select.value;
+        if(lang !== 'none' && !seenSet.has(lang)) {
+            pickedTrnLangs.push(lang);
+            seenSet.add(lang);
+        }
     }
-    const olElem = liElem.parentElement!;
-    const trnLang = liElem.dataset.lang;
-    const rank = Number(liElem.dataset.rank);
-    if(trnLang !== trnLangOrder[rank]) {
-        throw new Error("Assertion error: data-lang and data-rank don't match");
+
+    // make spotlight children
+    const spotlight = document.getElementById('spotlight')!;
+    const spotlightInner = document.getElementById('spotlight-inner')!;
+    spotlightInner.replaceChildren();
+    if(pickedTrnLangs.length === 0) {
+        spotlight.classList.add('hidden');
     }
-    if(rank === 0) {
-        return;
+    else {
+        spotlight.classList.remove('hidden');
+        for(const lang of pickedTrnLangs) {
+            const elem = document.createElement('div');
+            elem.setAttribute('lang', lang);
+            spotlightInner.appendChild(elem);
+        }
     }
-    trnLangOrder[rank] = trnLangOrder[rank-1];
-    trnLangOrder[rank-1] = trnLang;
-    liElem.dataset.rank = '' + (rank - 1);
-    (liElem.previousElementSibling as HTMLElement).dataset.rank = '' + rank;
-    olElem.insertBefore(liElem, liElem.previousElementSibling);
+
     showTrnInSpotlight(globals.state!.currSent);
 }
 
@@ -686,8 +772,6 @@ function setupMenuListeners(): void {
             .then(parseArticle).then(loadArticle).then(hideMenus).catch(logError);
     });
 
-    document.getElementById('trn-lang-list')!.addEventListener('click', trnLangClickHandler);
-
     setupSlider('voice-speed', 'voice-speed-number', (x: number) => {
         if(globals.settings !== undefined) {
             globals.settings.voiceSpeed = x;
@@ -736,7 +820,7 @@ function setEventHandlers(): void {
         setTimeout(registerVoices, 0);
     }
     else {
-        console.log('speech unavailable');
+        console.warn('speech unavailable');
     }
     document.getElementById('spotlight-collapse-btn')!.addEventListener('click',
         (ev) => {(ev.currentTarget as HTMLElement).parentElement!.classList.toggle('collapsed');});

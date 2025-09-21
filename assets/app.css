@@ -62,18 +62,29 @@ footer {
     flex-direction: column;
 }
 
-#spotlight-parent {
+#spotlight {
     position: relative;
     background-color: var(--light-shade);
     border-radius: var(--border-radius);
     min-height: 2rem;
 }
-#spotlight {
+#spotlight-inner {
+    display: flex;
+    flex-direction: column;
     line-height: var(--line-height);
     font-size: 1.2em;
-    margin: 0.8em 1em;
 }
-#spotlight-parent .collapse-btn {
+#spotlight-inner > div {
+    padding: 0.8em 1em;
+}
+#spotlight-inner > div:empty::after {
+    content: "(Translation missing)";
+    color: var(--text-secondary);
+}
+#spotlight-inner > div:not(:first-child) {
+    border-top: 1px solid var(--heavy-tint);
+}
+#spotlight .collapse-btn {
     cursor: pointer;
     background-color: var(--light-tint);
     color: var(--text-secondary);
@@ -90,19 +101,19 @@ footer {
     width: 2rem;
     height: 2rem;
 }
-#spotlight-parent .collapse-btn:hover {
+#spotlight .collapse-btn:hover {
     background-color: var(--medium-tint);
 }
-#spotlight-parent .collapse-btn:active {
+#spotlight .collapse-btn:active {
     background-color: var(--heavy-tint);
 }
-#spotlight-parent.collapsed #spotlight {
+#spotlight.collapsed #spotlight-inner {
     display: none;
 }
-#spotlight-parent .collapse-btn::after {
+#spotlight .collapse-btn::after {
     content: "▼";
 }
-#spotlight-parent.collapsed .collapse-btn::after {
+#spotlight.collapsed .collapse-btn::after {
     content: "▲";
 }
 
@@ -124,6 +135,7 @@ footer {
     /*aspect-ratio: 1;*/
     font-size: 1em;
 
+    color: var(--text-color);
     background-color: transparent;
     border: 1px solid var(--heavy-tint);
     padding: 0;
@@ -322,7 +334,7 @@ ol.menu-item, .all-ch-mi > ol {
     margin-left: 1.5em;
 }
 select.menu-item, .all-ch-mi > select {
-    padding: 0;
+    padding: 0.15em 0.5em;
     margin: 0.5em;
 }
 input.menu-item, .all-ch-mi > input {
@@ -360,6 +372,7 @@ textarea {
     font-size: 1em;
 }
 select {
+    padding: 0.15em 0.5em;
     font-size: 1em;
 }
 form button.menu-item {
