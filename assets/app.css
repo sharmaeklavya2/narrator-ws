@@ -154,6 +154,7 @@ footer {
 }
 .toolbar button[disabled] {
     cursor: not-allowed;
+    color: var(--text-secondary);
 }
 .toolbar button[disabled] .icon {
     fill: var(--text-secondary);

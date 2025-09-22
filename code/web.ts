@@ -314,6 +314,16 @@ function setupFileLoaders(): void {
     });
 }
 
+function disableButton(id: string): void {
+    const elem = document.getElementById(id);
+    if(elem) {
+        elem.setAttribute('disabled', '');
+    }
+    else {
+        throw new Error(`Couldn't find element #${id}.`);
+    }
+}
+
 //=[ After loading an article ]=================================================
 
 function deleteFromArray(a: string[], x?: string) {
@@ -387,18 +397,6 @@ function togglePrevNextButtons(): void {
     }
 }
 
-function enableButtons(): void {
-    const textSettingsButton = document.getElementById('button-text-settings')!;
-    if(textSettingsButton.hasAttribute('disabled')) {
-        // textSettingsButton is disabled iff we have not loaded any article yet.
-        document.getElementById('button-prev')!.onclick = () => showSentence('-');
-        document.getElementById('button-next')!.onclick = () => showSentence('+');
-        window.addEventListener('keydown', keyHandler);
-    }
-    textSettingsButton.removeAttribute('disabled');
-    togglePrevNextButtons();
-}
-
 function loadArticle(articleInfo: ArticleInfo): void {
     // show parsing warnings
     if(articleInfo.warnings.length > 0) {
@@ -462,13 +460,14 @@ function loadArticle(articleInfo: ArticleInfo): void {
     document.getElementById('src-lang')!.textContent = langNames.get(srcLang) ?? srcLang;
     loadTextSettingsMenu();
     setVoice();
-    enableButtons();
+    togglePrevNextButtons();
 
     // show spotlight
     updatePickedLangs();
 }
 
 function loadTextSettingsMenu(): void {
+    document.getElementById('button-text-settings')!.removeAttribute('disabled');
     const trnLangs = globals.settings!.trnLangs;
 
     // hide/unhide relevant parts in text-settings
@@ -560,6 +559,9 @@ function showTrnInSpotlight(i: number) {
 }
 
 function showSentence(j: number | '+' | '-'): void {
+    if(globals.articleInfo === undefined) {
+        return;
+    }
     const sockets = globals.articleInfo!.sockets;
     const i = globals.state!.currSent;
     if(j === '+') {
@@ -626,7 +628,10 @@ function keyHandler(ev: KeyboardEvent) {
     if(globals.menuSwitcher && globals.menuSwitcher.selected) {
         return;
     }
-    if(ev.key === "ArrowRight") {
+    else if(globals.articleInfo === undefined) {
+        return;
+    }
+    else if(ev.key === "ArrowRight") {
         showSentence('+');
         ev.preventDefault();
     }
@@ -824,6 +829,14 @@ function setEventHandlers(): void {
     }
     document.getElementById('spotlight-collapse-btn')!.addEventListener('click',
         (ev) => {(ev.currentTarget as HTMLElement).parentElement!.classList.toggle('collapsed');});
+
+    for(const id of ['button-play', 'button-prev', 'button-next', 'button-text-settings', 'button-voice-settings']) {
+        // disable buttons explicitly since browsers sometimes preserve form control states across page refresh
+        disableButton(id);
+    }
+    document.getElementById('button-prev')!.onclick = () => showSentence('-');
+    document.getElementById('button-next')!.onclick = () => showSentence('+');
+    window.addEventListener('keydown', keyHandler);
 
     deployMenuSwitcher();
     setupFileLoaders();
