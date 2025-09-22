@@ -7,9 +7,19 @@ interface ArticleEntry {
 };
 
 export const articleEntries: ArticleEntry[] = [
+    {id: 'ict-01', path: 'articles/ict/01.csv', label: 'ICT Lesson 1'},
+    {id: 'ict-02', path: 'articles/ict/02.csv', label: 'ICT Lesson 2'},
+    {id: 'ict-03', path: 'articles/ict/03.csv', label: 'ICT Lesson 3'},
+    {id: 'ict-04', path: 'articles/ict/04.csv', label: 'ICT Lesson 4'},
+    {id: 'ict-05', path: 'articles/ict/05.csv', label: 'ICT Lesson 5'},
+    {id: 'ict-06', path: 'articles/ict/06.csv', label: 'ICT Lesson 6'},
+    {id: 'ict-07', path: 'articles/ict/07.csv', label: 'ICT Lesson 7'},
+    {id: 'ict-08', path: 'articles/ict/08.csv', label: 'ICT Lesson 8'},
     {id: 'ict-20', path: 'articles/ict/20.html', label: 'ICT Lesson 20'},
     {id: 'ict-33', path: 'articles/ict/33.html', label: 'ICT Lesson 33'},
+
     {id: 'sk1-02', path: 'articles/sk1/02.csv', label: 'SK1 Chapter 2'},
+
     {id: 'clarinette', path: 'articles/clarinette.fr.txt',
         label: "J'ai perdue le do de ma clarinette"},
 ];
