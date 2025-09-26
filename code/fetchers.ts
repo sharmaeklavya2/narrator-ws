@@ -24,6 +24,7 @@ export const articleEntries: ArticleEntry[] = [
     {id: 'ict-15', path: 'articles/ict/15.csv', label: 'ICT Lesson 15'},
     {id: 'ict-16', path: 'articles/ict/16.csv', label: 'ICT Lesson 16'},
     {id: 'ict-17', path: 'articles/ict/17.csv', label: 'ICT Lesson 17'},
+    {id: 'ict-18', path: 'articles/ict/18.csv', label: 'ICT Lesson 18'},
 
     {id: 'ict-20', path: 'articles/ict/20.csv', label: 'ICT Lesson 20'},
     {id: 'ict-33', path: 'articles/ict/33.html', label: 'ICT Lesson 33'},
