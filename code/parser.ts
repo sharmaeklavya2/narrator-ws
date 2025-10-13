@@ -6,9 +6,11 @@ export interface RawArticle {
     lang?: string;
     text: string;
     trust: boolean;
+    id?: string;
 }
 
 export interface ArticleInfo {
+    id?: string;
     defaultLang?: string;
     langs: Set<string>;
     root: HTMLElement;
@@ -19,21 +21,25 @@ export interface ArticleInfo {
 }
 
 export function parseArticle(rawArticle: RawArticle): ArticleInfo {
+    let articleInfo;
     if(rawArticle.ext === 'html') {
-        return parseArticleFromHtml(rawArticle.text, rawArticle.trust);
+        articleInfo = parseArticleFromHtml(rawArticle.text, rawArticle.trust);
     }
     else if(rawArticle.ext === 'csv') {
-        return parseArticleFromCsv(rawArticle.text, ',');
+        articleInfo = parseArticleFromCsv(rawArticle.text, ',');
     }
     else if(rawArticle.ext === 'tsv') {
-        return parseArticleFromCsv(rawArticle.text, '\t');
+        articleInfo = parseArticleFromCsv(rawArticle.text, '\t');
     }
     else if(rawArticle.ext === 'txt') {
-        return parseArticleFromTxt(rawArticle.text, rawArticle.lang);
+        articleInfo = parseArticleFromTxt(rawArticle.text, rawArticle.lang);
     }
     else {
         throw new Error(`Invalid file extension ${rawArticle.ext}.`);
     }
+    articleInfo.id = rawArticle.id;
+    postProcess(articleInfo);
+    return articleInfo;
 }
 
 function postProcess(articleInfo: ArticleInfo): void {
@@ -108,7 +114,6 @@ function parseArticleFromCsv(text: string, delimiter: string): ArticleInfo {
             articleInfo.kids.push(kids);
         }
     }
-    postProcess(articleInfo);
     return articleInfo;
 }
 
@@ -131,7 +136,6 @@ function parseArticleFromHtml(text: string, trust: boolean): ArticleInfo {
     const articleInfo: ArticleInfo = {defaultLang: defaultLang ?? undefined, root: newRoot,
         langs: new Set(), sockets: [], kids: [], kids2: [], warnings: warnings};
     outerHtmlParseHelper(articleDocBody, newRoot, articleInfo);
-    postProcess(articleInfo);
     return articleInfo;
 }
 
@@ -251,7 +255,6 @@ function parseArticleFromTxt(text: string, lang?: string): ArticleInfo {
         }
     }
 
-    postProcess(articleInfo);
     return articleInfo;
 }
 

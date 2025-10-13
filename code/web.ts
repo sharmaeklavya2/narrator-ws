@@ -314,6 +314,15 @@ function setupFileLoaders(): void {
     });
 }
 
+function loadFromLocation(location: Location): void {
+    const ae = getArticleEntryFromQString(location);
+    if(ae !== undefined) {
+        fetchRawArticleFromUrl(ae.path, true)
+            .then((rawArticle: RawArticle) => {rawArticle.id = ae.id; return rawArticle;})
+            .then(parseArticle).then(loadArticle).catch(logError);
+    }
+}
+
 function disableButton(id: string): void {
     const elem = document.getElementById(id);
     if(elem) {
@@ -397,6 +406,22 @@ function togglePrevNextButtons(): void {
     }
 }
 
+function updateLocationWithArticleId(id?: string): void {
+    let params = new URLSearchParams(window.location.search);
+    if(id === undefined) {
+        params.delete('article');
+    }
+    else {
+        params.set('article', id);
+    }
+    const paramsString = params.toString();
+    const qstring = (paramsString === '') ? '' : '?' + paramsString;
+    if(qstring !== window.location.search) {
+        console.debug(`changing url search params to '${qstring}'`);
+        window.history.pushState({}, '', `${window.location.origin}${window.location.pathname}${qstring}`);
+    }
+}
+
 function loadArticle(articleInfo: ArticleInfo): void {
     // show parsing warnings
     if(articleInfo.warnings.length > 0) {
@@ -443,6 +468,9 @@ function loadArticle(articleInfo: ArticleInfo): void {
             showSentence(sentId);
         });
     }
+
+    // update address bar
+    updateLocationWithArticleId(articleInfo.id);
 
     // set settings and state
     const voiceSpeedElem = document.getElementById('voice-speed') as HTMLInputElement;
@@ -841,16 +869,20 @@ function setEventHandlers(): void {
     deployMenuSwitcher();
     setupFileLoaders();
     setupMenuListeners();
+
+    window.addEventListener('popstate', (event) => {
+        try {
+            loadFromLocation(window.location);
+        } catch (e) {
+            logError(e);
+        }
+    });
 }
 
 function main(): void {
     try {
         setEventHandlers();
-        const ae = getArticleEntryFromQString();
-        if(ae !== undefined) {
-            fetchRawArticleFromUrl(ae.path, true)
-                .then(parseArticle).then(loadArticle).catch(logError);
-        }
+        loadFromLocation(window.location);
     } catch (e) {
         logError(e);
     }

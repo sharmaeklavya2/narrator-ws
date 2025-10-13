@@ -40,8 +40,8 @@ const idToArticleEntry = new Map(articleEntries.map(ba => [ba.id, ba]));
 
 const validExtSet = new Set(['html', 'csv', 'tsv', 'txt']);
 
-export function getArticleEntryFromQString(): ArticleEntry | undefined {
-    const urlParams = new URLSearchParams(window.location.search);
+export function getArticleEntryFromQString(location: Location): ArticleEntry | undefined {
+    const urlParams = new URLSearchParams(location.search);
     const param = urlParams.get('article');
     if(param === null || param === '') {
         return undefined;
@@ -60,6 +60,7 @@ export async function fetchRawArticleFromId(id: string): Promise<RawArticle> {
     }
     else {
         const rawArticle = await fetchRawArticleFromUrl(ae.path, true);
+        rawArticle.id = id;
         return rawArticle;
     }
 }
