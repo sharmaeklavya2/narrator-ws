@@ -19,12 +19,14 @@ interface Settings {
     voice?: SpeechSynthesisVoice;
     speechPolicy: SpeechPolicy;
     voiceSpeed: number;
+    voiceInterPause: number;
 }
 
 interface State {
     currSent: number;
     speaking: boolean;
     speakingSent?: number;
+    waitingSent?: number;
 }
 
 interface Globals {
@@ -475,12 +477,15 @@ function loadArticle(articleInfo: ArticleInfo): void {
     // set settings and state
     const voiceSpeedElem = document.getElementById('voice-speed') as HTMLInputElement;
     const voiceSpeed = Number(voiceSpeedElem.value);
+    const voiceInterPauseElem = document.getElementById('voice-inter-pause') as HTMLInputElement;
+    const voiceInterPause = Number(voiceInterPauseElem.value);
     globals.settings = {
         srcLang: srcLang,
         trnLangs: trnLangs,
         pickedTrnLangs: pickedTrnLangs,
         speechPolicy: getSpeechPolicy(),
-        voiceSpeed: voiceSpeed
+        voiceSpeed: voiceSpeed,
+        voiceInterPause: voiceInterPause,
     };
     globals.state = {currSent: 0, speaking: false};
 
@@ -590,6 +595,7 @@ function showSentence(j: number | '+' | '-'): void {
     if(globals.articleInfo === undefined) {
         return;
     }
+    globals.state!.waitingSent = undefined;
     const sockets = globals.articleInfo!.sockets;
     const i = globals.state!.currSent;
     if(j === '+') {
@@ -695,8 +701,24 @@ function getCurrentUtterance(): SpeechSynthesisUtterance | undefined {
                 globals.state!.speaking = false;
                 globals.state!.speakingSent = undefined;
                 document.getElementById('button-play')!.dataset.state = 'paused';
-                if(globals.settings!.speechPolicy === 'continuous') {
-                    showSentence('+');
+                if(globals.settings !== undefined && globals.settings.speechPolicy === 'continuous') {
+                    const vip = globals.settings.voiceInterPause;
+                    if(vip === 0) {
+                        showSentence('+');
+                    }
+                    else {
+                        const i = globals.state!.currSent;
+                        const n = globals.articleInfo!.sockets.length;
+                        if(i+1 < n) {
+                            globals.state!.waitingSent = i+1;
+                            window.setTimeout(() => {
+                                    const j = globals.state!.waitingSent;
+                                    if(j === i+1) {
+                                        showSentence(j);
+                                    }
+                                }, vip * 1000);
+                        }
+                    }
                 }
             }
         });
@@ -707,6 +729,7 @@ function getCurrentUtterance(): SpeechSynthesisUtterance | undefined {
 function playButtonClick(force: boolean = false): void {
     // force means cancel current speech (if speaking) and start speaking afresh
     if(globals.state !== undefined && globals.settings!.voice !== undefined) {
+        globals.state.waitingSent = undefined;
         const speaking = speechSynthesis.speaking && !speechSynthesis.paused;
         const paused = speechSynthesis.speaking && speechSynthesis.paused;
         const stopped = !speechSynthesis.speaking;
@@ -808,6 +831,11 @@ function setupMenuListeners(): void {
     setupSlider('voice-speed', 'voice-speed-number', (x: number) => {
         if(globals.settings !== undefined) {
             globals.settings.voiceSpeed = x;
+        }
+    });
+    setupSlider('voice-inter-pause', 'voice-inter-pause-number', (x: number) => {
+        if(globals.settings !== undefined) {
+            globals.settings.voiceInterPause = x;
         }
     });
 
