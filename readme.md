@@ -16,3 +16,5 @@ Other features:
 * Transliterate among Indic scripts.
 
 For more information, see the [documentation](https://sharmaeklavya2.github.io/narrator-ws/doc.html).
+
+To deploy, run `npx tsc`, and serve the current directory through a web server.
