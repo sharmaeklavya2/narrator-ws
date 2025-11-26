@@ -1,0 +1,28 @@
+[
+{"id": "ict-01", "path": "articles/ict/01.csv", "label": "ICT Lesson 1"},
+{"id": "ict-02", "path": "articles/ict/02.csv", "label": "ICT Lesson 2"},
+{"id": "ict-03", "path": "articles/ict/03.csv", "label": "ICT Lesson 3"},
+{"id": "ict-04", "path": "articles/ict/04.csv", "label": "ICT Lesson 4"},
+{"id": "ict-05", "path": "articles/ict/05.csv", "label": "ICT Lesson 5"},
+{"id": "ict-06", "path": "articles/ict/06.csv", "label": "ICT Lesson 6"},
+{"id": "ict-07", "path": "articles/ict/07.csv", "label": "ICT Lesson 7"},
+{"id": "ict-08", "path": "articles/ict/08.csv", "label": "ICT Lesson 8"},
+{"id": "ict-09", "path": "articles/ict/09.csv", "label": "ICT Lesson 9"},
+{"id": "ict-10", "path": "articles/ict/10.csv", "label": "ICT Lesson 10"},
+{"id": "ict-11", "path": "articles/ict/11.csv", "label": "ICT Lesson 11"},
+{"id": "ict-12", "path": "articles/ict/12.csv", "label": "ICT Lesson 12"},
+{"id": "ict-13", "path": "articles/ict/13.csv", "label": "ICT Lesson 13"},
+{"id": "ict-14", "path": "articles/ict/14.csv", "label": "ICT Lesson 14"},
+{"id": "ict-15", "path": "articles/ict/15.csv", "label": "ICT Lesson 15"},
+{"id": "ict-16", "path": "articles/ict/16.csv", "label": "ICT Lesson 16"},
+{"id": "ict-17", "path": "articles/ict/17.csv", "label": "ICT Lesson 17"},
+{"id": "ict-18", "path": "articles/ict/18.csv", "label": "ICT Lesson 18"},
+{"id": "ict-19", "path": "articles/ict/19.csv", "label": "ICT Lesson 19"},
+{"id": "ict-20", "path": "articles/ict/20.csv", "label": "ICT Lesson 20"},
+
+{"id": "ict-33", "path": "articles/ict/33.html", "label": "ICT Lesson 33"},
+{"id": "ict-38", "path": "articles/ict/38.csv", "label": "ICT Lesson 38"},
+
+{"id": "sk1-02", "path": "articles/sk1/02.csv", "label": "SK1 Chapter 2"},
+{"id": "clarinette", "path": "articles/clarinette.fr.txt", "label": "J'ai perdue le do de ma clarinette"}
+]

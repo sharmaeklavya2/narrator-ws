@@ -1,9 +1,9 @@
 import {RawArticle, ArticleInfo, parseArticle, populate} from "./parser.js";
 import {scriptsInfo} from "./trin.js";
 import {buildScaffolding, trinAll} from "./trinUI.js";
-import {getFileFromList, fetchRawArticleFromFile,
-    articleEntries, fetchRawArticleFromId,
+import {getFileFromList, fetchRawArticleFromFile, fetchRawArticleFromId,
     getArticleEntryFromQString, fetchRawArticleFromUrl} from "./fetchers.js";
+import articleEntries from "articleEntries.json" with { type: "json" };
 
 //=[ Interfaces and global variables ]==========================================
 
