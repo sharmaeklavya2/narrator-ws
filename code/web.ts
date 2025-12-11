@@ -183,7 +183,7 @@ function deployMenuSwitcher(): void {
     function hideMenus(): void {menuSwitcher.hide();}
 
     document.getElementById('modal-overlay')!.addEventListener('click', hideMenus);
-    for(const [id, elem] of menuSwitcher.menus.entries()) {
+    for(const elem of menuSwitcher.menus.values()) {
         const closeBtn = elem.firstElementChild!.lastElementChild!;
         closeBtn.addEventListener('click', hideMenus);
     }
@@ -221,7 +221,7 @@ function registerVoices(): void {
                 voiceList.push(voice);
             }
         }
-        for(const [lang, voiceList] of voicesByLang.entries()) {
+        for(const voiceList of voicesByLang.values()) {
             const defaultVoices = voiceList.filter(voice => voice.default);
             const nonDefaultVoices = voiceList.filter(voice => !voice.default);
             voiceList.length = 0;
@@ -245,7 +245,7 @@ function setupFileLoaders(): void {
             logError(e);
         }
     });
-    document.getElementById('button-upload')!.addEventListener('click', function(ev: Event) {
+    document.getElementById('button-upload')!.addEventListener('click', function() {
         fileLoaderElem.click();
     });
 
@@ -465,7 +465,7 @@ function loadArticle(articleInfo: ArticleInfo): void {
         articleInfo.sockets[0].classList.add('selected');
     }
     for(const socket of articleInfo.sockets) {
-        socket.addEventListener('click', function(ev: Event) {
+        socket.addEventListener('click', function() {
             const sentId = Number(socket.dataset.sentId);
             showSentence(sentId);
         });
@@ -695,7 +695,7 @@ function getCurrentUtterance(): SpeechSynthesisUtterance | undefined {
                 uiMessage('danger', `Speech error code ${ev.error}.`);
             }
         });
-        utterance.addEventListener('end', (ev) => {
+        utterance.addEventListener('end', () => {
             console.debug(`Playback of sentence ${sentId} ended.`);
             if(!speechSynthesis.pending && !speechSynthesis.speaking) {
                 globals.state!.speaking = false;
@@ -799,7 +799,7 @@ function setupSlider(sliderId: string, numberId: string, f: (x: number) => void)
     const sliderElem = document.getElementById(sliderId) as HTMLInputElement;
     const numberElem = document.getElementById(numberId)!;
     numberElem.textContent = sliderElem.value;
-    sliderElem.addEventListener('input', (ev) => {
+    sliderElem.addEventListener('input', () => {
         numberElem.textContent = sliderElem.value;
         f(Number(sliderElem.value));
     });
@@ -844,7 +844,7 @@ function setupMenuListeners(): void {
         mainElem.style.fontSize = (x * 1.2) + 'em';
     });
 
-    document.getElementById('speech-policy-group')!.addEventListener('change', (ev: Event) => {
+    document.getElementById('speech-policy-group')!.addEventListener('change', () => {
         if(globals.settings !== undefined) {
             globals.settings.speechPolicy = getSpeechPolicy();
         }
@@ -898,7 +898,7 @@ function setEventHandlers(): void {
     setupFileLoaders();
     setupMenuListeners();
 
-    window.addEventListener('popstate', (event) => {
+    window.addEventListener('popstate', () => {
         try {
             loadFromLocation(window.location);
         } catch (e) {
