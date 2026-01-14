@@ -7,7 +7,7 @@ export function splitIntoLines(text: string): string[] {
     return text.split('\r').join('').split('\n');
 }
 
-export function parseLine(line: string, delimiter: string): string[] {
+export function parseLine(line: string, delimiter: string, lineNo: number): string[] {
     if(!line.includes('"')) {
         return line.split(delimiter);
     }
@@ -19,7 +19,7 @@ export function parseLine(line: string, delimiter: string): string[] {
         const jq = myIndexOf(line, '"', i);
         if(inQuote) {
             if(jq === n) {
-                throw new Error('Unclosed quote in CSV.');
+                throw new Error(`Unclosed quote in CSV (line ${lineNo+1}).`);
             }
             else if(jq < n-1 && line[jq+1] === '"') {
                 // double quotes
@@ -86,10 +86,10 @@ export default function parse(text: string, delimiter?: string): [string[], Reco
     if(delimiter === undefined) {
         delimiter = guessDelimiter(lines[0]);
     }
-    const header = parseLine(lines[0], delimiter);
+    const header = parseLine(lines[0], delimiter, 0);
     const data = [];
     for(let i=1; i < lines.length; ++i) {
-        const cells = parseLine(lines[i], delimiter);
+        const cells = parseLine(lines[i], delimiter, i);
         const m = Math.min(header.length, cells.length);
         const obj: Record<string, string> = {};
         for(let j=0; j<m; ++j) {
