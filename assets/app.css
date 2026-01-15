@@ -314,8 +314,13 @@ svg.icon {
 .menu-body.padded {
     padding: 0.5em 1em;
 }
-.menu-body.button-group {
+.menu-body.button-list {
     align-items: stretch;
+}
+.menu-body.button-grid {
+    display: grid;
+    width: min(100vw, 20em);
+    grid-template-columns: repeat(auto-fit, minmax(4em, 1fr));
 }
 form.menu-body {
     display: flex;
@@ -345,16 +350,21 @@ input.menu-item, .all-ch-mi > input {
     padding: 0;
     margin-left: 0.8em;
 }
-.menu-body.button-group > * {
-    margin: 0;
-    padding: 0.75em 1.5em;
-    user-select: none;
-}
 textarea.menu-item {
     align-self: center;
     margin: 0.5em;
 }
-.menu-body.button-group > :last-child {
+.menu-body.button-group > * {
+    margin: 0;
+    padding: 0.75em 1.5em;
+    user-select: none;
+    align-items: center;
+}
+.menu-body.button-grid > * {
+    display: flex;
+    justify-content: center;
+}
+.menu-body.button-list > :last-child {
     border-radius: 0 0 var(--border-radius) var(--border-radius);
 }
 .slider-number {

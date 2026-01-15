@@ -50,7 +50,7 @@ interface CategoryInfo {
     id: string;
     label: string;
     description?: string;
-    displayStyle: "list";
+    displayStyle: "list" | "grid";
     partName?: string;
 }
 
@@ -80,7 +80,7 @@ const langsInfo: LangInfo[] = [
 ];
 
 const categoriesInfo: CategoryInfo[] = [
-{"id": "ict", "label": "An Intensive Course in Telugu", "displayStyle": "list", "partName": "lesson"},
+{"id": "ict", "label": "An Intensive Course in Telugu", "displayStyle": "grid", "partName": "lesson"},
 {"id": "sk", "label": "Savi Kannada", "description": "Kannada textbook series by KTBS", "displayStyle": "list", "partName": "chapter"},
 {"id": "misc", "label": "Miscellaneous", "displayStyle": "list"},
 ]
@@ -875,6 +875,7 @@ function setupLibrary(): void {
         body.id = catIdPrefix + catInfo.id + '-body';
         body.classList.add('menu-body');
         body.classList.add('button-group');
+        body.classList.add(catInfo.displayStyle === 'grid' ? 'button-grid' : 'button-list');
         body.addEventListener('click', baClickHandler);
         elem.appendChild(body);
 
@@ -885,10 +886,15 @@ function setupLibrary(): void {
     for(const ba of articleEntries) {
         const baElem = document.createElement('div');
         baElem.id = baIdPrefix + ba.id;
-        baElem.textContent = ba.label;
         const catDomInfo = catsDomInfo.get(ba.category);
         if(catDomInfo === undefined) {
             throw new Error(`Unknown category ${ba.category}.`);
+        }
+        if(catDomInfo.info.displayStyle === 'grid') {
+            baElem.textContent = ba.shortLabel ?? ba.label;
+        }
+        else {
+            baElem.textContent = ba.label;
         }
         catDomInfo.body.appendChild(baElem);
     }
