@@ -159,11 +159,11 @@ footer {
 .toolbar button[disabled] .icon {
     fill: var(--text-secondary);
 }
-.toolbar button:not([disabled]):hover, ol.orderable > li:hover, .button-group .menu-item:hover {
+.toolbar button:not([disabled]):hover, .button-group > :hover {
     background-color: var(--medium-tint);
     cursor: pointer;
 }
-.toolbar button:not([disabled]):active, ol.orderable > li:active, .button-group .menu-item:active {
+.toolbar button:not([disabled]):active, .button-group > :active {
     background-color: var(--heavy-tint);
 }
 button .icon {
@@ -308,12 +308,13 @@ svg.icon {
     flex-direction: column;
     align-items: start;
     margin: 0;
-    padding: 0.5em 1em;
+    padding: 0;
     overflow-y: auto;
 }
+.menu-body.padded {
+    padding: 0.5em 1em;
+}
 .menu-body.button-group {
-    margin: 0;
-    padding: 0;
     align-items: stretch;
 }
 form.menu-body {
@@ -344,7 +345,7 @@ input.menu-item, .all-ch-mi > input {
     padding: 0;
     margin-left: 0.8em;
 }
-.menu-body.button-group > .menu-item {
+.menu-body.button-group > * {
     margin: 0;
     padding: 0.75em 1.5em;
     user-select: none;
@@ -353,13 +354,8 @@ textarea.menu-item {
     align-self: center;
     margin: 0.5em;
 }
-.menu-body.button-group > .menu-item:last-child {
+.menu-body.button-group > :last-child {
     border-radius: 0 0 var(--border-radius) var(--border-radius);
-}
-ol.orderable > li {
-    padding: 0.5em;
-    background-color: var(--light-tint);
-    border-radius: var(--border-radius);
 }
 .slider-number {
     min-width: 2em;

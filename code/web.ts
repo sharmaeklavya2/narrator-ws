@@ -886,7 +886,6 @@ function setupLibrary(): void {
         const baElem = document.createElement('div');
         baElem.id = baIdPrefix + ba.id;
         baElem.textContent = ba.label;
-        baElem.classList.add('menu-item');
         const catDomInfo = catsDomInfo.get(ba.category);
         if(catDomInfo === undefined) {
             throw new Error(`Unknown category ${ba.category}.`);
@@ -902,7 +901,6 @@ function setupLibrary(): void {
 
         const catButton = document.createElement('div');
         catButton.id = catIdPrefix + catDomInfo.info.id + '-button';
-        catButton.classList.add('menu-item');
         catButton.textContent = catDomInfo.info.label;
         catButton.addEventListener('click', () => menuSwitcher.show(catDomInfo.menu.id));
         libraryMenuBody.appendChild(catButton);
