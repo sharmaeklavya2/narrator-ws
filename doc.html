@@ -94,7 +94,7 @@ Another way to open an article bundled with this web app is using querystrings.
 Appending <a href=".?article=ict-20"><code class="nowrap">?article=ict-20</code></a> to the URL
 will open ‘ICT Lesson 20’.
 The codes for all built-in articles can be found in
-<a href="https://github.com/sharmaeklavya2/narrator-ws/blob/main/code/fetchers.ts">fetchers.ts</a>.
+<a href="https://github.com/sharmaeklavya2/narrator-ws/blob/main/articleEntries.json">articleEntries.json</a>.
 </p>
 
 <h2 id="how-to-use">How to Use</h2>
@@ -138,7 +138,7 @@ Text Settings also displays the primary language at the top.
 <p>
 Pressing the play button in the toolbar (or pressing spacebar on the keyboard)
 will speak the currently selected sentence, or pause it if it is already speaking.
-However, for this to work, a text-to-speech engine must be available for the primary language.
+However, for this to work, a text-to-speech engine must be available in the web browser for the primary language.
 If it is unavailable, the play button and the voice settings button will be disabled.
 <p>
 
@@ -146,7 +146,7 @@ If it is unavailable, the play button and the voice settings button will be disa
 This web app relies on the web browser’s
 <a href="https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis">Speech Synthesis</a> service,
 which in turn (usually) relies on the operating system’s text-to-speech service.
-If a text-to-speech engine is not available for the primary language, you may be able to install it.
+If a text-to-speech service is not available for the primary language, you may be able to install it.
 Keep in mind that after this installation, for the changes to take effect,
 you may have to restart your web browser.
 </p>
@@ -216,7 +216,7 @@ B1,B2,B3</code>
 </pre>
 
 <p>
-The CSV article has a column or each language:
+The CSV article has a column for each language:
 the first column for the primary language and the remaining columns for secondary languages.
 The first row contains the IETF codes for the languages.
 Each subsequent row contains a sentence and its translations.
