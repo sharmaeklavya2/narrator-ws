@@ -46,6 +46,14 @@ interface LangInfo {
     nativeName?: string;
 }
 
+interface CategoryInfo {
+    id: string;
+    label: string;
+    description?: string;
+    displayStyle: "list";
+    partName?: string;
+}
+
 const langsInfo: LangInfo[] = [
 {"code":"en", "name": "English"},
 
@@ -70,6 +78,12 @@ const langsInfo: LangInfo[] = [
 {"code":"ja", "group": "East Asian", "name":"Japanese", "nativeName":"日本語"},
 {"code":"ko", "group": "East Asian", "name":"Korean", "nativeName":"한국어"}
 ];
+
+const categoriesInfo: CategoryInfo[] = [
+{"id": "ict", "label": "An Intensive Course in Telugu", "displayStyle": "list", "partName": "lesson"},
+{"id": "sk", "label": "Savi Kannada", "description": "Kannada textbook series by KTBS", "displayStyle": "list", "partName": "chapter"},
+{"id": "misc", "label": "Miscellaneous", "displayStyle": "list"},
+]
 
 function getLangLabel(langInfo: LangInfo): string {
     if(langInfo.nativeName) {
@@ -174,7 +188,7 @@ function deployMenuSwitcher(): void {
     const menuSwitcher = new MenuSwitcher();
     globals.menuSwitcher = menuSwitcher;
     menuSwitcher.add('open-menu');
-    menuSwitcher.add('enlist-menu');
+    menuSwitcher.add('library-menu');
     menuSwitcher.add('edit-menu');
     menuSwitcher.add('about-menu');
     menuSwitcher.add('text-settings-menu');
@@ -197,11 +211,11 @@ function deployMenuSwitcher(): void {
     document.getElementById('button-open')!.addEventListener('click',
         () => menuSwitcher.show('open-menu'));
 
-    document.getElementById('button-enlist')!.addEventListener('click',
-        () => menuSwitcher.show('enlist-menu'));
+    document.getElementById('button-library')!.addEventListener('click',
+        () => menuSwitcher.show('library-menu'));
     document.getElementById('button-edit')!.addEventListener('click',
         () => menuSwitcher.show('edit-menu'));
-    document.getElementById('enlist-back')!.addEventListener('click',
+    document.getElementById('library-back')!.addEventListener('click',
         () => menuSwitcher.show('open-menu'));
     document.getElementById('edit-back')!.addEventListener('click',
         () => menuSwitcher.show('open-menu'));
@@ -805,28 +819,101 @@ function setupSlider(sliderId: string, numberId: string, f: (x: number) => void)
     });
 }
 
-function setupMenuListeners(): void {
+function baClickHandler(ev: PointerEvent): void {
+    console.debug('logged a click on a menu', ev);
+    function hideMenus(): void {
+        const menuSwitcher = globals.menuSwitcher!;
+        menuSwitcher.hide();
+    }
+
+    const baIdPrefix = 'ba-';
+    const baElem = getParentIfNeeded(ev.target);
+    console.debug('baElem:', baElem);
+    if(baElem === null || !baElem.parentElement!.classList.contains('menu-body')) {
+        return;
+    }
+    const id = baElem.id.slice(baIdPrefix.length);
+    fetchRawArticleFromId(id)
+        .then(parseArticle).then(loadArticle).then(hideMenus).catch(logError);
+}
+
+function setupLibrary(): void {
+    interface CatDomInfo {
+        menu: HTMLElement;
+        body: HTMLElement;
+        info: CategoryInfo;
+    }
+
     const menuSwitcher = globals.menuSwitcher!;
     function hideMenus(): void {menuSwitcher.hide();}
 
-    const builtinsMenu = document.getElementById('enlist-body')!;
+    const catIdPrefix = 'cat-';
+    const catsDomInfo : Map<string, CatDomInfo> = new Map();
+    for(const catInfo of categoriesInfo) {
+        const elem = document.createElement('div');
+        elem.id = catIdPrefix + catInfo.id + '-menu';
+        elem.classList.add('menu');
+        elem.classList.add('disabled');
+
+        const header = document.createElement('header');
+        const backBtn = document.createElement('div');
+        backBtn.id = catIdPrefix + catInfo.id + '-back';
+        backBtn.classList.add('back-btn');
+        backBtn.addEventListener('click', () => menuSwitcher.show('library-menu'));
+        header.appendChild(backBtn);
+        const heading = document.createElement('div');
+        heading.classList.add('heading');
+        heading.textContent = 'Select a ' + (catInfo.partName ?? 'document');
+        header.appendChild(heading);
+        const closeBtn = document.createElement('div');
+        closeBtn.classList.add('close-btn');
+        closeBtn.addEventListener('click', hideMenus);
+        header.appendChild(closeBtn);
+        elem.appendChild(header);
+
+        const body = document.createElement('div');
+        body.id = catIdPrefix + catInfo.id + '-body';
+        body.classList.add('menu-body');
+        body.classList.add('button-group');
+        body.addEventListener('click', baClickHandler);
+        elem.appendChild(body);
+
+        catsDomInfo.set(catInfo.id, {'menu': elem, 'body': body, 'info': catInfo});
+    }
+
     const baIdPrefix = 'ba-';
     for(const ba of articleEntries) {
         const baElem = document.createElement('div');
         baElem.id = baIdPrefix + ba.id;
-        baElem.classList.add('menu-item');
         baElem.textContent = ba.label;
-        builtinsMenu.appendChild(baElem);
-    }
-    builtinsMenu.addEventListener('click', (ev) => {
-        const elem = getParentIfNeeded(ev.target);
-        if(elem === null || !elem.classList.contains('menu-item')) {
-            return;
+        baElem.classList.add('menu-item');
+        const catDomInfo = catsDomInfo.get(ba.category);
+        if(catDomInfo === undefined) {
+            throw new Error(`Unknown category ${ba.category}.`);
         }
-        const id = elem.id.slice(baIdPrefix.length);
-        fetchRawArticleFromId(id)
-            .then(parseArticle).then(loadArticle).then(hideMenus).catch(logError);
-    });
+        catDomInfo.body.appendChild(baElem);
+    }
+
+    const libraryMenuBody = document.getElementById('library-body')!;
+    const modalGroup = document.getElementById('modal-group')!;
+    for(const catDomInfo of catsDomInfo.values()) {
+        modalGroup.appendChild(catDomInfo.menu);
+        menuSwitcher.add(catDomInfo.menu.id);
+
+        const catButton = document.createElement('div');
+        catButton.id = catIdPrefix + catDomInfo.info.id + '-button';
+        catButton.classList.add('menu-item');
+        catButton.textContent = catDomInfo.info.label;
+        catButton.addEventListener('click', () => menuSwitcher.show(catDomInfo.menu.id));
+        libraryMenuBody.appendChild(catButton);
+    }
+
+    const modalOverlay = document.getElementById('modal-overlay')!;
+    modalGroup.appendChild(modalOverlay);
+}
+
+function setupMenuListeners(): void {
+    const menuSwitcher = globals.menuSwitcher!;
 
     setupSlider('voice-speed', 'voice-speed-number', (x: number) => {
         if(globals.settings !== undefined) {
@@ -897,6 +984,7 @@ function setEventHandlers(): void {
     deployMenuSwitcher();
     setupFileLoaders();
     setupMenuListeners();
+    setupLibrary();
 
     window.addEventListener('popstate', () => {
         try {
