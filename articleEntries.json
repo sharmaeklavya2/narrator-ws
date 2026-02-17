@@ -19,9 +19,11 @@
 {"id": "ict-18", "category": "ict", "path": "articles/ict/18.csv", "shortLabel": "18", "label": "ICT Lesson 18"},
 {"id": "ict-19", "category": "ict", "path": "articles/ict/19.csv", "shortLabel": "19", "label": "ICT Lesson 19"},
 {"id": "ict-20", "category": "ict", "path": "articles/ict/20.csv", "shortLabel": "20", "label": "ICT Lesson 20"},
+{"id": "ict-21", "category": "ict", "path": "articles/ict/21.csv", "shortLabel": "21", "label": "ICT Lesson 21"},
 
 {"id": "ict-33", "category": "ict", "path": "articles/ict/33.html", "shortLabel": "33", "label": "ICT Lesson 33"},
 {"id": "ict-38", "category": "ict", "path": "articles/ict/38.csv", "shortLabel": "38", "label": "ICT Lesson 38"},
+{"id": "ict-47", "category": "ict", "path": "articles/ict/47.csv", "shortLabel": "47", "label": "ICT Lesson 47"},
 
 {"id": "sk1-02", "category": "sk", "path": "articles/sk1/02.csv", "label": "SK1 Chapter 2"},
 {"id": "clarinette", "category": "misc", "path": "articles/clarinette.fr.txt", "label": "J'ai perdue le do de ma clarinette"}
