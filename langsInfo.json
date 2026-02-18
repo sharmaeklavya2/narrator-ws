@@ -13,6 +13,7 @@
 {"code":"ta", "group": "Indian", "name":"Tamil", "nativeName":"தமிழ்"},
 {"code":"te", "group": "Indian", "name":"Telugu", "nativeName":"తెలుగు"},
 {"code":"te_AP", "group": "Indian", "name":"Andhra Telugu", "nativeName":"ఆంధ్ర తెలుగు"},
+{"code":"te_TG", "group": "Indian", "name":"Telangana Telugu", "nativeName":"తెలంగాణ తెలుగు"},
 
 {"code":"fr", "group": "European", "name":"French", "nativeName":"Français"},
 {"code":"de", "group": "European", "name":"German", "nativeName":"Deutsch"},
