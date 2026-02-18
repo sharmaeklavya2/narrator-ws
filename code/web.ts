@@ -4,6 +4,7 @@ import {buildScaffolding, trinAll} from "./trinUI.js";
 import {getFileFromList, fetchRawArticleFromFile, fetchRawArticleFromId,
     getArticleEntryFromQString, fetchRawArticleFromUrl} from "./fetchers.js";
 import articleEntries from "articleEntries.json" with { type: "json" };
+import langsInfo from "langsInfo.json" with { type: "json" };
 
 //=[ Interfaces and global variables ]==========================================
 
@@ -53,31 +54,6 @@ interface CategoryInfo {
     displayStyle: "list" | "grid";
     partName?: string;
 }
-
-const langsInfo: LangInfo[] = [
-{"code":"en", "name": "English"},
-
-{"code":"bn", "group": "Indian", "name":"Bengali", "nativeName":"বাংলা"},
-{"code":"gu", "group": "Indian", "name":"Gujarati", "nativeName":"ગુજરાતી"},
-{"code":"hi", "group": "Indian", "name":"Hindi", "nativeName":"हिंदी"},
-{"code":"kn", "group": "Indian", "name":"Kannada", "nativeName":"ಕನ್ನಡ"},
-{"code":"ml", "group": "Indian", "name":"Malayalam", "nativeName":"മലയാളം"},
-{"code":"mr", "group": "Indian", "name":"Marathi", "nativeName":"मराठी"},
-{"code":"or", "group": "Indian", "name":"Oriya", "nativeName":"ଓଡ଼ିଆ"},
-{"code":"pa", "group": "Indian", "name":"Punjabi", "nativeName":"ਪੰਜਾਬੀ"},
-{"code":"sa", "group": "Indian", "name":"Sanskrit", "nativeName":"संस्कृतम्"},
-{"code":"ta", "group": "Indian", "name":"Tamil", "nativeName":"தமிழ்"},
-{"code":"te", "group": "Indian", "name":"Telugu", "nativeName":"తెలుగు"},
-
-{"code":"fr", "group": "European", "name":"French", "nativeName":"Français"},
-{"code":"de", "group": "European", "name":"German", "nativeName":"Deutsch"},
-{"code":"it", "group": "European", "name":"Italian", "nativeName":"Italiano"},
-{"code":"es", "group": "European", "name":"Spanish", "nativeName":"Español"},
-
-{"code":"zh", "group": "East Asian", "name":"Chinese", "nativeName":"中文"},
-{"code":"ja", "group": "East Asian", "name":"Japanese", "nativeName":"日本語"},
-{"code":"ko", "group": "East Asian", "name":"Korean", "nativeName":"한국어"}
-];
 
 const categoriesInfo: CategoryInfo[] = [
 {"id": "ict", "label": "An Intensive Course in Telugu", "displayStyle": "grid", "partName": "lesson"},
