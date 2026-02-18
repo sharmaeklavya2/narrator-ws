@@ -353,7 +353,7 @@ function voiceDescription(voice: SpeechSynthesisVoice): string {
 
 function setVoice(): void {
     if(globals.voicesByLang !== undefined && globals.settings !== undefined) {
-        const voiceList = globals.voicesByLang.get(globals.settings.srcLang);
+        const voiceList = globals.voicesByLang.get(globals.settings.srcLang.slice(0, 2));
         const playButton = document.getElementById('button-play') as HTMLButtonElement;
         const voiceSettingsButton = document.getElementById('button-voice-settings')!;
         const voiceInfoElem = document.getElementById('voice-info')!;
