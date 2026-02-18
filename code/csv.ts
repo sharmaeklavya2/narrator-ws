@@ -38,7 +38,7 @@ export function parseLine(line: string, delimiter: string, lineNo: number): stri
             if(jc <= jq) {
                 // end of cell
                 parts.push(line.slice(i, jc));
-                cells.push(parts.join(''));
+                cells.push(parts.join('').trim());
                 parts.length = 0;
                 i = jc + 1;
             }
