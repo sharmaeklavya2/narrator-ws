@@ -1,5 +1,6 @@
 import {default as parseCsv} from "./csv.js";
 import {sanitize} from "./sanitizeHtml.js";
+import langsInfo from "langsInfo.json" with {type: "json"};
 
 export interface RawArticle {
     ext?: string;
@@ -73,11 +74,16 @@ function tagFromValues(d: Record<string, string>): string | undefined {
     return tag ?? 'p';
 }
 
+const langCodes = new Set(langsInfo.map(lang => lang.code));
+
 function parseArticleFromCsv(text: string, delimiter: string): ArticleInfo {
     const newRoot = document.createElement('div');
     const [header, data] = parseCsv(text, delimiter);
-    const articleInfo: ArticleInfo = {defaultLang: header[0], root: newRoot,
-        langs: new Set(header), sockets: [], kids: [], kids2: [], warnings: []};
+    const langs = new Set(header.filter(langCode => langCodes.has(langCode)));
+    const articleInfo: ArticleInfo = {
+        defaultLang: header[0], root: newRoot, langs: langs,
+        sockets: [], kids: [], kids2: [], warnings: []
+    };
 
     let langKids: Record<string, HTMLElement> = {};
     let langBox: HTMLElement | undefined = undefined;
@@ -104,7 +110,7 @@ function parseArticleFromCsv(text: string, delimiter: string): ArticleInfo {
 
             const kids: Record<string, HTMLElement> = {};
             for(const [lang, sentence] of Object.entries(row)) {
-                if(sentence !== '') {
+                if(langs.has(lang) && sentence !== '') {
                     const langKid = document.createElement('span');
                     langKid.setAttribute('lang', lang);
                     langKid.textContent = sentence.trim();
