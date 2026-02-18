@@ -12,6 +12,7 @@
 {"code":"sa", "group": "Indian", "name":"Sanskrit", "nativeName":"संस्कृतम्"},
 {"code":"ta", "group": "Indian", "name":"Tamil", "nativeName":"தமிழ்"},
 {"code":"te", "group": "Indian", "name":"Telugu", "nativeName":"తెలుగు"},
+{"code":"te_AP", "group": "Indian", "name":"Andhra Telugu", "nativeName":"ఆంధ్ర తెలుగు"},
 
 {"code":"fr", "group": "European", "name":"French", "nativeName":"Français"},
 {"code":"de", "group": "European", "name":"German", "nativeName":"Deutsch"},
