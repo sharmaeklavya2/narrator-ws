@@ -59,12 +59,17 @@ function tagFromValues(d: Record<string, string>): string | undefined {
     let tag: string | undefined;
     for(const [k, v] of Object.entries(d)) {
         if(v !== '') {
-            if(tag !== undefined || v.length < 2 || v[0] !== '<' || v[v.length - 1] !== '>') {
+            if(v.length < 2 || v[0] !== '<' || v[v.length - 1] !== '>') {
                 return undefined;
             }
             const vTag = v.slice(1, v.length - 1);
             if(knownTags.has(vTag)) {
-                tag = vTag;
+                if(tag === undefined) {
+                    tag = vTag;
+                }
+                else if(tag !== vTag) {
+                    return undefined;
+                }
             }
             else {
                 return undefined;
