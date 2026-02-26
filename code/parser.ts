@@ -53,7 +53,7 @@ function postProcess(articleInfo: ArticleInfo): void {
     }
 }
 
-const knownTags = new Set(['ul', 'ol', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
+const knownTags = new Set(['br', 'ul', 'ol', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
 
 function tagFromValues(d: Record<string, string>): string | undefined {
     let tag: string | undefined;
@@ -97,9 +97,14 @@ function parseArticleFromCsv(text: string, delimiter: string): ArticleInfo {
     for(const row of data) {
         const foundTag = tagFromValues(row);
         if(foundTag) {
-            p = undefined;
-            outerTag = foundTag;
-            innerTag = (foundTag === 'ol' || foundTag === 'ul') ? 'li' : 'span';
+            if(foundTag === 'br' && p !== undefined) {
+                p.appendChild(document.createElement(foundTag));
+            }
+            else {
+                p = undefined;
+                outerTag = foundTag;
+                innerTag = (foundTag === 'ol' || foundTag === 'ul') ? 'li' : 'span';
+            }
         }
         else {
             if(p === undefined) {
