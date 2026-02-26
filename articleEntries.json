@@ -20,10 +20,16 @@
 {"id": "ict-19", "category": "ict", "path": "articles/ict/19.csv", "shortLabel": "19", "label": "ICT Lesson 19"},
 {"id": "ict-20", "category": "ict", "path": "articles/ict/20.csv", "shortLabel": "20", "label": "ICT Lesson 20"},
 {"id": "ict-21", "category": "ict", "path": "articles/ict/21.csv", "shortLabel": "21", "label": "ICT Lesson 21"},
+{"id": "ict-22", "category": "ict", "path": "articles/ict/22.csv", "shortLabel": "22", "label": "ICT Lesson 22"},
+{"id": "ict-23", "category": "ict", "path": "articles/ict/23.csv", "shortLabel": "23", "label": "ICT Lesson 23"},
+{"id": "ict-24", "category": "ict", "path": "articles/ict/24.csv", "shortLabel": "24", "label": "ICT Lesson 24"},
+{"id": "ict-25", "category": "ict", "path": "articles/ict/25.csv", "shortLabel": "25", "label": "ICT Lesson 25"},
 
 {"id": "ict-33", "category": "ict", "path": "articles/ict/33.html", "shortLabel": "33", "label": "ICT Lesson 33"},
 {"id": "ict-38", "category": "ict", "path": "articles/ict/38.csv", "shortLabel": "38", "label": "ICT Lesson 38"},
 {"id": "ict-47", "category": "ict", "path": "articles/ict/47.csv", "shortLabel": "47", "label": "ICT Lesson 47"},
+{"id": "ict-48", "category": "ict", "path": "articles/ict/48.csv", "shortLabel": "48", "label": "ICT Lesson 48"},
+{"id": "ict-49", "category": "ict", "path": "articles/ict/49.csv", "shortLabel": "49", "label": "ICT Lesson 49"},
 
 {"id": "sk1-02", "category": "sk", "path": "articles/sk1/02.csv", "label": "SK1 Chapter 2"},
 {"id": "clarinette", "category": "misc", "path": "articles/clarinette.fr.txt", "label": "J'ai perdue le do de ma clarinette"}
