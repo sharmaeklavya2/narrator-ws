@@ -12,7 +12,6 @@ jobs:
           node-version: latest
           cache: npm
       - run: npm install
-      - run: npm install typescript
       - run: npx tsc
       - run: rm -r node_modules scripts
       - uses: actions/upload-pages-artifact@v5
